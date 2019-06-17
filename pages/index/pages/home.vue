@@ -36,21 +36,25 @@
 			</view>
 
 			<view class="flex nav">
-				<view class="flex-1 item text-center" v-for="(item,index) in contentArr" :key="index">
+				<view class="flex-1 item text-center" v-for="(item, index) in contentArr" :key="index" @click="goPageForIndex(index)">
 					<image :src="item.img"></image>
 					<view class="fs24 text-333 text">{{item.text}}</view>
 				</view>
 			</view>
 		</view>
 
-		<view class="service" @click="doContact">
-			<image :src="'https://static.yidap.com/miniapp/o2o_find/index/index_icon_3.png'"></image>
-			<text class="text-yellow">小鹿客服: </text>
-			<text class="text-red mgl-10"> 400-8088-156</text>
+		<view class="service flex">
+			<image src="https://static.yidap.com/miniapp/o2o_find/index/index_icon_5.png"></image>
+			<view class='flex-1 left fll' @click="contact"></view>
+			<view class='flex-1 right flr'>
+				<button class="navigator-text fs30 pdl-30" style="background-color:#fff;border:none;height:140upx;line-height:115upx;text-align:left;opacity:0"
+				 open-type="contact"></button>
+				<view class="navigator-arrow"></view>
+			</view>
 		</view>
-		<showModel v-if="isNodes" v-on:toDo="toDo">
-			<rich-text :nodes="nodes"></rich-text>
-		</showModel>
+		<!-- <dialog id="indexDialog" title="{{dialogTitle}}" bind:confirmEvent="confirmEvent">
+			<rich-text nodes="{{nodes}}"></rich-text>
+		</dialog> -->
 
 	</view>
 </template>
@@ -76,20 +80,20 @@
 				isArrow: false,
 				navArr: [{
 						img: "https://static.yidap.com/miniapp/o2o_find/index/index_nav_1.png",
-						text: "立即找料"
+						text: "数百名资深专业皮革辅料买手"
 					},
 					{
 						img: "https://static.yidap.com/miniapp/o2o_find/index/index_nav_2.png",
-						text: "立刻取送"
+						text: "3分钟响应、3小时反馈、8小时内找到"
 					}
 				],
 				contentArr: [{
 						img: "https://static.yidap.com/miniapp/o2o_find/index/index_icon_1.png",
-						text: "数百名资深专业皮革辅料买手"
+						text: ""
 					},
 					{
 						img: "https://static.yidap.com/miniapp/o2o_find/index/index_icon_2.png",
-						text: "3分钟响应、3小时反馈、8小时内找到"
+						text: ""
 					},
 				],
 				serviceData: "", // 服务人数 次数
@@ -156,20 +160,19 @@
 				api.getInviteCode({}).then((res) => {
 					if (res.code == 200 || res.code == 0) {
 						this.mynotice();
+						this.$data.familyStatus = res.data.status;
 						if (res.data.status > 0) {
-							this.setData({
-								familyStatus: res.data.status,
-								status_label: res.data.status_label
-							})
-						} else {
-							this.setData({
-								familyStatus: res.data.status
-							})
+							this.$data.status_label = res.data.status_label;
 						}
 
 					}
 				})
 			},
+			contact(){
+				uni.makePhoneCall({
+					phoneNumber: '400-8088-156'
+				})
+			}
 		}
 	}
 </script>
@@ -207,11 +210,11 @@
 
 			.nav {
 				position: relative;
-				top: 50upx;
+				top: 20upx;
 
 				image {
-					width: 100upx;
-					height: 100upx;
+					width: 228upx;
+					height: 228upx;
 				}
 
 				.text {
@@ -248,6 +251,7 @@
 			.nav {
 				padding: 0 40upx;
 				text-align: left;
+
 				&:after {
 					content: "";
 					height: 100upx;
@@ -288,7 +292,7 @@
 		font-size: 32rpx;
 		background: #fff;
 		color: rgba(242, 152, 0, 1);
-		top: 10rpx;
+		top: 4rpx;
 		border-radius: 40rpx;
 		border: 2rpx solid rgba(242, 152, 0, 1);
 	}
@@ -319,6 +323,7 @@
 	.index .index-top-warp .nav .text-2 {
 		font-size: 24rpx;
 		color: #999;
+		margin-top: 8upx;
 	}
 
 	.index .index-top-warp .nav .item .text-fff {
@@ -326,6 +331,30 @@
 		text-align: center;
 		margin: 0 auto;
 		display: block;
-
+	}
+	
+	.index .service{
+	  line-height: 140rpx;
+		text-align: center;
+		font-size: 26rpx;
+	  position: relative;
+	}
+	.index .service .left{
+	  width: 375rpx;
+	  height: 140rpx;
+	  position: relative;
+	  z-index: 999999;
+	}
+	.index .service .right{
+	  width: 375rpx;
+	  height: 140rpx;
+	  position: relative;
+	  z-index: 999999;
+	}
+	.index .service image{
+		width: 750rpx;
+	  height: 140rpx;
+	  position: absolute;
+	  margin-bottom: 50rpx;
 	}
 </style>

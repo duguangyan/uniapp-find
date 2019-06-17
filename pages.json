@@ -13,7 +13,13 @@
             "style" : {
 				"navigationBarTitleText" : "登录"
 			}
-        }
+        },
+		{
+			"path" : "pages/resetPassworld/resetPassworld",
+			"style" : {
+				"navigationBarTitleText" : "重置密码"
+			}
+		}
     ],
     "globalStyle" : {
         "navigationBarTextStyle" : "black",
