@@ -7,7 +7,7 @@ import store from "./store";
 
 // 状态数据
 Vue.prototype.$store = store;
-
+Vue.prototype.$eventHub = new Vue();
 
 App.mpType = 'app';
 const app = new Vue({

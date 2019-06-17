@@ -16,4 +16,6 @@
 	/*每个页面公共css */
 	@import "./common/css/base.scss";
 	@import "./common/css/common.scss";
+	@import "./common/css/iconfont.scss";
+	
 </style>

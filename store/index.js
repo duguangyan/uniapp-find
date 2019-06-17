@@ -5,70 +5,84 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		loading:'0',
+		loading:false,
 		base_url:"https://cnodejs.org/api/v1",
 		list:[],
-		detail:''
+		detail:'',
+		fromRest:0,
+		token:'',
+		userInfo:'',
+		defultAddress:"",
+		addressList:"",
+		keyword:'',
+		isPhoneX: false,
+		isAndroid: false
 	},
 	mutations: {
 		
-		switch_loading(state,status){
-			console.log(status)
-			if(status == "change"){
-				if(state.loading=='0'){
-					state.loading = '1'
+		switch_loading(state,tf){
+			if(tf){
+				if(tf=="true"){
+					state.loading = true;
 				}else{
-					state.loading = '0'
+					state.loading = false;
 				}
 			}else{
-				state.loading = status;
+				state.loading = !state.loading
 			}
-			
 		},
 		update_list(state,data){
 			state.list = data
 		},
 		update_detail(state,data){
 			state.detail = data
+		},
+		changeReset(state,payload) {
+			if(payload.hasOwnProperty('number')){
+				state.fromRest = payload.number
+            }
+		 
+		},
+		setToken(state,payload){
+			if(payload.hasOwnProperty('number')){
+				state.token = payload.token
+			}
+		},
+		setUserInfo(state,payload){
+			if(payload.hasOwnProperty('userInfo')){
+				state.userInfo = payload.userInfo
+			}
+		},
+		setDefultAddress(state,payload){
+			if(payload.hasOwnProperty('defultAddress')){
+				state.defultAddress = payload.defultAddress
+			}
+		},
+		setAddressList(state,payload){
+			if(payload.hasOwnProperty('addressList')){
+				state.addressList = payload.addressList
+			}
+		},
+		setKeyword(state,payload){
+			if(payload.hasOwnProperty('keyword')){
+				state.keyword = payload.keyword
+			}
+		},
+		setPhoneX(state,payload){
+			if(payload.hasOwnProperty('isPhoneX')){
+				state.isPhoneX = payload.isPhoneX
+			}
+		},
+		setAndroid(state,payload){
+			if(payload.hasOwnProperty('isAndroid')){
+				state.isAndroid = payload.isAndroid
+			}
 		}
+		
+		
 	},
 	actions: {
-		get_data(ctx){
-			
-			console.log(ctx)
-			ctx.commit("switch_loading","1")
-			uni.request({
-				url:ctx.state.base_url+"/topics",
-				data:{
-					page :1,
-					tab :"share",
-					limit :10,
-					mdrender :false
-				},
-				success(res) {
-					ctx.commit("update_list",res.data.data)
-				},
-				complete(){
-					ctx.commit("switch_loading","0")
-				}
-			})
-		},
-		get_detail(ctx,id){
-			ctx.commit("switch_loading","1")
-			uni.request({
-				url:ctx.state.base_url+"/topic/"+id,
-				data:{
-					mdrender :true
-				},
-				success(res) {
-					console.log(res)
-					ctx.commit("update_detail",res.data.data.content)
-				},
-				complete(){
-					ctx.commit("switch_loading","0")
-				}
-			})
-		}
+		
 	},
 	modules:{
 		footer_store

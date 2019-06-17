@@ -33,7 +33,7 @@
 		},
 		onLoad() {
 			console.log('index onload')
-						this.$store.dispatch('get_data')
+			// this.$store.dispatch('get_data')
 		},
 		methods: {
 			

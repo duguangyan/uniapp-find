@@ -10,7 +10,9 @@
         
         ,{
             "path" : "pages/login/login",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "登录"
+			}
         }
     ],
     "globalStyle" : {

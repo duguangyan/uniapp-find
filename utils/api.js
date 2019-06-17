@@ -37,10 +37,12 @@ const myRequest = function (params = {}, url , id, st, page) {
             data.deviceId     = "wx";
             data.platformType =  "1";
             data.versionCode  = '4.0';            
-        const token = wx.getStorageSync('token') || '';
-        const token_type = wx.getStorageSync('token_type') || 'Bearer';
-        // data.member_token = token;
-        let header = {'Accept':'application/json', 'Authorization': token_type+ ' ' +token };
+        let header = { 
+        	'Accept': 'application/json', 
+        	'Content-Type': 'application/x-www-form-urlencoded',
+        	'token': uni.getStorageSync("token") || "",
+        	// 'accessToken':'ssupplier'
+        	};
         let apiUrl = url;
         if (id!=undefined){
           apiUrl = url +'/'+id
@@ -71,7 +73,7 @@ const myRequest = function (params = {}, url , id, st, page) {
 							} else {
 									if (401 === res.code) {  
 										let fromCenter =  uni.getStorageSync('fromCenter');
-                      uni.setStorageSync('fromCenter', '0');
+										uni.setStorageSync('fromCenter', '0');
 										if (fromCenter!=1){
 											showModel = uni.showModal({
 												title: '您尚未登录',
@@ -79,7 +81,7 @@ const myRequest = function (params = {}, url , id, st, page) {
 												confirmText: '前往',
 												success: (res) => {
 													if (res.confirm) {
-														wx.navigateTo({
+														uni.navigateTo({
 															url: '../login/login',
 														})
 														showModel = '';
