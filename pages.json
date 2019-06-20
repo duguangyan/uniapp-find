@@ -20,6 +20,7 @@
 				"navigationBarTitleText" : "重置密码"
 			}
 		}
+<<<<<<< HEAD
         ,{
             "path" : "pages/familyCenter/familyCenter",
             "style" : {
@@ -74,6 +75,14 @@
 				"navigationBarTitleText" : "小鹿支付"
 			}
         }
+=======
+        ,{
+            "path" : "pages/setting/setting",
+            "style" : {
+				"navigationBarTitleText" : "设置"
+			}
+        }
+>>>>>>> f590a76ea852270bd2e41b7614b00ccc1ed3fca0
     ],
 	"permission": {
 		"scope.userLocation": {
