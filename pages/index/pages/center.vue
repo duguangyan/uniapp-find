@@ -2,12 +2,14 @@
 	<view class="index">
 		<view class="center-top">
 			<view class="title">个人中心</view>
-			<image class="icon" src="/static/footer_icon/2.1.png" mode=""></image>
-			<view class="name">Eric</view>
+			<image class="icon" :src="avatar_path" mode=""></image>
+			<view class="name">{{nick_name}}</view>
 			<button class="top-button recharge" type="primary" plain="true">余额充值</button>
 			<button class="top-button buy" type="default">购买鹿币</button>
-			<image class="setting" src="/static/center/setting.png" mode=""></image>
-			<image class="message" src="/static/center/message.png" mode=""></image>
+			<navigator url="/pages/setting/setting">
+                <image class="setting" src="/static/center/setting.png"></image>
+            </navigator>
+			<image class="message" src="/static/center/message.png"></image>
 		</view>
 		<view class="wallet">
 			<view class="wallet-left">
@@ -26,19 +28,19 @@
 			<view class="horizon_separator"></view>
 			<ul>
 				<li>
-				<image class="order_image" src="http://img5.imgtn.bdimg.com/it/u=3300305952,1328708913&fm=26&gp=0.jpg" mode=""></image>
+				<image class="order_image" src="/static/center/find.png" mode=""></image>
 				<text class="order_item_text">待找料</text>
 				</li>
 				<li>
-				<image class="order_image" src="http://img5.imgtn.bdimg.com/it/u=3300305952,1328708913&fm=26&gp=0.jpg" mode=""></image>
+				<image class="order_image" src="/static/center/deliver.png" mode=""></image>
 				<text class="order_item_text">待确认</text>
 				</li>
 				<li>
-				<image class="order_image" src="http://img5.imgtn.bdimg.com/it/u=3300305952,1328708913&fm=26&gp=0.jpg" mode=""></image>
+				<image class="order_image" src="/static/center/receive.png" mode=""></image>
 				<text class="order_item_text">待收货</text>
 				</li>
 				<li>
-				<image class="order_image" src="http://img5.imgtn.bdimg.com/it/u=3300305952,1328708913&fm=26&gp=0.jpg" mode=""></image>
+				<image class="order_image" src="/static/center/evaluate.png"></image>
 				<text class="order_item_text">待评价</text>
 				</li>
 			</ul>
@@ -57,12 +59,13 @@
 		
 		<view class="horizon_list">
 			<view class="family">
-					<text>小鹿家人</text>
+					<text class="title">小鹿家人</text>
+					<text class="subTitle">注册小鹿家人，增添更大收益</text>
 					<image class="arrow" src="/static/center/arrow.png"></image>
 			</view>
 			<ul>
 				<li v-for="(item,index) in contents" :key=index>
-					<text>{{item.title}}</text>
+					<text class="title">{{item.title}}</text>
 					<image class="arrow" src="/static/center/arrow.png"></image>
 				</li>
 			</ul>
@@ -73,26 +76,26 @@
 </template>
 
 <script>
-	export var imageUrl="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560941321832&di=7513fdf538cb2d391d614f0ec103a584&imgtype=0&src=http%3A%2F%2Fpic30.nipic.com%2F20130604%2F12127826_163002377300_2.jpg";
+	import api from "../../../utils/api.js";
 	export default {
 		data() {
 			return {
 				
 				order_finds:[{
-					img:imageUrl,
-					text:"待找料",
+					img:"/static/center/find.png",
+					text:"待取料",
 					},
 					{
-					img:imageUrl,
+					img:"/static/center/deliver.png",
 					text:"待确认",
 					},
 					{
-					img:imageUrl,
-					text:"待评价",
+					img:"/static/center/receive.png",
+					text:"待收货",
 					},
 					{
-					img:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560941321832&di=7513fdf538cb2d391d614f0ec103a584&imgtype=0&src=http%3A%2F%2Fpic30.nipic.com%2F20130604%2F12127826_163002377300_2.jpg",
-					text:"待找料",
+					img:"/static/center/evaluate.png",
+					text:"待评价",
 					}
 				],
 				contents:[{
@@ -107,9 +110,28 @@
 				{
 					title:"积分商城",
 				}
-				]
+				],
+				nick_name:"Eric",
+				avatar_path:"/static/footer_icon/2.1.png",
 				
 			};
+		},
+		created() {
+			console.log("llllllllll----------")
+			api.getUserInfo({
+ 							method:"GET",
+ 							data:{
+ 								mobile:"18022408390",
+ 								password:"123456"
+ 							}
+ 						}).then((res)=>{
+ 							if(res.code==0){
+								
+								this.nick_name = res.data.nick_name;
+								this.avatar_path = res.data.avatar_path;
+ 								console.log(res.data);
+ 							}
+ 						})
 		}
 	}
 </script>
@@ -302,7 +324,6 @@
 			background-color: white;
 			height:112upx; 
 		}
-		
 		ul{
 			display: flex;
 			display: -webkit-flex;
@@ -317,12 +338,19 @@
 			height: 112upx;
 			flex: 1;
 		}
-		text{
+		text.title{
 			color: #333333;
 			font-size:30upx;
 			position: absolute;
 			left: 30upx;
 			top: 35upx;
+		}
+		text.subTitle{
+			color: #999999;
+			font-size:24upx;
+			position: absolute;
+			left: 170upx;
+			top: 42upx;
 		}
 		.arrow{
 			// background-color: #666666;
