@@ -2,12 +2,12 @@
 	<view class="index">
 		<view class="center-top">
 			<view class="title">个人中心</view>
-			<image class="icon" src="../../../static/footer_icon/2.1.png" mode=""></image>
+			<image class="icon" src="/static/footer_icon/2.1.png" mode=""></image>
 			<view class="name">Eric</view>
 			<button class="top-button recharge" type="primary" plain="true">余额充值</button>
 			<button class="top-button buy" type="default">购买鹿币</button>
-			<image class="setting" src="" mode=""></image>
-			<image class="message" src="" mode=""></image>
+			<image class="setting" src="/static/center/setting.png" mode=""></image>
+			<image class="message" src="/static/center/message.png" mode=""></image>
 		</view>
 		<view class="wallet">
 			<view class="wallet-left">
@@ -23,6 +23,7 @@
 		<view class="order find">
 			<text class="order_text">找料订单</text>
 			<text class="order_check">查看全部订单</text>
+			<view class="horizon_separator"></view>
 			<ul>
 				<li>
 				<image class="order_image" src="http://img5.imgtn.bdimg.com/it/u=3300305952,1328708913&fm=26&gp=0.jpg" mode=""></image>
@@ -45,6 +46,7 @@
 		<view class="order fectch">
 			<text class="order_text">取料订单</text>
 			<text class="order_check">查看全部订单</text>
+			<view class="horizon_separator"></view>
 			<ul>
 				<li v-for="(item,index) in order_finds" :key=index>
 					<image class="order_image" :src="item.img" mode=""></image>
@@ -54,28 +56,24 @@
 		</view>
 		
 		<view class="horizon_list">
+			<view class="family">
+					<text>小鹿家人</text>
+					<image class="arrow" src="/static/center/arrow.png"></image>
+			</view>
 			<ul>
-				<li>
-					<text>小鹿家人</text>
-					<image class="arrow" src=""></image>
-				</li>
-				<li>
-					<text>小鹿家人</text>
-					<image class="arrow" src=""></image>
-				</li>
-				<li>
-					<text>小鹿家人</text>
-					<image class="arrow" src=""></image>
+				<li v-for="(item,index) in contents" :key=index>
+					<text>{{item.title}}</text>
+					<image class="arrow" src="/static/center/arrow.png"></image>
 				</li>
 			</ul>
 		</view>
+		<text class="copyright">Copyright@2018-现在 \n 众皮联版权所有</text>
 		
 	</view>
 </template>
 
 <script>
 	export var imageUrl="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560941321832&di=7513fdf538cb2d391d614f0ec103a584&imgtype=0&src=http%3A%2F%2Fpic30.nipic.com%2F20130604%2F12127826_163002377300_2.jpg";
-	
 	export default {
 		data() {
 			return {
@@ -96,6 +94,19 @@
 					img:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560941321832&di=7513fdf538cb2d391d614f0ec103a584&imgtype=0&src=http%3A%2F%2Fpic30.nipic.com%2F20130604%2F12127826_163002377300_2.jpg",
 					text:"待找料",
 					}
+				],
+				contents:[{
+					title:"我的地址",
+				},
+				{
+					title:"在线客服",
+				},
+				{
+					title:"我的礼券",
+				},
+				{
+					title:"积分商城",
+				}
 				]
 				
 			};
@@ -105,7 +116,7 @@
 
 <style lang="scss" scoped>
 	.index{
-		background-color: bisque;
+		background-color: #F6F6F6;
 		height: 1836upx;
 	}
 	//top
@@ -115,7 +126,6 @@
 		background-color: #F29800;
 
 		.title {
-			// background-color: pink;
 			padding-top: 68upx;
 			color: white;
 			font-size: 36upx;
@@ -133,7 +143,7 @@
 		}
 
 		.setting {
-			background-color: pink;
+			// background-color: pink;
 			float: right;
 			margin-top: 94upx;
 			margin-right: 38upx;
@@ -141,7 +151,6 @@
 			height: 48upx;
 		}
 		.message {
-			background-color: darkcyan;
 			float: right;
 			margin-top: 94upx;
 			margin-right: 20upx;
@@ -237,6 +246,14 @@
 			right: 38upx;
 			margin-top:30upx;
 		}
+		.horizon_separator{
+			background-color: #D8D8D8;
+			position: relative;
+			top: 104upx;
+			width: 100%;
+			height:2upx;
+			
+		}
 		ul{
 			background-color: blue;
 			display: flex;
@@ -278,32 +295,50 @@
 	//列表
 	.horizon_list{
 		position: relative;
-		background-color: white;
+		background-color: #F6F6F6;
 		height: 580upx;
+		.family{
+			display: flex;
+			background-color: white;
+			height:112upx; 
+		}
 		
 		ul{
+			display: flex;
+			display: -webkit-flex;
+			flex-direction: column;
+			margin-top: 20upx;
 			padding-left:0upx;
+			height: 448upx;
 		}
 		li{
-			background-color: orange;
+			position: relative;
+			background-color: white;
 			height: 112upx;
+			flex: 1;
 		}
 		text{
-			
-			float: left;
 			color: #333333;
 			font-size:30upx;
 			position: absolute;
 			left: 30upx;
-			// top: 35upx;
+			top: 35upx;
 		}
 		.arrow{
-			float: right;
-			background-color: #666666;
+			// background-color: #666666;
 			position: absolute;
-			right: 20upx;
+			top: 30upx;
+			right: 25upx;
+			width: 28upx;
 			height:28upx;
 		}
 	}
-	
+	.copyright{
+		position: relative;
+		top: 40upx;
+		color: #999999;
+		font-size: 24upx;
+		text-align: center;
+		line-height: 34upx;
+	}
 </style>
