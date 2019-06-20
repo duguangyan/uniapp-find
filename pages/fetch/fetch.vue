@@ -1,0 +1,770 @@
+<template>
+	<view>
+		<view class='material'>
+			<view class='box-shadow'>
+				<view class='lh90 fs30 pdl-20 border-bottom'>
+					物料信息
+				</view>
+				<view v-if="cname==''" class='lh90 fs30 pdl-20 bb-1' @click='goClassify'>
+					<text class="text-theme">*</text> <text>物料品类:</text>
+					<text class='text-999' style='padding-left:50rpx;'>请选择物料品类</text>
+					<view class='iconfont icon-jiantou material-icon flr pdr-30'></view>
+				</view>
+
+				<view v-if="cname!=''" class='lh90 fs30 pdl-20 bb-1' @click='goClassify'>
+					<text class="text-theme">*</text> <text>物料品类:</text>
+					<text style='padding-left:50rpx;'> {{cname}}</text>
+					<view class='iconfont icon-jiantou material-icon flr pdr-30'></view>
+				</view>
+
+
+
+				<view class='material-number lh90 fs30 pdl-20 cf border-bottom'>
+					<text class="text-theme">*</text> <text>物料数量:</text>
+					<text class='sub' @click='sub'>-</text>
+					<input class='material-input' @input="changeNumber" type='number' v-model='findNum'></input>
+					<text class='plu' @click='plu'>+</text>
+					<text class='pdl-30'>件</text>
+				</view>
+
+				<view class="flex-start form-add-img fs30 pdl-20 cf'">
+					<view class="tl"> <text style='opacity:0'>*</text>上传图片:</view>
+				</view>
+				<view class="upload">
+					<upload @imageUpload='imageUpload' :files='files'></upload>
+				</view>
+				<view class="pd-30 align-start fs30 cf field-warp">
+					<view class="word-spacing field-txt">
+						<text class="text-theme">*</text>描 述 ：</view>
+
+					<textarea v-if="!isPopup && !isNotes" class="height-200 field-desc" v-model="desc" placeholder='(注：请详细描述物料的名称、用途、材质、交货时间)'>
+            </textarea>
+				</view>
+
+			</view>
+
+			<!--收货地址  -->
+			<view class="fs30 box-shadow">
+				<view class="cell-padding fs30 lh90 border-bottom mgt-20">
+					取料地址
+				</view>
+				<view class="address flex flex-start pdt-30 pdb-30 pdl-20 pdr-20">
+					<text class="iconfont icon-dizhi text-gray mgr-20"></text>
+					<view class='iconfont icon-jiantou address-icon flr pdr-30'></view>
+					<view @click='goConsigneeAddress' v-if="address!=''" class="flex-1 address-info fs24">
+						<view>
+							<view>
+								<text class='remark' v-if='address.remark'>{{address.remark ||''}}</text>
+								{{address.city_str || ''}} {{address.address || ''}} {{address.room ||''}}
+
+							</view>
+						</view>
+						<view style='word-break:break-all;'>
+							<text>{{address.consignee || ''}} / {{address.mobile || ''}}</text>
+						</view>
+						<view style='word-break:break-all;'>
+							<text class='text-999'>{{address.stall ||''}}</text>
+						</view>
+
+					</view>
+
+					<view @click='goConsigneeAddress' v-if="address == ''" class="text-666 h100 lh100 flex-1">
+						点击添加取料地址
+					</view>
+				</view>
+			</view>
+			<view class='fs30 box-shadow'>
+				<view class='lh90 fs30 pdl-30 bb-1'>
+					配送费用
+				</view>
+				<view class='lh90 fs30 pdl-30'>
+					<text>共{{findNum}}件</text>
+					<text class='flr pdr-30 text-red'>￥{{totalFecthPrice}}</text>
+				</view>
+			</view>
+			
+			<button @click="fethchSubmit" class='join-find lh90 fs30 mgb-30'>加入小鹿任务</button>
+			
+			<view class='xuzhi' @click='showNotes'>
+				<image src='../../static/icon/xuzhi.png'></image> <text class='fs24 text-999'>《小鹿取送须知》</text>
+			</view>
+			<view style='height:50rpx;'></view>
+		</view>
+
+		<view class='index-popup' v-if="isPopup">
+			<view class='index-popup-bg' @click='closePopup'></view>
+			<view class='index-popup-content'>
+				<view class='index-popup-title'>加入小鹿任务成功！</view>
+				<view class='index-popup-btn'>
+					<view class='go-pay' @click='goPay'>去结算({{payNum}}s)</view>
+					<view @click='goBack' style='color:#F29800'>继续取送</view>
+				</view>
+			</view>
+		</view>
+
+		<view class='index-popup notes-popup' v-if="isNotes">
+			<view class='index-popup-bg' @click='hiddenNotes'></view>
+			<view class='index-popup-content notes-btn-content'>
+				<view class='index-popup-title'>小鹿取送须知 <text class='iconfont icon-del1' @click='hiddenNotes'></text></view>
+				<view class="rich-text">
+					<rich-text :nodes="deliveryNeedKnow"></rich-text>
+				</view>
+				<view @click='checkIsResNotes' class='mgt-30' style='padding-left:200rpx;'>
+					<text v-if='isResNotes' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
+					<text v-if='!isResNotes' class="iconfont icon-yuan icon-yuan-1 fs40 pdl-10 text-eb"></text>
+					<text style='color:999;padding-left:20rpx;'>已阅读，下次不再显示</text>
+				</view>
+				<view class='index-popup-btn notes-btn'>
+					<view class='text-red btn-shadow' @click='hiddenNotes'>确定</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import util from "../../utils/util.js";
+	import api from "../../utils/api.js";
+	import upload from "../../components/upload.vue";
+	export default {
+		data() {
+			return {
+				cid:'',           // 分类ID
+				cname:''  ,       // 分类名称
+				files:[],         // 图片数据
+				
+				isResNotes: false,
+				isNotes: true,    // 取料须知
+				isSelect: false,
+				checkTypes: '',
+				checkType: '',    // 物料类型
+				checkTypes_cid: '',
+				findNum: 1,       // 物料数量
+				describeValue: '',
+				desc:'',          // 描述
+				fecthPrice: 0,    // 配送费用
+				isPopup: false,   // 弹窗控制   
+				payNum: 10,       // 倒计时
+				address: '',      // 取料地址
+				deliveryNeedKnow: '',
+				isFetchNotes:true,
+				totalFecthPrice:'' ,// 总价
+				interval:''
+			};
+		},
+		components: {
+			upload
+		},
+		onLoad() {
+			// 动态获取须知
+			api.needKnow({}).then((res) => {
+				if (res.code == 200 || res.code == 0) {
+					this.$data.deliveryNeedKnow = res.data.delivery_need_know
+				}
+			})
+
+			// 获取单价
+			this.getTaskFee();
+			
+			// 获取默认地址
+			this.getDefaultAddress();
+		},
+		onShow() {
+			// 判断是否显示须知
+			uni.getStorageSync('isFetchNotes')?this.$data.isNotes=false:this.$data.isNotes=true;
+	
+			// 获取分类数据
+			this.$eventHub.$on('classifyData', (data) => {
+				this.$data.cid = data.cid;
+				this.$data.cname = data.cname;
+			})
+			// 获取地址
+			this.$eventHub.$on('fetchPage', (data) => {
+				console.log('fetchPage:', data);
+				this.$data.address = data.address;
+			})
+		},
+		methods: {
+			// 图片上传返回数据
+			imageUpload(e) {
+				this.$data.files = e.files;
+			},
+			// 选择物料类型
+			goClassify(){
+				uni.navigateTo({
+					url: '../classify/classify?from=2&'
+				})
+			},
+			// 同意须知
+			checkIsResNotes() {
+				this.$data.isResNotes = !this.$data.isResNotes;
+				this.$data.isResNotes?uni.setStorageSync('isFetchNotes', true):uni.removeStorageSync('isFetchNotes');
+			},
+			// 获取单个任务价格
+			getTaskFee() {
+				api.getTaskFee({}).then((res) => {
+					if (res.code == 200 || res.code == 0) {
+						this.$data.fecthPrice = res.data.fetch_price;
+						this.$data.totalFecthPrice = util.formatMoney(res.data.fetch_price);
+						uni.setStorageSync('fecthPrice', res.data.fetch_price);
+					} else {
+						util.errorTips('获取单价失败');
+					}
+				})
+			},
+			// 显示照料须知
+			showNotes() {
+				this.$data.isNotes = true
+			},
+			// 隐藏找料须知
+			hiddenNotes() {
+				this.$data.isNotes = false
+			},
+			// 减法
+			sub() {
+				if (this.$data.findNum <= 1) {
+					util.errorTips('最少1个取料单');
+					return false;
+				}
+
+				this.$data.findNum--;
+				this.$data.totalFecthPrice = util.formatMoney(this.$data.fecthPrice * this.$data.findNum);
+			},
+			// 加法
+			plu() {
+				if (this.$data.findNum >= 10) {
+					util.errorTips('最多10个取料单');
+					return false;
+				}
+				this.$data.findNum++;
+				this.$data.totalFecthPrice = util.formatMoney(this.$data.fecthPrice * this.$data.findNum);
+			},
+			// 数量输入
+			changeNumber(e){
+				this.$data.findNum = e.detail.value;
+				this.$data.totalFecthPrice = util.formatMoney(this.$data.fecthPrice * this.$data.findNum);
+			},
+			// 获取默认地址
+			getDefaultAddress() {
+				api.defaultAddress({}).then((res) => {
+					if (res.code == 0 || res.code == 200) {
+						this.$data.address = res.data;
+					}
+				})
+			},
+			// 去地址选择页面
+			goConsigneeAddress(e) {
+				let id = e.currentTarget.dataset.id;
+				uni.navigateTo({
+					url: '../address/address?from=fetchPage',
+				})
+			},
+			// 去支付
+			goPay() {
+				let _this = this;
+				this.$data.payNum = 10;
+				clearInterval(this.$data.interval);
+				uni.reLaunch({
+					url: '../index/index',
+					success:function(){
+						_this.$store.commit("change_page",1);
+					}
+				});
+			},
+			// 继续找料
+			goBack() {
+				this.$data.payNum = 10;
+				clearInterval(this.$data.interval);
+				this.$data.isPopup = false;
+			},
+			// 取料任务提交
+			fethchSubmit(e) {
+				let _this = this;
+				// 图片获取
+				let uploadImgs = [];
+				let isUploading = this.$data.files.every((ele, i) => {
+					return (ele.pct && ele.pct === 'finish')
+				})
+				if (!isUploading) {
+					util.errorTips('图片正在上传')
+					return false
+				}
+				this.$data.files.forEach((ele, i) => {
+					if (ele.full_url) {
+						uploadImgs.push(ele.full_url)
+					}
+				})
+				if (this.$data.cname == '') {
+					util.errorTips('请填写物料品类')
+					return false
+				}
+				if (this.$data.desc == '') {
+					util.errorTips('请填写描述')
+					return false
+				}
+
+				if (!this.$data.address) {
+					util.errorTips('请添加地址')
+					return false
+				}
+				let data = {
+					task: [{
+						type: 2,
+						cid: this.$data.cid,
+						cname: this.$data.cname,
+						desc: this.$data.desc,
+						fetch_num: this.$data.findNum,
+						address_id: this.$data.address.id,
+						desc_img: uploadImgs
+					}]
+				}
+				api.joinTask({
+					method: 'POST',
+					data
+				}).then((res) => {
+					console.log(res);
+					if (res.code == 200 || res.code == 0) {
+						this.$data.isPopup = true;
+						_this.$data.interval = setInterval(function() {
+							_this.$data.payNum--;
+							if (_this.$data.payNum == 0) {
+								_this.$data.isPopup = false;
+								clearInterval(_this.$data.interval);
+								_this.goPay();
+								_this.$data.payNum = 10;
+							}
+						}, 1000)
+					} else {
+						util.successTips(res.msg);
+					}
+				}).catch((res) => {
+					util.successTips(res.msg);
+				})
+			}
+		},
+	}
+</script>
+
+<style lang="scss" scoped>
+	.rich-text{
+		padding: 10upx 30upx;
+	}
+	.material-number {
+		height: 90upx;
+		border-bottom: 1upx solid #f4f4f4;
+	}
+
+	.material-number text {
+		float: left;
+	}
+
+	.sub {
+		margin-left: 50upx;
+	}
+
+	.sub,
+	.plu {
+		width: 70upx;
+		height: 70upx;
+		line-height: 70upx;
+		background-color: #eeeeee;
+		text-align: center;
+		font-size: 50upx;
+		border-radius: 10upx;
+		margin-top: 10upx;
+	}
+
+	.material-input {
+		margin: 0 20upx;
+		width: 80upx;
+		border: 1upx solid #eeeeee;
+		height: 68upx;
+		display: inline-block;
+		float: left;
+		border-radius: 10upx;
+		margin-top: 10upx;
+		text-align: center;
+	}
+
+	.material-describe {}
+
+	.material-describe-title {
+		width: 200upx;
+	}
+
+	.material-describe textarea {
+		width: 300px;
+		height: 150px;
+		display: block;
+		position: relative;
+
+	}
+
+	.width-200 {
+		width: 200upx;
+	}
+
+	.height-200 {
+		height: 200upx;
+	}
+
+	.align-start {
+		align-items: flex-start;
+		border-bottom: 1px solid #f0eff5;
+	}
+
+	.word-spacing {
+		word-spacing: 12upx;
+	}
+
+	.join-find {
+		text-align: center;
+		background-color: #F29800;
+		margin: 0 20upx;
+		border-radius: 10upx;
+		margin-top: 50upx;
+		color: #fff;
+	}
+
+	.field-desc {
+		display: inline-block;
+		width: 500upx;
+		float: right;
+		position: relative;
+		top: -10upx;
+	}
+
+	.field-txt {
+		float: left;
+		width: 150upx;
+	}
+
+	.field-warp {
+		position: relative;
+		z-index: 9;
+	}
+
+	.index-popup {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 999999;
+	}
+
+	.index-popup-bg {
+		width: 100%;
+		height: 100%;
+		background-color: #000;
+		opacity: .7;
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 9999;
+	}
+
+	.index-popup-content {
+		width: 700upx;
+		height: 330upx;
+		background-color: #fff;
+		position: absolute;
+		top: 20%;
+		left: 25upx;
+		border-radius: 10upx;
+		z-index: 9999;
+	}
+
+	.index-popup-title {
+		height: 100upx;
+		line-height: 100upx;
+		font-size: 36upx;
+		text-align: center;
+
+	}
+
+	.index-popup-main {
+		font-size: 30upx;
+		padding: 0 80upx;
+		border-bottom: 1px solid #f4f4f4;
+	}
+
+	.index-popup-main .index-popup-view-1 {
+		letter-spacing: 9px;
+		line-height: 90upx;
+		height: 90upx;
+		float: left;
+	}
+
+	.index-popup-main view:last-child {}
+
+	.findInput,
+	.sub,
+	.plu {
+		float: left;
+		margin-top: 10upx;
+	}
+
+	.sub,
+	.plu {
+		font-size: 40upx;
+		display: inline-block;
+		height: 70upx;
+		line-height: 70upx;
+		width: 70upx;
+		background-color: #eee;
+		border-radius: 10upx;
+		text-align: center;
+		position: relative;
+	}
+
+	.index-popup-main input {
+		display: inline-block;
+		height: 68upx;
+		line-height: 68upx;
+		width: 80upx;
+		border: 1upx solid #f4f4f4;
+		border-radius: 10upx;
+		padding-left: 20upx;
+		margin: 0 20upx;
+		margin-top: 10upx;
+	}
+
+	.index-popup-check {
+		padding: 0 80upx;
+		height: 90upx;
+		line-height: 90upx;
+		border-bottom: 1upx solid #f4f4f4;
+	}
+
+	.index-popup-check view {
+		display: inline-block;
+		margin-left: 30upx;
+		font-size: 30upx;
+	}
+
+	.index-popup-check view:first-child {
+		margin-left: 0;
+	}
+
+	.doSubmit {
+		width: 350upx;
+		height: 80upx;
+		line-height: 80upx;
+		text-align: center;
+		margin: 0 auto;
+		background-color: #F29800;
+		border-radius: 20upx;
+		font-size: 30upx;
+		color: #fff;
+		margin-top: 60upx;
+	}
+
+	.index-popup-btn view {
+		display: inline-block;
+		width: 256upx;
+		height: 80upx;
+		line-height: 80upx;
+		text-align: center;
+		font-size: 30upx;
+		margin-left: 60upx;
+		margin-top: 20upx;
+		border: 1upx solid #F29800;
+		border-radius: 10upx;
+	}
+
+	.go-pay {
+		background-color: #F29800;
+		color: #fff;
+	}
+
+
+	.index-popup {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999999;
+	}
+
+	.index-popup-bg {
+		width: 100%;
+		height: 100%;
+		background-color: #000;
+		opacity: .7;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+
+	.index-popup-content {
+		width: 700upx;
+		min-height: 330upx;
+		background-color: #fff;
+		position: absolute;
+		top: 20%;
+		left: 25upx;
+		border-radius: 10upx;
+	}
+
+	.index-popup-title {
+		height: 100upx;
+		line-height: 100upx;
+		font-size: 36upx;
+		text-align: center;
+		position: relative;
+	}
+
+	.index-popup-main {
+		font-size: 30upx;
+		padding: 20upx 30upx;
+		border-bottom: 1px solid #f4f4f4;
+	}
+
+	.index-popup-main .index-popup-view-1 {
+		letter-spacing: 9px;
+		line-height: 90upx;
+		height: 90upx;
+		float: left;
+	}
+
+	.index-popup-main view:last-child {}
+
+	.index-popup-main input {
+		display: inline-block;
+		height: 68upx;
+		line-height: 68upx;
+		width: 80upx;
+		border: 1upx solid #f4f4f4;
+		border-radius: 10upx;
+		padding-left: 20upx;
+		margin: 0 20upx;
+		margin-top: 10upx;
+	}
+
+	.index-popup-check {
+		padding: 0 80upx;
+		height: 90upx;
+		line-height: 90upx;
+		border-bottom: 1upx solid #f4f4f4;
+	}
+
+	.index-popup-check view {
+		display: inline-block;
+		margin-left: 30upx;
+		font-size: 30upx;
+	}
+
+	.index-popup-check view:first-child {
+		margin-left: 0;
+	}
+
+	.doSubmit {
+		width: 350upx;
+		height: 80upx;
+		line-height: 80upx;
+		text-align: center;
+		margin: 0 auto;
+		background-color: #F29800;
+		border-radius: 20upx;
+		font-size: 30upx;
+		color: #fff;
+		margin-top: 60upx;
+	}
+
+	.index-popup-btn view {
+		display: inline-block;
+		width: 256upx;
+		height: 80upx;
+		line-height: 80upx;
+		text-align: center;
+		font-size: 30upx;
+		margin-left: 60upx;
+		margin-top: 20upx;
+		border: 1upx solid #F29800;
+		border-radius: 10upx;
+	}
+
+	.xuzhi {
+		text-align: center;
+		margin: 0 auto;
+		margin-bottom: 30upx;
+		margin-top: 30upx;
+	}
+
+	.xuzhi image {
+		width: 35upx;
+		height: 35upx;
+		margin-right: 5upx;
+		position: relative;
+		top: 8upx;
+	}
+
+	.xuzhi text {}
+
+	.notes-btn {
+		margin-top: 30upx;
+		margin-bottom: 50upx;
+	}
+
+	.notes-btn view {
+		margin-left: 218upx;
+		background-color: #F29800;
+		color: #fff;
+	}
+
+	.notes-btn-content {
+		height: 88%;
+		top: 6%;
+		overflow-y: auto;
+	}
+
+	.index-popup-main view {
+		line-height: 50upx;
+	}
+
+	.icon-del1 {
+		position: absolute;
+		font-size: 50upx;
+		right: 20upx;
+		top: -10upx;
+		color: #999;
+	}
+
+	/* 2.2改版 */
+
+	.icon-dizhi {
+		font-size: 50upx;
+	}
+
+	.address-icon {
+		position: absolute;
+		top: 40%;
+		right: 0;
+	}
+
+	.address {
+		position: relative;
+		padding-right: 70upx;
+	}
+
+	.flex {
+		display: flex;
+	}
+
+	.pd20 {
+		padding-top: 20upx;
+	}
+
+	.form-add-img {
+		
+		.tl{
+			line-height: 88upx;
+		}
+	}
+	.upload{
+		border-bottom: 1upx solid #eee;
+		padding-bottom: 30upx;
+	}
+</style>

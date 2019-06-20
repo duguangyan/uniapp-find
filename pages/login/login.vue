@@ -179,9 +179,11 @@
  								
  								
  								console.log("login:"+res);
- 								let resData = res;
+ 								let resData = res; 
+								
  								uni.setStorageSync("token",resData.data.token);
- 								
+ 								uni.setStorageSync("access_token",resData.data.access_token);
+ 								uni.setStorageSync("avatarPath",resData.data.avatar_path);
  								api.getUserInfo().then((res)=>{
  									resData.data.name = name
  								})
@@ -189,24 +191,6 @@
  								this.$store.commit('setToken',{token: resData.data.token});
  								this.$store.commit('setUserInfo',{userInfo: resData.data});
  								this.$eventHub.$emit('doUserInfo',resData.data);
- 								
- 								
- // 								// #ifdef  MP-WEIXIN || APP-PLUS
- // 								if(this.$store.state.footer_store.now_page_index == 3){
- // 									this.$store.commit("change_page",0)
- // 								}else{
- // 									this.$store.commit("change_page",this.$store.state.footer_store.now_page_index)
- // 								}
- // 								// #endif
- // 								
- // 								// #ifdef  H5
- // 								if(this.$store.state.footer_store.now_page_index == 2){
- // 									this.$store.commit("change_page",0)
- // 								}else{
- // 									this.$store.commit("change_page",this.$store.state.footer_store.now_page_index)
- // 								}
- // 								// #endif
- 								
  								uni.navigateBack({
  									delta: 1
  								});
@@ -226,7 +210,10 @@
  								
  								let resData = res;
  								uni.setStorageSync("token",resData.data.token);
- 			
+								uni.setStorageSync("access_token",resData.data.access_token);
+								uni.setStorageSync("avatarPath",resData.data.avatar_path);
+								uni.setStorageSync("user_name",resData.data.user_name);
+								uni.setStorageSync("nick_name",resData.data.nick_name);
  								api.getUserInfo().then((res)=>{
  									resData.data.name = res.data.name;
  								})

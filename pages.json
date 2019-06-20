@@ -20,7 +20,66 @@
 				"navigationBarTitleText" : "重置密码"
 			}
 		}
+        ,{
+            "path" : "pages/familyCenter/familyCenter",
+            "style" : {
+				"navigationBarTitleText" : "小鹿家人"
+			}
+        }
+        ,{
+            "path" : "pages/familyExplain/familyExplain",
+            "style" : {
+				"navigationBarTitleText" : "小鹿家人说明"
+			}
+        }
+        ,{
+            "path" : "pages/family/family",
+            "style" : {
+				"navigationBarTitleText" : "小鹿家人"
+			}
+        }
+        ,{
+            "path" : "pages/find/find",
+            "style" : {
+				"navigationBarTitleText" : "找料任务"
+			}
+        }
+        ,{
+            "path" : "pages/classify/classify",
+            "style" : {
+				"navigationBarTitleText" : "物料品类分类选择"
+			}
+        }
+        ,{
+            "path" : "pages/address/address",
+            "style" : {
+				"navigationBarTitleText" : "地址列表"
+			}
+        }
+        ,{
+            "path" : "pages/addressNew/addressNew",
+            "style" : {
+				"navigationBarTitleText" : "新增地址"
+			}
+        }
+        ,{
+            "path" : "pages/fetch/fetch",
+            "style" : {
+				"navigationBarTitleText" : "取送任务"
+			}
+        }
+        ,{
+            "path" : "pages/taskPay/taskPay",
+            "style" : {
+				"navigationBarTitleText" : "小鹿支付"
+			}
+        }
     ],
+	"permission": {
+		"scope.userLocation": {
+		  "desc": "你的位置信息将用于小程序位置接口的效果展示"
+		}
+	  },
     "globalStyle" : {
         "navigationBarTextStyle" : "black",
         "navigationBarTitleText" : "小鹿快找",

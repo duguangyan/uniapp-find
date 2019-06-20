@@ -1,8 +1,5 @@
 <template>
 	<view class="index">
-		<!-- #ifdef H5 -->
-		<wxTitle :headTitle="title" :isArrow="isArrow"></wxTitle>
-		<!-- #endif -->
 		<view class="index-top-warp">
 			<view class="uni-padding-wrap">
 				<view class="page-section swiper">
@@ -131,7 +128,7 @@
 					})
 				} else {
 					uni.navigateTo({
-						url: "/pages/take/take"
+						url: "/pages/fetch/fetch"
 					})
 				}
 			},
@@ -168,7 +165,51 @@
 					}
 				})
 			},
-			contact(){
+			goIn() {
+				let token = wx.getStorageSync('token');
+				let isTrue = token ? false : true;
+				
+				if (isTrue) {
+					uni.showModal({
+						title: '您尚未登录',
+						content: '是否前往登录页面',
+						confirmText: '前往',
+						// confirmColor: '#c81a29',
+						success: (res) => {
+							if (res.confirm) {
+								wx.navigateTo({
+									url: '../login/login',
+								})
+								return false;
+							} else if (res.cancel) {
+								console.log('用户点击取消')
+							}
+						}
+					})
+
+					return false;
+				}
+				api.getInviteCode({}).then((res) => {
+					if (res.code == 200 || res.code == 0) {
+						if (res.data.status == 0) {
+							uni.navigateTo({
+								url: '../familyExplain/familyExplain?familyStatus=' + res.data.status,
+							})
+						} else if (res.data.status == 1) {
+							uni.navigateTo({
+								url: '../familyCenter/familyCenter',
+							})
+						} else {
+							uni.navigateTo({
+								url: '../family/family',
+							})
+						}
+
+					}
+				})
+
+			},
+			contact() {
 				uni.makePhoneCall({
 					phoneNumber: '400-8088-156'
 				})
@@ -332,29 +373,32 @@
 		margin: 0 auto;
 		display: block;
 	}
-	
-	.index .service{
-	  line-height: 140rpx;
+
+	.index .service {
+		line-height: 140rpx;
 		text-align: center;
 		font-size: 26rpx;
-	  position: relative;
+		position: relative;
 	}
-	.index .service .left{
-	  width: 375rpx;
-	  height: 140rpx;
-	  position: relative;
-	  z-index: 999999;
+
+	.index .service .left {
+		width: 375rpx;
+		height: 140rpx;
+		position: relative;
+		z-index: 999999;
 	}
-	.index .service .right{
-	  width: 375rpx;
-	  height: 140rpx;
-	  position: relative;
-	  z-index: 999999;
+
+	.index .service .right {
+		width: 375rpx;
+		height: 140rpx;
+		position: relative;
+		z-index: 999999;
 	}
-	.index .service image{
+
+	.index .service image {
 		width: 750rpx;
-	  height: 140rpx;
-	  position: absolute;
-	  margin-bottom: 50rpx;
+		height: 140rpx;
+		position: absolute;
+		margin-bottom: 50rpx;
 	}
 </style>
