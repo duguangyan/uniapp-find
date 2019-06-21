@@ -1,10 +1,6 @@
 
 
  /* #ifdef H5 || APP-PLUS */
-    uni-page-head
-    {
-        display: none;
-    }
 	uni-swiper .uni-swiper-dots-horizontal{
 		bottom: 78upx;
 	}
@@ -25,7 +21,7 @@
 page{
 	height:100%;
 	width:750upx;
-	
+	font-size: 24upx;
 }
 
 .height40{

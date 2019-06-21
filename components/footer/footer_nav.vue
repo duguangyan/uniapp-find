@@ -66,6 +66,7 @@
 	color: #333;
 	border-top: 1upx solid #eee;
 	padding-top: 10upx;;
+	z-index: 99999999;
 }
 .footer_item{
 	float: left;
