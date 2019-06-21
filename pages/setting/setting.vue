@@ -46,7 +46,6 @@
 			display: -webkit-flex;
 			flex-direction: column;
 			height: 800upx;
-			align-content: space-between;
 			.item{
 				background-color: green;
 				flex-basis: 116upx;
