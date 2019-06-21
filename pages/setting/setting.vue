@@ -2,22 +2,22 @@
 	<view class="index">
 		<view class="setting_list">
 			<view class="item_first">
-				1
+				<view class="item-subTitle">完善个人信息</view>
 			</view>
 			<view class="item">
-				2
+				<view class="item-title">登录密码</view>
 			</view>
 			<view class="item">
-				3
+				<view class="item-title">支付密码</view>
 			</view>
 			<view class="item">
-				4
+				<view class="item-title">推荐人</view>
 			</view>
 			<view class="item">
-				5
+				<view class="item-title">版本号</view>
 			</view>
 			<view class="item">
-				6
+				<view class="item-title">清除缓存</view>
 			</view>
 		</view>
 	</view>
@@ -42,17 +42,19 @@
 	}
 	.setting_list{
 			background-color: orange;
-			display: flex;
-			display: -webkit-flex;
-			flex-direction: column;
 			height: 800upx;
 			.item{
 				background-color: green;
-				flex-basis: 116upx;
+				height: 116upx;
 			}
 			.item_first{
 				background-color: red;
-				flex-basis: 180upx;
+				height: 180upx;
+			}
+			.item-title{
+				font-size:32upx;
+				color: #333333;
+				text-align: center;
 			}
 		}
 </style>
