@@ -2,28 +2,23 @@
 	<view class="index">
 		<view class="setting_list">
 			<view class="item_first">
-				<view class="item-subTitle">完善个人信息</view>
+				<image class="icon" src="/static/icon/add-find.png"></image>
+				<text>完善个人信息</text>
+				<image class="arrow" src="/static/center/arrow.png"></image>
 			</view>
-			<view class="item">
-				<view class="item-title">登录密码</view>
-			</view>
-			<view class="item">
-				<view class="item-title">支付密码</view>
-			</view>
-			<view class="item">
-				<view class="item-title">推荐人</view>
-			</view>
-			<view class="item">
-				<view class="item-title">版本号</view>
-			</view>
-			<view class="item">
-				<view class="item-title">清除缓存</view>
-			</view>
+			<list title="登录密码"></list>
+			<list title="支付密码"></list>
+			<list title="绑定小鹿家人" id="item_mid_top"></list>
+			<list title="用户认证" id="item_mid_bottom"></list>
+			<list title="版本号" isShowText="true"></list>
+			<list title="清除缓存" isShowText="true"></list>
+			<button type="primary" class="logout">退出登录</button>
 		</view>
 	</view>
 </template>
 
 <script>
+	import list from "./list.vue"
 	export default {
 		data() {
 			return {
@@ -32,6 +27,9 @@
 		},
 		methods: {
 			
+		},
+		components:{
+			list,
 		}
 	}
 </script>
@@ -39,22 +37,55 @@
 <style lang="scss" scoped>
 	.index{
 		background-color: #F5F5F5;
+		height: 1334upx;
 	}
 	.setting_list{
-			background-color: orange;
+			background-color: #F5F5F5;
 			height: 800upx;
-			.item{
-				background-color: green;
-				height: 116upx;
-			}
+			
 			.item_first{
-				background-color: red;
+				background-color: white;
 				height: 180upx;
+				position: relative;
+				.icon{
+					position: absolute;
+					top: 28upx;
+					left: 40upx;
+					height: 120upx;
+					width: 120upx;
+				}
+				text{
+					color: #999999;
+					position: absolute;
+					right: 88upx;
+					top: 76upx;
+				}
+				.arrow{
+					position: absolute;
+					right: 20upx;
+					top: 76upx;
+					height: 28upx;
+					width: 28upx;
+				}
+			}
+			#item_mid_top{
+				margin-top: 20upx;
+			}
+			#item_mid_bottom{
+				margin-bottom: 20upx;
 			}
 			.item-title{
 				font-size:32upx;
 				color: #333333;
-				text-align: center;
+				position: relative;
+				top: 40upx;
+				left: 40upx;
+			}
+			
+			.logout {
+				background-color: rgb(240, 141, 5);
+				width: 90%;
+				margin-top: 162upx;
 			}
 		}
 </style>
