@@ -1,5 +1,5 @@
-const apiUrl = 'https://devv2.yidap.com'; // 测试
- // const apiUrl = 'https://apiv2.yidap.com';     // 正式
+ const apiUrl = 'https://devv2.yidap.com'; // 测试
+// const apiUrl = 'https://apiv2.yidap.com';     // 正式
  const versionNumber = 'v3.0.4'; //版本号
 
  if (apiUrl == 'https://apiv2.yidap.com') {
@@ -73,32 +73,26 @@ const apiUrl = 'https://devv2.yidap.com'; // 测试
  				}
  				var res = res.data;
  				if (200 === res.code || 0 === res.code) {
-					
  					resolve(res);
  				} else {
-					
  					if (401 === res.code) {
- 						let fromCenter = uni.getStorageSync('fromCenter');
- 						uni.setStorageSync('fromCenter', '0');
- 						if (fromCenter != 1) {
- 							showModel = uni.showModal({
- 								title: '您尚未登录',
- 								content: '是否前往登录页面',
- 								confirmText: '前往',
- 								success: (res) => {
- 									if (res.confirm) {
- 										uni.navigateTo({
- 											url: '../login/login',
- 										})
- 										showModel = '';
- 										return false;
- 									} else if (res.cancel) {
- 										util.errorTips('您点击了取消');
- 										showModel = '';
- 									}
- 								}
- 							})
- 						}
+						showModel = uni.showModal({
+							title: '您尚未登录',
+							content: '是否前往登录页面',
+							confirmText: '前往',
+							success: (res) => {
+								if (res.confirm) {
+									uni.navigateTo({
+										url: '../login/login',
+									})
+									showModel = '';
+									return false;
+								} else if (res.cancel) {
+									util.errorTips('您点击了取消');
+									showModel = '';
+								}
+							}
+						})
  					}
  					if (201 === res.code || -1 == res.code || 1 == res.code) {
  						uni.showToast({
@@ -120,7 +114,6 @@ const apiUrl = 'https://devv2.yidap.com'; // 测试
  						image: '../../static/icon//error.png',
  						duration: 3000
  					})
-
  				}
  				// reject(err)
  			},
@@ -146,8 +139,6 @@ const apiUrl = 'https://devv2.yidap.com'; // 测试
  const associateAccount = (params) => {
  	return myRequest(params, `${apiUrl}/auth/member/weixin/bind`)
  }
-
-
 
  // 手机登录
  const login = (params) => {

@@ -83,7 +83,7 @@
 				</view>
 			</view>
 			
-			<button @click="fethchSubmit" class='join-find lh90 fs30 mgb-30'>加入小鹿任务</button>
+			<button @click="fethchSubmit" class='join-find lh90 fs30 mgb-30'>{{taskEditItem!=''?'完成':'加入小鹿任务'}}</button>
 			
 			<view class='xuzhi' @click='showNotes'>
 				<image src='../../static/icon/xuzhi.png'></image> <text class='fs24 text-999'>《小鹿取送须知》</text>
@@ -149,13 +149,40 @@
 				deliveryNeedKnow: '',
 				isFetchNotes:true,
 				totalFecthPrice:'' ,// 总价
-				interval:''
+				interval:'',
+				taskEditItem:''
 			};
 		},
 		components: {
 			upload
 		},
-		onLoad() {
+		onLoad(options) {
+			
+			if(options.taskEditItem){    // 编辑取送任务
+				this.$data.isNotes = false;
+				uni.setStorageSync('isFetchNotes',true);
+				this.$data.taskEditItem = uni.getStorageSync('fetchItem');
+				let item = this.$data.taskEditItem;
+				this.$data.cid = item.cid;
+				this.$data.cname = item.cname;
+				this.$data.desc = item.desc;
+				this.$data.fetch_num = item.fetch_num;
+				this.$data.address_id = item.address_id;
+				this.$data.address = item.address;
+				
+				if(item.desc_img.length>0){
+					let desc_img = [];
+					item.desc_img.forEach((o,i)=>{
+						let imgObj = {
+							url:o,
+							pct:'finish'
+						}
+						desc_img.push(imgObj);
+					})
+					this.$data.files = desc_img;
+				}
+			}
+			
 			// 动态获取须知
 			api.needKnow({}).then((res) => {
 				if (res.code == 200 || res.code == 0) {
@@ -183,6 +210,7 @@
 				console.log('fetchPage:', data);
 				this.$data.address = data.address;
 			})
+			
 		},
 		methods: {
 			// 图片上传返回数据
@@ -290,8 +318,8 @@
 					return false
 				}
 				this.$data.files.forEach((ele, i) => {
-					if (ele.full_url) {
-						uploadImgs.push(ele.full_url)
+					if (ele.url) {
+						uploadImgs.push(ele.url)
 					}
 				})
 				if (this.$data.cname == '') {
@@ -318,28 +346,49 @@
 						desc_img: uploadImgs
 					}]
 				}
-				api.joinTask({
-					method: 'POST',
-					data
-				}).then((res) => {
-					console.log(res);
-					if (res.code == 200 || res.code == 0) {
-						this.$data.isPopup = true;
-						_this.$data.interval = setInterval(function() {
-							_this.$data.payNum--;
-							if (_this.$data.payNum == 0) {
-								_this.$data.isPopup = false;
-								clearInterval(_this.$data.interval);
-								_this.goPay();
-								_this.$data.payNum = 10;
-							}
-						}, 1000)
-					} else {
-						util.successTips(res.msg);
-					}
-				}).catch((res) => {
-					util.successTips(res.msg);
-				})
+				if(this.$data.taskEditItem!=''){  // 编辑
+					data.task[0].id = this.$data.taskEditItem.id;
+					api.updateTaskInit({
+						method: 'POST',
+						data:data.task[0]
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							this.$eventHub.$emit('editData', data);
+							uni.navigateBack({
+								delta:1
+							})
+						}else{
+							util.errorTips(res.msg);
+						}
+					}).catch((res) => {
+						util.errorTips(res.msg);
+					})
+				}else{  // 新增
+					api.joinTask({
+						method: 'POST',
+						data
+					}).then((res) => {
+						console.log(res);
+						if (res.code == 200 || res.code == 0) {
+				
+							this.$data.isPopup = true;
+							_this.$data.interval = setInterval(function() {
+								_this.$data.payNum--;
+								if (_this.$data.payNum == 0) {
+									_this.$data.isPopup = false;
+									clearInterval(_this.$data.interval);
+									_this.goPay();
+									_this.$data.payNum = 10;
+								}
+							}, 1000)
+						} else {
+							util.errorTips(res.msg);
+						}
+					}).catch((res) => {
+						util.errorTips(res.msg);
+					})
+				}
+				
 			}
 		},
 	}

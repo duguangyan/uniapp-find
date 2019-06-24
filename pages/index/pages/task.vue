@@ -14,7 +14,7 @@
 						<text v-if='item.check' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
 						<text v-if='!item.check' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
 					</view>
-					<view class='check-edit' @click='edit'>
+					<view class='check-edit' @click='edit' :data-index='index' :data-item='item' data-nav='1'>
 						<text>修改</text>
 					</view>
 					<view class='image-bg'>
@@ -205,7 +205,7 @@
 			this.getCompanyaddress();
 		},
 		onShow() {
-
+			
 		},
 		mounted() {
 			// 初始化选择按钮
@@ -215,6 +215,23 @@
 			this.$data.finds = [];
 			this.$data.fetchs = [];
 			this.init();
+			// 获取取送任务编辑信息
+			this.$eventHub.$on('editData', (data) => {
+				if(data.task[0].type == 1){
+					this.$data.finds.forEach((o,i)=>{
+						if(o.id == data.task[0].id){
+							this.$data.finds[i] = data.task[0] 
+						}
+					})
+				}else{
+					this.$data.fetchs.forEach((o,i)=>{
+						if(o.id == data.task[0].id){
+							this.$data.fetchs[i] = data.task[0] 
+						}
+					})
+				}
+				
+			})
 		},
 		methods: {
 			// 获取公司地址
@@ -539,7 +556,7 @@
 				  } else {
 					if (!this.$data.fetchsCheckAll) {
 					  cancelCheckFetchsIds = [];
-					  this.$data.finds.forEach((v, i) => {
+					  this.$data.fetchs.forEach((v, i) => {
 						cancelCheckFetchsIds.push(this.$data.fetchs[i].id);
 					  })
 					} else {
@@ -655,6 +672,61 @@
 				  url: '../taskPay/taskPay?payMethed=' + payMethed
 				})
 			  },
+			  // 编辑订单
+			  edit(e){
+				let item = e.currentTarget.dataset.item,
+				   index = e.currentTarget.dataset.index,
+				   nav   = e.currentTarget.dataset.nav;
+				   
+				   if(nav == 1){
+					 uni.setStorageSync('findItem',item);  
+					 uni.navigateTo({
+					   url: '../find/find?taskEditItem=true' 
+					 })
+				   }else{
+					 uni.setStorageSync('fetchItem',item);
+					 uni.navigateTo({
+					   url: '../fetch/fetch?taskEditItem=true'
+					 })
+				   }
+			  },
+			  // 去结算
+			  saveTask(){
+				let newFinds = [];
+				let newFetchs = [];
+				let task_ids = [];
+				// 刷选选中的找料任务
+				for (let i = 0; i < this.$data.finds.length; i++) {
+				  if (this.$data.finds[i].check) {
+					newFinds.push(this.$data.finds[i]);
+					task_ids.push(this.$data.finds[i].id);
+				  }
+				}
+				// 刷选选中的取料任务
+				for (let j = 0; j < this.$data.fetchs.length; j++) {
+				  if (this.$data.fetchs[j].check) {
+					newFetchs.push(this.$data.fetchs[j]);
+					task_ids.push(this.$data.fetchs[j].id);
+				  }
+				}
+				let taskPayList = {
+				  task_ids: task_ids,
+				  finds: newFinds,
+				  fetchs: newFetchs
+				}
+				uni.setStorageSync('taskPayList', taskPayList);
+				let payMethed = 1;
+				if (this.$data.finds.length > 0){
+				  payMethed = 1
+				} else if (this.$data.fetchs.length > 0){
+				  payMethed = 2
+				} else if (this.$data.finds.length > 0 && this.$data.fetchs.length > 0){
+				  payMethed = 3
+				}
+				wx.navigateTo({
+				  url: '../taskPay/taskPay?payMethed=' + payMethed
+				})
+			  }
 		},
 	}
 </script>

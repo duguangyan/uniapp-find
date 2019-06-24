@@ -259,6 +259,10 @@
 					let data = {'address':item};
 					this.$eventHub.$emit('fetchPage', data);
 				}
+				if(this.$data.from == 'taskPayPage'){
+					let data = {'address':item};
+					this.$eventHub.$emit('taskPayPage', data);
+				}
 				// 返回上一页
 				wx.navigateBack({
 					delta: 1

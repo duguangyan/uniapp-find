@@ -37,7 +37,7 @@
 							<text class='iconfont icon-jiantou address-icon'></text>
 							<view v-if="item.address != ''" @click='goConsigneeAddress(index)' class="flex-1 address-info fs24">
 								<view>
-									<text class='remark' v-if="item.address.tag">{{item.address.tag||''}}</text>
+									<text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
 									{{item.address.address||''}} {{item.address.name||''}} {{item.address.room ||''}}
 
 								</view>
@@ -83,13 +83,13 @@
 		</view>
 
 		<!--提交按钮  -->
-		<view class='add-find' @click='addFind'>
+		<view class='add-find' @click='addFind' v-if="taskEditItem==''">
 			<image src='../../static/icon/add-find.png'></image>
 			<text style='font-size:20rpx;color:#999'>点击添加找料</text>
 		</view>
 
 		<view class="cell-padding submit-form">
-			<button @click="submit" :disabled='findDisabled' class='btn-shadow'>加入小鹿任务</button>
+			<button @click="submit" :disabled='findDisabled' class='btn-shadow'>{{taskEditItem!=''?'完成':'加入小鹿任务'}}</button>
 		</view>
 		<view class='xuzhi' @click='showNotes'>
 			<image src='../../static/icon/xuzhi.png'></image> <text>《小鹿找料须知》</text>
@@ -161,12 +161,40 @@
 					desc_img: [],
 					files:[]
 				}],
+				taskEditItem:''
 			};
 		},
 		components: {
 			upload
 		},
-		onLoad() {
+		onLoad(optiosn) {
+			if(optiosn.taskEditItem){
+				this.$data.isNotes = false;
+				uni.setStorageSync('isFindNotes',true);
+				this.$data.taskEditItem = uni.getStorageSync('findItem');
+				let item = this.$data.taskEditItem;
+				this.$data.finds[0].id         = item.id;
+				this.$data.finds[0].cid        = item.cid;
+				this.$data.finds[0].cname      = item.cname;
+				this.$data.finds[0].check      = item.check;
+				this.$data.finds[0].find_type  = item.find_type;
+				this.$data.finds[0].desc       = item.desc;
+				this.$data.finds[0].address_id = item.address_id;
+				this.$data.finds[0].address    = item.address;
+				this.$data.finds[0].checkIndex = item.find_type - 1;
+				if(item.desc_img.length>0){
+					let desc_img = [];
+					item.desc_img.forEach((o,i)=>{
+						let imgObj = {
+							url:o,
+							pct:'finish'
+						}
+						desc_img.push(imgObj);
+					})
+					this.$data.finds[0].files = desc_img;
+				}
+				
+			}
 			// 获取公司地址
 			this.getCompanyaddress();
 			// 获取默认地址
@@ -233,18 +261,21 @@
 							util.errorTips('第' + (i + 1) + '个任务，至少上传一张图片')
 							return false
 						}
+						
 					} else if (finds[i].checkIndex == 1) { // 上门取样
 						if (finds[i].address == '') {
 							util.errorTips('第' + (i + 1) + '个任务，请添加地址')
 							return false;
 						}
+						finds[i].address_id = finds[i].address.id;
+						
 					} else if (finds[i].checkIndex == 2) { // 寄送样品
 					
 					}
 					
 					finds[i].find_type = finds[i].checkIndex + 1;
 					finds[i].type = 1;
-					finds[i].address_id = finds[i].address.id;
+					
 				}
 				
 				let task = {
@@ -252,42 +283,68 @@
 				};
 
 
-				console.log('data--->', task);
+				
 				// 加入小鹿任务
 				this.$data.findDisabled = true;
-				api.joinTask({
-					method: 'POST',
-					data: task
-				}).then((res) => {
-					setTimeout(() => {
-						this.$data.findDisabled = false;
-					}, 500)
-
-					if (res.code == 200 || res.code == 0) {
-						console.log('joinTask-finds:',this.$data.finds);
-						this.$data.isPopup = true;
-						_this.$data.interval = setInterval(function() {
-							console.log(_this.$data.payNum);
-							_this.$data.payNum--;
-							if (_this.$data.payNum == 0) {
-								_this.$data.isPopup = false;
-								clearInterval(_this.$data.interval);
-								_this.goPay();
-								_this.$data.payNum = 10;
-							}
-						}, 1000)
-					} else {
-						this.$data.findDisabled = true;
-					}
-				}).catch((res) => {
-					if(res.msg){
+				
+				if(this.$data.taskEditItem!=''){  // 编辑
+					finds[0].fetch_num = 1;
+					finds[0].id = this.$data.taskEditItem.id;
+					let data = finds[0];
+					api.updateTaskInit({
+						method: 'POST',
+						data
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							let task = {'task':finds}
+							this.$eventHub.$emit('editData', task);
+							uni.navigateBack({
+								delta:1
+							})
+						}else{
+							util.errorTips(res.msg);
+						}
+					}).catch((res) => {
 						util.errorTips(res.msg);
-					}else{
-						util.errorTips(res);
-					}
+					})
+				}else{
+					api.joinTask({
+						method: 'POST',
+						data: task
+					}).then((res) => {
+						setTimeout(() => {
+							this.$data.findDisabled = false;
+						}, 500)
 					
-					this.$data.findDisabled = false;
-				})
+						if (res.code == 200 || res.code == 0) {
+							console.log('joinTask-finds:',this.$data.finds);
+							this.$data.isPopup = true;
+							_this.$data.interval = setInterval(function() {
+								console.log(_this.$data.payNum);
+								_this.$data.payNum--;
+								if (_this.$data.payNum == 0) {
+									_this.$data.isPopup = false;
+									clearInterval(_this.$data.interval);
+									_this.goPay();
+									_this.$data.payNum = 10;
+								}
+							}, 1000)
+						} else {
+							this.$data.findDisabled = true;
+						}
+					}).catch((res) => {
+						if(res.msg){
+							util.errorTips(res.msg);
+						}else{
+							util.errorTips(res);
+						}
+						
+						this.$data.findDisabled = false;
+					})
+				}
+				
+				
+				
 
 			},
 			imageUpload(e) {
