@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
 	<view>
 		<view class='order'>
 			<view class='ordder-top-hidden'></view>
@@ -195,6 +196,15 @@
 			<view class='text-theme fs30 flr pdr-30 mgb-40' catchtap='forgetPayPassWord'>忘记密码</view>
 		</form> -->
 
+=======
+	<view >
+		订单中心
+		 <view class="page-body">
+            <view class="btn-area">
+				
+            </view>
+        </view>
+>>>>>>> a8ea4edd87df085d6c1768299c489f3bbc780f22
 	</view>
 </template>
 

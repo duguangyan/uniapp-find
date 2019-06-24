@@ -14,11 +14,11 @@
 		<view class="wallet">
 			<view class="wallet-left">
 				<text class="wallet_up">鹿币(个)</text>
-				<text class="wallet_down">10</text>
+				<text class="wallet_down">{{marketing}}</text>
 			</view>
 			<view class="wallet-right">
 				<text class="wallet_up">余额(元)</text>
-				<text class="wallet_down">150</text>
+				<text class="wallet_down">{{balance}}</text>
 			</view>
 			<view class="wallet-separator"></view>
 		</view>
@@ -113,22 +113,22 @@
 				],
 				nick_name:"Eric",
 				avatar_path:"/static/footer_icon/2.1.png",
+				balance:0,
+				marketing:0,
+				
 				
 			};
 		},
 		created() {
 			console.log("llllllllll----------")
 			api.getUserInfo({
- 							method:"GET",
- 							data:{
- 								mobile:"18022408390",
- 								password:"123456"
- 							}
+ 							method:"GET"
  						}).then((res)=>{
  							if(res.code==0){
-								
 								this.nick_name = res.data.nick_name;
 								this.avatar_path = res.data.avatar_path;
+								this.balance = res.data.balance;
+								this.marketing = res.data.marketing;
  								console.log(res.data);
  							}
  						})
@@ -140,6 +140,7 @@
 	.index{
 		background-color: #F6F6F6;
 		height: 1836upx;
+		margin-bottom:-66upx;
 	}
 	//top
 	.center-top {

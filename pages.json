@@ -17,8 +17,13 @@
 			"style" : {
 				"navigationBarTitleText" : "重置密码"
 			}
+<<<<<<< HEAD
 		}
         ,{
+=======
+		},
+		{
+>>>>>>> a8ea4edd87df085d6c1768299c489f3bbc780f22
             "path" : "pages/familyCenter/familyCenter",
             "style" : {
 				"navigationBarTitleText" : "小鹿家人"
