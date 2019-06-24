@@ -46,7 +46,7 @@
 	 
 	.content {
 		text-align: center;
-		padding-bottom: 200upx;
+		padding-bottom: 130upx;
 	}
 
 	.logo {

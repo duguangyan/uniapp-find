@@ -6,9 +6,7 @@
             "style" : {
                 "navigationBarTitleText" : "小鹿快找"
             }
-        }
-        
-        ,{
+        },{
             "path" : "pages/login/login",
             "style" : {
 				"navigationBarTitleText" : "登录"
@@ -19,8 +17,13 @@
 			"style" : {
 				"navigationBarTitleText" : "重置密码"
 			}
+<<<<<<< HEAD
+		}
+        ,{
+=======
 		},
 		{
+>>>>>>> a8ea4edd87df085d6c1768299c489f3bbc780f22
             "path" : "pages/familyCenter/familyCenter",
             "style" : {
 				"navigationBarTitleText" : "小鹿家人"
@@ -75,9 +78,9 @@
 			}
         }
         ,{
-            "path" : "pages/setting/setting",
+            "path" : "pages/taskPaySuccess/taskPaySuccess",
             "style" : {
-				"navigationBarTitleText" : "设置"
+				"navigationBarTitleText" : "支付成功"
 			}
         }
     ],
