@@ -3,7 +3,6 @@
 		<view class="item-title">{{title}}</view>
 		<text class="item-text" v-if="isShowText">1.0.0</text>
 		<image class="item-arrow" src="/static/center/arrow.png" v-else></image>
-		
 	</view>
 </template>
 
