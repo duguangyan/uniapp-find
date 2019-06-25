@@ -1,5 +1,4 @@
 <template>
-
 	<view>
 		<view class='order'>
 			<view class='ordder-top-hidden'></view>
@@ -190,7 +189,11 @@
 			<view class='text-theme fs30 flr pdr-30 mgb-40' catchtap='forgetPayPassWord'>忘记密码</view>
 		</form> -->
 
+<<<<<<< HEAD
 	</view>
+=======
+
+>>>>>>> 84f85124cc71a052d689b8e5b0687d5b4fd1a868
 </template>
 
 <script>
