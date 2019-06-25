@@ -139,8 +139,7 @@
 <style lang="scss" scoped>
 	.index{
 		background-color: #F6F6F6;
-		height: 1836upx;
-		margin-bottom:-66upx;
+		min-height: 1836upx;
 	}
 	//top
 	.center-top {
