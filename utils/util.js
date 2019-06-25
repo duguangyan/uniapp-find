@@ -327,7 +327,18 @@ function formatMoney(num) {
 	return fmoney(num, 2)
 }
 
+
+// 验证金额 可验证大于等于零，小于等于99999999.99 的数字
+function verificationAmount(num){
+  var exp = /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/;
+  if (exp.test(num)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 module.exports = {
+	verificationAmount,
 	fmoney,
 	formatMoney,
 	makeSign,

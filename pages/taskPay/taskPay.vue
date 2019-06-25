@@ -260,7 +260,22 @@
 			this.$data.findsTotalPrice = findsTotalPrice;
 			this.$data.fetchsTotalPrice = fetchsTotalPrice;
 		},
+		mounted() {
+			let _this = this;
+			this.$eventHub.$on('giftData', (list) => {
+				_this.$data.couponList      = list;
+				_this.$data.couponListPrice = list.value;
+				_this.$data.couponId        = list.id;
+			})
+		},
 		methods: {
+			// 去优惠券列表
+		  goCoupon(){
+			let totalPrice = this.$data.findsTotalPrice + this.$data.fetchsTotalPrice;
+			uni.navigateTo({
+			  url: '../giftCertificate/giftCertificate?from=giftCertificate&totalPrice='+totalPrice,
+			})
+		  },
 			// 收货地址
 			getDefaultAddress() {
 				let _this = this;

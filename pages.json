@@ -97,6 +97,28 @@
 				"navigationBarTitleText" : "个人信息"
 			}
         }
+        ,{
+            "path" : "pages/chatList/chatList",
+            "style" : {
+				"navigationBarTitleText" : "聊天列表"
+			}
+        }
+        ,{
+            "path" : "pages/chat/chat",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/recharge/recharge",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/giftCertificate/giftCertificate",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/integralmall/integralmall",
+            "style" : {}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {

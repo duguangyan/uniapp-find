@@ -245,42 +245,16 @@
 			
 		},
 		onShow() {
-			// 从个人中心跳转过来对应数据
-			let method = uni.getStorageSync('method');
-			if (method) {
-				let status = uni.getStorageSync('status');
-				this.$data.orderNavNum = method;
-				this.$data.orderChildNavNum = status;
-			}
 			
-			try {
-				wx.removeStorageSync('method');
-				wx.removeStorageSync('status');
-			} catch (e) {
-				// Do something when catch error
-			}
-			// 初始化获取找料列表
-			this.$data.orderList = [];
-			this.getList(this.$data.orderNavNum + 1, this.$data.orderChildNavNum, this.$data.page);
 		},
 		mounted() {
 			
 			// 获取公司地址
 			this.getCompanyaddress();
 			// 从个人中心跳转过来对应数据
-			let method = uni.getStorageSync('method');
-			if (method) {
-				let status = uni.getStorageSync('status');
-				this.$data.orderNavNum = method;
-				this.$data.orderChildNavNum = status;
-			}
-
-			try {
-				uni.removeStorageSync('method');
-				uni.removeStorageSync('status');
-			} catch (e) {
-				// Do something when catch error
-			}
+			this.$data.orderNavNum = uni.getStorageSync('method') || 0;
+			this.$data.orderChildNavNum = uni.getStorageSync('status') || 0;
+			
 			// 初始化获取找料列表
 			this.getList(parseInt(this.$data.orderNavNum) + 1, this.$data.orderChildNavNum, this.$data.page);
 		},
@@ -476,6 +450,8 @@
 			checkChildNav(e) {
 				let i = e.currentTarget.dataset.index;
 				this.$data.orderChildNavNum = i;
+				uni.setStorageSync('method',this.$data.orderNavNum);
+				uni.setStorageSync('status',i);
 				this.$data.orderList = [];
 				this.$data.page = 1;
 				this.getList(this.$data.orderNavNum + 1, i, this.$data.page);
@@ -484,6 +460,9 @@
 			checkNav(e) {
 				let i = e.currentTarget.dataset.index;
 				this.$data.orderNavNum = i;
+				
+				uni.setStorageSync('method',i);
+				uni.setStorageSync('status',0);
 				this.$data.checkChildNavs = i == 0 ? ['全部', '找料中', '待收货', '待评价', '已完成'] : ['全部', '取料中', '待收货', '待评价', '已完成'];
 				this.$data.orderList = [];
 				this.$data.page = 1;
