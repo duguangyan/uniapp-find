@@ -2,6 +2,8 @@
 	<view>
 		<view class="item">
 		<view class="item-title">{{title}}</view>
+		<view class="item-subTitle">{{subTitle}}</view>
+		
 		<text class="item-text" v-if="isShowText">1.0.0</text>
 		<image class="item-arrow" src="/static/center/arrow.png" v-else></image>
 	</view>
@@ -21,6 +23,10 @@
 				type:String,
 				default:""
 			},
+			subTitle:{
+				type:String,
+				default:""
+			},
 			isShowText:{
 				type: Boolean,
 				default: false
@@ -36,12 +42,18 @@
 		position: relative;
 	}
 	.item-title{
-		font-size:32upx;
 		color: #333333;
 		font-size:32upx;
 		position: absolute;
 		top: 40upx;
 		left: 40upx;
+	}
+	.item-subTitle{
+		color: #999999;
+		font-size:28upx;
+		position: absolute;
+		right: 88upx;
+		top: 40upx;
 	}
 	.item-arrow{
 		position: absolute;
