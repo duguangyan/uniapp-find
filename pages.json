@@ -85,21 +85,18 @@
 				"navigationBarTitleText" : "支付成功"
 			}
         }
-<<<<<<< HEAD
         ,{
             "path" : "pages/orderDetail/orderDetail",
             "style" : {
 				"navigationBarTitleText" : "订单详情"
 			}
         }
-=======
         ,{
             "path" : "pages/setting/userInfo/userInfo",
             "style" : {
 				"navigationBarTitleText" : "个人信息"
 			}
         }
->>>>>>> 84f85124cc71a052d689b8e5b0687d5b4fd1a868
     ],
 	"permission": {
 		"scope.userLocation": {
