@@ -85,6 +85,12 @@
 				"navigationBarTitleText" : "支付成功"
 			}
         }
+        ,{
+            "path" : "pages/setting/userInfo/userInfo",
+            "style" : {
+				"navigationBarTitleText" : "个人信息"
+			}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {

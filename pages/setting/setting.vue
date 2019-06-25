@@ -1,11 +1,14 @@
 <template>
 	<view class="index">
 		<view class="setting_list">
-			<view class="item_first">
+			<navigator url="userInfo/userInfo">
+				<view class="item_first">
 				<image class="icon" src="/static/icon/add-find.png"></image>
 				<text>完善个人信息</text>
 				<image class="arrow" src="/static/center/arrow.png"></image>
 			</view>
+			</navigator>
+			
 			<list-item title="登录密码"></list-item> <!-- 传入一个静态的值 动态绑定 再前面加冒号： -->
 			<list-item title="支付密码"></list-item>
 			<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
@@ -18,7 +21,7 @@
 </template>
 
 <script>
-	import listItem from "@/components/list-item.vue"
+	import listItem from "@/components/list/list-item.vue" //这里不能用list
 	export default {
 		data() {
 			return {
