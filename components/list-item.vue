@@ -1,8 +1,10 @@
 <template>
-	<view class="item">
+	<view>
+		<view class="item">
 		<view class="item-title">{{title}}</view>
 		<text class="item-text" v-if="isShowText">1.0.0</text>
 		<image class="item-arrow" src="/static/center/arrow.png" v-else></image>
+	</view>
 	</view>
 </template>
 
@@ -10,14 +12,25 @@
 	export default {
 		data(){
 			return {
+				
 			}
 		},
-		props: ['title','isShowText'],//当一个值传递给一个 prop 特性的时候，它就变成了那个组件实例的一个属性。
+		
+		props:{
+			title: {
+				type:String,
+				default:""
+			},
+			isShowText:{
+				type: Boolean,
+				default: false
+			}
+		},
 	}
 </script>
 
 <style lang="scss" scoped>
-	.item{
+.item{
 		background-color: white;
 		height: 116upx;
 		position: relative;

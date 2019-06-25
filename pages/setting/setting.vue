@@ -6,30 +6,29 @@
 				<text>完善个人信息</text>
 				<image class="arrow" src="/static/center/arrow.png"></image>
 			</view>
-			<list title="登录密码"></list>
-			<list title="支付密码"></list>
-			<list title="绑定小鹿家人" id="item_mid_top"></list>
-			<list title="用户认证" id="item_mid_bottom"></list>
-			<list title="版本号" isShowText="true"></list>
-			<list title="清除缓存" isShowText="true"></list>
+			<list-item title="登录密码"></list-item> <!-- 传入一个静态的值 动态绑定 再前面加冒号： -->
+			<list-item title="支付密码"></list-item>
+			<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
+			<list-item title="用户认证" id="item_mid_bottom"></list-item>
+			<list-item title="版本号" isShowText="true"></list-item>
+			<list-item title="清除缓存" isShowText="true"></list-item>
 			<button type="primary" class="logout">退出登录</button>
 		</view>
 	</view>
 </template>
 
 <script>
-	import list from "./list.vue"
+	import listItem from "@/components/list-item.vue"
 	export default {
 		data() {
 			return {
-				
 			}
 		},
 		methods: {
 			
 		},
 		components:{
-			list,
+			listItem,
 		}
 	}
 </script>
