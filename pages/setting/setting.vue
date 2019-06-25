@@ -8,7 +8,7 @@
 				<image class="arrow" src="/static/center/arrow.png"></image>
 			</view>
 			</navigator>
-			
+			aa
 			<list-item title="登录密码"></list-item> <!-- 传入一个静态的值 动态绑定 再前面加冒号： -->
 			<list-item title="支付密码"></list-item>
 			<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
