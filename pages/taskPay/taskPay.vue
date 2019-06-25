@@ -27,7 +27,7 @@
 								</view>
 								<view>
 									<view class='fs24'>
-										<view class='remark' v-if="item.address.remark && item.address.remark!=''">
+										<view class='remark' v-if="item.address && item.address.remark!=''">
 											{{item.address.remark||''}}
 										</view>
 										{{item.address.city_str ||''}} {{item.address.address||''}} {{item.address.room||''}}
@@ -214,7 +214,11 @@
 		},
 		onLoad(options) {
 			let payMethed = options.payMethed;
-			uni.setStorageSync('method', payMethed);
+			if(payMethed == 1){
+				uni.setStorageSync('method', 0);
+			}else{
+				uni.setStorageSync('method', 1);
+			}
 			uni.setStorageSync('status', 0);
 			// 获取默认地址
 			this.getDefaultAddress();

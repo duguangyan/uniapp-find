@@ -18,6 +18,25 @@
 		},
 		methods:{
 			change_nav(index){
+				let access_token = uni.getStorageSync('access_token');
+				if(!access_token){
+					uni.showModal({
+						title: '您尚未登录',
+						content: '是否前往登录页面',
+						confirmText: '前往',
+						success: (res) => {
+							if (res.confirm) {
+								uni.navigateTo({
+									url: '../login/login',
+								})
+								return false;
+							} else if (res.cancel) {
+								util.errorTips('您点击了取消');
+							}
+						}
+					})
+					return false
+				}
 				this.$store.commit("change_page",index)
 			}
 		},

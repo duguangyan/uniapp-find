@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App'
+
 // 生产环境的提示 开关
 Vue.config.productionTip = false
 // 引入vuex 状态库

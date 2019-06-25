@@ -690,43 +690,7 @@
 					 })
 				   }
 			  },
-			  // 去结算
-			  saveTask(){
-				let newFinds = [];
-				let newFetchs = [];
-				let task_ids = [];
-				// 刷选选中的找料任务
-				for (let i = 0; i < this.$data.finds.length; i++) {
-				  if (this.$data.finds[i].check) {
-					newFinds.push(this.$data.finds[i]);
-					task_ids.push(this.$data.finds[i].id);
-				  }
-				}
-				// 刷选选中的取料任务
-				for (let j = 0; j < this.$data.fetchs.length; j++) {
-				  if (this.$data.fetchs[j].check) {
-					newFetchs.push(this.$data.fetchs[j]);
-					task_ids.push(this.$data.fetchs[j].id);
-				  }
-				}
-				let taskPayList = {
-				  task_ids: task_ids,
-				  finds: newFinds,
-				  fetchs: newFetchs
-				}
-				uni.setStorageSync('taskPayList', taskPayList);
-				let payMethed = 1;
-				if (this.$data.finds.length > 0){
-				  payMethed = 1
-				} else if (this.$data.fetchs.length > 0){
-				  payMethed = 2
-				} else if (this.$data.finds.length > 0 && this.$data.fetchs.length > 0){
-				  payMethed = 3
-				}
-				wx.navigateTo({
-				  url: '../taskPay/taskPay?payMethed=' + payMethed
-				})
-			  }
+			  
 		},
 	}
 </script>

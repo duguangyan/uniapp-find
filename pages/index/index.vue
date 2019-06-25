@@ -17,7 +17,9 @@
 	import footerNav from "../../components/footer/footer_nav.vue";
 	export default {
 		data() {
-			return {}
+			return {
+				from:0
+			}
 		},
 		components: {
 			home,
@@ -31,9 +33,15 @@
 				return this.$store.state.footer_store.footer_nav[this.$store.state.footer_store.now_page_index].name_code;
 			}
 		},
-		onLoad() {
+		onLoad(options) {
+			if(options.from){
+				this.$store.commit("change_page",options.from);
+			}
 			console.log('index onload')
 			// this.$store.dispatch('get_data')
+		},
+		onShow() {
+			
 		},
 		methods: {
 			

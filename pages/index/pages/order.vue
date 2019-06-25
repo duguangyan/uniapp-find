@@ -1,29 +1,17 @@
 <template>
-<<<<<<< HEAD
+
 	<view>
 		<view class='order'>
 			<view class='ordder-top-hidden'></view>
 			<view class='box-shadow order-header'>
 				<view class='order-nav fs30 lh90 border-bottom'>
-					<text @click='checkNav' :data-index='1' :class="orderNavNum==1?'nav-active':'order-text'">找料订单</text>
-					<text @click='checkNav' :data-index='2' :class="orderNavNum==2?'nav-active':'order-text'">取料订单</text>
+					<text v-for="(item, index) in checkNavs" :key="index" @click='checkNav' :data-index='index' :class="orderNavNum==index?'nav-active':'order-text'">{{item}}</text>
 				</view>
-				<view class='order-nav order-child-nav fs30 lh90' v-if="orderNavNum==1">
-					<text @click='checkChildNav' :data-index='0' :class="orderChildNavNum==0?'nav-child-active':''">全部</text>
-					<text @click='checkChildNav' :data-index='1' :class="orderChildNavNum==1?'nav-child-active':''">找料中</text>
-					<text @click='checkChildNav' :data-index='2' :class="orderChildNavNum==2?'nav-child-active':''">待收货</text>
-					<text @click='checkChildNav' :data-index='3' :class="orderChildNavNum==3?'nav-child-active':''">待评价</text>
-					<text @click='checkChildNav' :data-index='4' :class="orderChildNavNum==4?'nav-child-active':''">已完成</text>
-				</view>
-				<view class='order-nav order-child-nav fs30 lh90' v-if="orderNavNum==2">
-					<text @click='checkChildNav' :data-index='0' :class="orderChildNavNum==0?'nav-child-active':''">全部</text>
-					<text @click='checkChildNav' :data-index='1' :class="orderChildNavNum==1?'nav-child-active':''">取料中</text>
-					<text @click='checkChildNav' :data-index='2' :class="orderChildNavNum==2?'nav-child-active':''">待收货</text>
-					<text @click='checkChildNav' :data-index='3' :class="orderChildNavNum==3?'nav-child-active':''">待评价</text>
-					<text @click='checkChildNav' :data-index='4' :class="orderChildNavNum==4?'nav-child-active':''">已完成</text>
+				<view class='order-nav order-child-nav fs30 lh90'>
+					<text v-for="(item, index) in checkChildNavs" :key="index" @click='checkChildNav' :data-index='index' :class="orderChildNavNum==index?'nav-child-active':''">{{item}}</text>
 				</view>
 			</view>
-			<view class='no-order-data' v-if="orderList==''">
+			<view class='no-order-data' v-if="orderList.length<=0">
 				<image src='../../static/icon/no_order.png'></image>
 				<view class='text-666 text-center fs30 mgt-50'>你还没有相关订单</view>
 				<view class='do-order' @click='doOrder'>去下单</view>
@@ -35,15 +23,15 @@
 						<text class='task-find-snname text-red flr pdr-30'>{{item.status_label}}</text>
 					</view>
 					<view class='task-find-list fs30 cf'>
-						<view @click='goFindDetail' :data-id='item.id' :data-index="index" class='task-find-item-warp'>
+						<view @click='goOrderDetail' :data-id='item.id' :data-index="index" class='task-find-item-warp'>
 							<view class="task-find-item" :class="orderNavNum==2?'pdb-50':''">
 								<view style='width:650upx;'>物料品类：{{item.cname}}
 									<text class='flr'>金额:￥{{item.fee}}</text>
 								</view>
 								<view>物料描述：{{item.desc}}</view>
-								<view v-if='orderNavNum==1'>找料方式：{{item.find_type_label}}</view>
-								<image v-if="orderNavNum==1" class='task-find-img' src='../../static/icon/task_find.png'></image>
-								<image v-if="orderNavNum==2" class='task-find-img' src='../../static/icon/task_get.png'></image>
+								<view v-if='orderNavNum==0'>找料方式：{{item.find_type_label}}</view>
+								<image v-if="orderNavNum==0" class='task-find-img' src='../../static/icon/task_find.png'></image>
+								<image v-if="orderNavNum==1" class='task-find-img' src='../../static/icon/task_get.png'></image>
 							</view>
 							<view class='task-find-method pdb-20'>
 								<view class='task-find-method-img'>
@@ -113,11 +101,10 @@
 								<view class='order-footer-btn bt-2 cf' v-if='item.can_refuse==1||item.can_confirm==1||item.can_delete==1 ||item.can_comment==1'>
 
 
-									<button style='border: 1upx solid #666;color: #666;' :data-id='item.id' @click='toReturn' v-if='item.can_refuse==1'>退款</button>
-									<button :data-id='item.id' @click='affirmOrder' v-if='item.can_confirm==1' class='order-footer-btn-red'
-									 :data-index="index">确认收货</button>
-									<button :data-id='item.id' @click='toComment' v-if='item.can_comment==1'>评价</button>
-									<button style='border: 1upx solid #666;color: #666;' :data-id='item.id' @click='toDel' v-if='item.can_delete==1'>删除</button>
+									<button style='border: 1upx solid #666;color: #666;' @click.stop='toReturn(item.id)' v-if='item.can_refuse==1'>退款</button>
+									<button @click.stop='affirmOrder(item.id,index)' v-if='item.can_confirm==1' class='order-footer-btn-red'>确认收货</button>
+									<button @click.stop='toComment(item.id)' v-if='item.can_comment==1'>评价</button>
+									<button style='border: 1upx solid #666;color: #666;' @click.stop='toDel(item.id)' v-if='item.can_delete==1'>删除</button>
 
 
 								</view>
@@ -128,36 +115,43 @@
 					</view>
 				</view>
 			</view>
-			<view v-if="!shopLoading && !isData" class='loding pdb-30'>
-				已经全部加载完毕
+			<view class='loding pdb-30' v-if="orderList.length>0">
+				{{ !shopLoading ?'已经全部加载完毕':'正在加载中...'}}
 			</view>
 		</view>
 		<!-- 填写取消订单原因model -->
-		<!-- <modal title="请填写取消订单原因" hidden="{{ isDelModel }}" confirm-text="提交" cancel-text="取消" bindconfirm="delConfirm"
+		<!-- <dialog :title="请填写取消订单原因" v-if="!isDelModel" :confirm-text="提交" :cancel-text="取消" :bindconfirm="delConfirm"
 		 bindcancel="delCancel">
-			<input class='bt-1 lh50 pdt-30' type='text' placeholder='请填写取消订单的原因' bindinput='delModelInput'></input>
-		</modal>
+			<input class='bt-1 lh50 pdt-30' type='text' placeholder='请填写取消订单的原因' @click='delModelInput'></input>
+		</dialog> -->
 
 
-
-		<modal title="评价本次服务" hidden="{{ isCommentModel }}" confirm-text="提交" cancel-text="取消" bindconfirm="commentConfirm"
-		 bindcancel="commentCancel">
-			<view class='star-warp pdt-30 pdb-30'>
-				<view>
-					找料满意度：
-					<text catchtap='satisfact' data-idx='{{index}}' wx:key="{{this}}" wx:for="{{starArr}}" wx:for-item="item"
-					 wx:for-index="index" class="star iconfont icon-star {{ starIndex_1 >= index ? 'text-yellow':''}}"></text>
+		<view v-if="isCommentModel" class="comment-model">
+			<view class="comment-model-bg"></view>
+			<view class="comment-content">
+				<view class="title">评价本次服务</view>
+				<view class='star-warp pdt-30 pdb-30'>
+					<view>
+						找料满意度：
+						<text @click='satisfact' v-for="(item, index) in starArr" :key="index" :data-idx='index' class="star iconfont icon-star"
+						 :class="starIndex_1 >= index ? 'text-yellow':''"></text>
+					</view>
+					<view>
+						配送及时性：
+						<text @click='timely' v-for="(item, index) in starArr" :key="index" :data-idx='index' class="star iconfont icon-star"
+						 :class="starIndex_2 >= index ? 'text-yellow':''"></text>
+					</view>
 				</view>
-				<view>
-					配送及时性：
-					<text catchtap='timely' data-idx='{{index}}' wx:for="{{starArr}}" wx:key="{{this}}" wx:for-item="item"
-					 wx:for-index="index" class="star iconfont icon-star {{ starIndex_2 >= index ? 'text-yellow':''}}"></text>
+
+				<input class='input bt-1 lh50 pdt-30' v-if='isStarShow' type='text' placeholder='请输入评语' @input='commentModelInput'></input>
+
+				<view class="btn flex">
+					<view class="cancel flex-1" @click="commentCancel">取消</view>
+					<view class="confirm flex-1" @click="commentConfirm">确定</view>
 				</view>
 			</view>
 
-			<input class='bt-1 lh50 pdt-30' wx:if='{{isStarShow}}' type='text' placeholder='请输入评语' bindinput='commentModelInput'></input>
-		</modal>
- -->
+		</view>
 
 
 		<!-- <view class='index-popup notes-popup' wx:if="{{isUrgeOrder}}">
@@ -196,15 +190,6 @@
 			<view class='text-theme fs30 flr pdr-30 mgb-40' catchtap='forgetPayPassWord'>忘记密码</view>
 		</form> -->
 
-=======
-	<view >
-		订单中心
-		 <view class="page-body">
-            <view class="btn-area">
-				
-            </view>
-        </view>
->>>>>>> a8ea4edd87df085d6c1768299c489f3bbc780f22
 	</view>
 </template>
 
@@ -214,57 +199,54 @@
 	export default {
 		data() {
 			return {
-// 				isStarShow: false, // 初始化评价评语
-// 				isUrgeOrder: false, // 催单弹窗
-// 				
-// 				shopLoading: true,
-// 				modalShow: true,
-// 				isDelModel: true, // 取消订单模态框
-// 				delMsg: '', // 取消订单原因数据
-// 				isCommentModel: true, // 评价模态框 
-// 				commentMsg: '', // 评价内容
-// 				starArr: [0, 1, 2, 3, 4], // 评价星星
-// 				starIndex_1: 4, // 星星评价选中
-// 				starIndex_2: 4, // 星星评价选中
-// 				findList: '', // 找料列表数据
-// 				fecthList: '', // 取料列表数据
-// 				totalPages: 0, // 总页数
-// 				current_page: 1, // 当前页 
-// 				isDisabled: false,
-// 
-// 				payDates: {},
-// 				isOldPayPasswordModel: false, // 旧支付密码弹窗
-// 				Length: 6, //输入框个数  
-// 				isFocus: true, //聚焦  
-// 				Value: "", //输入的内容  
-// 				ispassword: true, //是否密文显示 true为密文， false为明文。
-// 				
+				// 				isStarShow: false, // 初始化评价评语
+				// 				isUrgeOrder: false, // 催单弹窗
+				// 				
+				// 				shopLoading: true,
+				// 				modalShow: true,
+				// 				isDelModel: true, // 取消订单模态框
+				// 				delMsg: '', // 取消订单原因数据
+				// 				isCommentModel: true, // 评价模态框 
+				// 				commentMsg: '', // 评价内容
+				// 				starArr: [0, 1, 2, 3, 4], // 评价星星
+				// 				starIndex_1: 4, // 星星评价选中
+				// 				starIndex_2: 4, // 星星评价选中
+				// 				findList: '', // 找料列表数据
+				// 				fecthList: '', // 取料列表数据
+				// 				totalPages: 0, // 总页数
+				// 				current_page: 1, // 当前页 
+				// 				isDisabled: false,
+				// 
+				// 				payDates: {},
+				// 				isOldPayPasswordModel: false, // 旧支付密码弹窗
+				// 				Length: 6, //输入框个数  
+				// 				isFocus: true, //聚焦  
+				// 				Value: "", //输入的内容  
+				// 				ispassword: true, //是否密文显示 true为密文， false为明文。
+				// 				
 
-
-				checkNav:['找料订单','取料订单'],
-				checkChildNav1:['全部','找料中','待收货','待评价','已完成'],
-				checkChildNav2:['全部','取料中','待收货','待评价','已完成'],
-				companyaddress: '',    // 公司地址
-				orderNavNum: 1,        // nav一级切换
- 				orderChildNavNum: 0,   //  nav二级切换
-				shopLoading: true,     // 载入动画
-				orderList    : '',     // 页面数据
-				page         :  1,     // 第几页
+				isStarShow: false, // 初始化评价评语
+				starArr: [0, 1, 2, 3, 4], // 评价星星
+				starIndex_1: 4, // 星星评价选中
+				starIndex_2: 4, // 星星评价选中
+				isDelModel: true, // 取消订单模态框
+				commentId: '', // 评价订单ID
+				isCommentModel: false, // 评价模态框 
+				commentMsg: '', // 评价内容
+				checkNavs: ['找料订单', '取料订单'],
+				checkChildNavs: ['全部', '找料中', '待收货', '待评价', '已完成'], // ['全部','取料中','待收货','待评价','已完成'],
+				companyaddress: '', // 公司地址
+				orderNavNum: 0, // nav一级切换
+				orderChildNavNum: 0, //  nav二级切换
+				shopLoading: true, // 载入动画
+				orderList: [], // 页面数据
+				page: 1, // 第几页
 			};
 		},
 		onLoad(options) {
-			// if (options.orderId) {
-			// 	uni.navigateTo({
-			// 		url: '../findOrderDetail/findOrderDetail?id=' + options.orderId + '&nav=' + options.nav
-			// 	})
-			// }
-		},
-		onShow() {
 			
 		},
-		mounted(){
-			// 获取公司地址
-			this.getCompanyaddress();
+		onShow() {
 			// 从个人中心跳转过来对应数据
 			let method = uni.getStorageSync('method');
 			if (method) {
@@ -280,9 +262,236 @@
 				// Do something when catch error
 			}
 			// 初始化获取找料列表
-			this.getList(this.$data.orderNavNum, this.$data.orderChildNavNum,this.$data.page);
+			this.$data.orderList = [];
+			this.getList(this.$data.orderNavNum + 1, this.$data.orderChildNavNum, this.$data.page);
+		},
+		mounted() {
+			
+			// 获取公司地址
+			this.getCompanyaddress();
+			// 从个人中心跳转过来对应数据
+			let method = uni.getStorageSync('method');
+			if (method) {
+				let status = uni.getStorageSync('status');
+				this.$data.orderNavNum = method;
+				this.$data.orderChildNavNum = status;
+			}
+
+			try {
+				uni.removeStorageSync('method');
+				uni.removeStorageSync('status');
+			} catch (e) {
+				// Do something when catch error
+			}
+			// 初始化获取找料列表
+			this.getList(parseInt(this.$data.orderNavNum) + 1, this.$data.orderChildNavNum, this.$data.page);
 		},
 		methods: {
+			// 去找料详情
+			goOrderDetail(e) {
+				
+				let index = e.currentTarget.dataset.index;
+				let id = e.currentTarget.dataset.id;
+				let item = JSON.stringify(this.$data.orderList[index]);
+				uni.navigateTo({
+					url: '../orderDetail/orderDetail?id=' + id + '&nav=' + this.$data.orderNavNum + '&status=' + this.$data.orderChildNavNum
+				})
+			},
+			// 确认收货
+			affirmOrder(id,index) {
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确认收货吗?',
+					success: function(res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+							api.affirmOrder({
+								method: 'POST',
+								data: {
+									id
+								}
+							}).then((res) => {
+								console.log(res);
+								if (res.code == 200 || res.code == 0) {
+									_this.$data.orderList[index].can_confirm = 0;
+									util.successTips('收货成功！');
+								} else {
+									util.errorTips(res.msg);
+								}
+							}).catch((res) => {
+								util.errorTips(res.msg || res.message);
+							})
+							console.log('确认收货');
+
+						} else if (res.cancel) {
+							console.log('用户点击取消')
+						}
+					}
+				})
+			},
+			// 删除订单
+			toDel(id) {
+				let data = {
+					id
+				}
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确认删除吗？',
+					success: function(res) {
+						if (res.confirm) {
+							api.orderDel({
+								method: 'POST',
+								data
+							}).then((res) => {
+								if (res.code = 200 || res.code == 0) {
+									for (let i = 0; i < _this.$data.orderList.length; i++) {
+										if (_this.$data.orderList[i].id == id) {
+											_this.$data.orderList.splice(i, 1);
+										}
+									}
+									util.successTips('删除成功');
+								} else {
+
+								}
+							}).catch((res) => {
+								util.errorTips('网络慢,请稍后再试');
+							})
+
+						} else if (res.cancel) {
+							console.log('用户点击取消')
+						}
+					}
+				})
+
+
+			},
+			// 去评价
+			toComment(id) {
+				this.$data.commentMsg = ''; // 评价内容
+				this.$data.isCommentModel = true; // 评价模态框
+				this.$data.commentId = id; // 评价订单ID
+			},
+			// 获取评价内容
+			commentModelInput(e) {
+				this.$data.commentMsg = e.detail.value
+			},
+			// 取消评价模态框
+			commentCancel() {
+				this.$data.isCommentModel = false;
+			},
+			// 取消评价模态框并获取数据
+			commentConfirm(e) {
+				let data = {
+					id: this.$data.commentId,
+					star: this.$data.starIndex_1 + 1,
+					star_ship: this.$data.starIndex_2 + 1,
+					content: this.$data.commentMsg
+				}
+				api.toCommentOrder({
+					method: 'POST',
+					data
+				}).then((res) => {
+					if (res.code == 200 || res.code == 0) {
+						util.successTips('评价成功');
+						this.$data.orderList.forEach((v, i) => {
+							if (v.id == this.$data.commentId) {
+								this.$data.orderList.splice(i, 1);
+							}
+						})
+						this.$data.isCommentModel = false;
+						this.$data.isStarShow = false;
+						this.$data.starIndex_1 = 4;
+						this.$data.starIndex_2 = 4;
+						this.$data.commentMsg = '';
+					} else {
+						util.errorTips('评价失败!');
+					}
+				}).catch((res) => {
+					util.errorTips(res.msg || res.message);
+				})
+
+			},
+			// 设置找料满意度
+			satisfact(e) {
+				this.$data.starIndex_1 = e.target.dataset.idx
+				this.$data.isStarShow = this.$data.starIndex_1 < 3 || this.$data.starIndex_2 < 3 ? true : false;
+			},
+			// 配送及时性
+			timely(e) {
+				this.$data.starIndex_2 = e.target.dataset.idx
+				this.$data.isStarShow = this.$data.starIndex_1 < 3 || this.$data.starIndex_2 < 3 ? true : false;
+			},
+
+			// 去下单
+			doOrder() {
+				uni.reLaunch({
+					url: '../index/index',
+					success: function() {
+						_this.$store.commit("change_page", 1);
+					}
+				});
+			},
+			// 退款
+			toReturn(id) {
+				let data = {
+					id
+				}
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确认退款吗？',
+					success: function(res) {
+						if (res.confirm) {
+							console.log('用户点击确定')
+							api.refuse({
+								method: 'POST',
+								data
+							}).then((res) => {
+								if (res.code = 200 || res.code == 0) {
+									for (let i = 0; i < _this.$data.orderList.length; i++) {
+										if (_this.$data.orderList[i].id == id) {
+											_this.$data.orderList[i].can_refuse = 0;
+										}
+									}
+								}
+								util.successTips(res.msg);
+							}).catch((res) => {
+								util.errorTips(res.msg);
+							})
+						} else if (res.cancel) {
+							//console.log('用户点击取消')
+							util.errorTips('用户点击取消');
+						}
+					}
+				}).catch((res)=>{
+					for (let i = 0; i < _this.$data.orderList.length; i++) {
+						if (_this.$data.orderList[i].id == id) {
+							_this.$data.orderList[i].can_refuse = 0;
+						}
+					}
+				})
+
+			},
+			// 二级切换
+			checkChildNav(e) {
+				let i = e.currentTarget.dataset.index;
+				this.$data.orderChildNavNum = i;
+				this.$data.orderList = [];
+				this.$data.page = 1;
+				this.getList(this.$data.orderNavNum + 1, i, this.$data.page);
+			},
+			// 一级nav切换
+			checkNav(e) {
+				let i = e.currentTarget.dataset.index;
+				this.$data.orderNavNum = i;
+				this.$data.checkChildNavs = i == 0 ? ['全部', '找料中', '待收货', '待评价', '已完成'] : ['全部', '取料中', '待收货', '待评价', '已完成'];
+				this.$data.orderList = [];
+				this.$data.page = 1;
+				this.$data.orderChildNavNum = 0;
+				this.getList(i + 1, this.$data.orderChildNavNum, this.$data.page);
+			},
 			// 获取订单列表
 			getList(index, status, page) {
 				api.orderList({
@@ -293,7 +502,7 @@
 					}
 				}).then((res) => {
 					if (res.code == 200 || res.code == 0) {
-						this.$data.orderList = res.data;
+						this.$data.orderList = this.$data.orderList.concat(res.data);
 						for (let i = 0; i < this.$data.orderList.length; i++) {
 							// 1按图找,2按样找3按描述
 							if (this.$data.orderList[i].type == 1) {
@@ -305,9 +514,7 @@
 							}
 						}
 						// 判断是否加载更多
-						this.$data.orderList.length <=0?this.$data.shopLoading = false:this.$data.shopLoading = true;
-					} else {
-						this.$data.isData = true;
+						res.data.length <= 0 ? this.$data.shopLoading = false : this.$data.shopLoading = true;
 					}
 					wx.hideLoading();
 				}).catch((res) => {
@@ -315,26 +522,106 @@
 				})
 			},
 			// 获取公司地址
-			  getCompanyaddress() {
+			getCompanyaddress() {
 				api.getCompanyaddress({}).then((res) => {
-				  if (res.code == 200 || res.code == 0) {
-					this.$data.companyaddress = res.data;
-				  }
+					if (res.code == 200 || res.code == 0) {
+						this.$data.companyaddress = res.data;
+					}
 				})
-			  },
-		}
+			}
+		},
+		/**
+		 * 页面上拉触底事件的处理函数
+		 */
+		onReachBottom: function() {
+			this.$data.page++;
+			this.getList(this.$data.orderNavNum + 1, this.$data.orderChildNavNum, this.$data.page);
+		},
 	}
 </script>
 
 <style lang="scss" scoped="true">
-	.ordder-top-hidden {
-		height: 30upx;
-		background-color: #efeff4;
+	.comment-model {
 		position: fixed;
 		top: 0;
-		width: 100%;
-		z-index: 99;
+		left: 0;
+		width: 750upx;
+		height: 100%;
+		z-index: 999999999;
+
+		.comment-model-bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 750upx;
+			height: 100%;
+			background: #000;
+			opacity: .8;
+		}
+
+		.comment-content {
+			left: 55upx;
+			width: 630upx;
+			position: absolute;
+			top: 300upx;
+			background: #fff;
+			text-align: left;
+
+			border-radius: 10upx;
+
+			.title {
+				color: #333;
+				font-size: 40upx;
+				text-align: center;
+				padding: 30upx;
+			}
+
+			.star-warp {
+				padding: 30upx 30upx 30upx 60upx;
+				font-size: 36upx;
+				color: #999;
+				margin: 10upx 0 20upx 0;
+
+				view {
+					height: 60upx;
+					line-height: 60upx;
+				}
+			}
+
+			.btn {
+				height: 100upx;
+				line-height: 100upx;
+				text-align: center;
+				border-top: 1upx solid #eee;
+				font-size: 40upx;
+				color: #333;
+
+				.confirm {
+					border-left: 1upx solid #eee;
+					color: limegreen;
+				}
+			}
+
+			.input {
+				margin: 0 55upx;
+				font-size: 40upx;
+				line-height: 80upx;
+				height: 80upx;
+				margin-bottom: 30upx;
+			}
+
+		}
 	}
+
+	// .ordder-top-hidden {
+	// 	height: 30upx;
+	// 	background-color: #efeff4;
+	// 	position: fixed;
+	// 	top: 0;
+	// 	width: 100%;
+	// 	z-index: 99;
+	// }
+
 	.order-nav {
 		display: flex;
 		position: relative;
@@ -529,7 +816,7 @@
 		height: 144upx;
 		text-align: center;
 		margin-top: 370upx;
-		
+
 	}
 
 	.do-order {

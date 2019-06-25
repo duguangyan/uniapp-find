@@ -46,19 +46,13 @@
 			 */
 			goIndex() {
 				uni.reLaunch({
-					url: '../index/index',
-					success:function(){
-						_this.$store.commit("change_page",0);
-					}
+					url: '../index/index?from=0'
 				});
 			},
 			// 去订单详情
 			goFindOrderDetail() {
 				uni.reLaunch({
-					url: '../index/index',
-					success:function(){
-						_this.$store.commit("change_page",1);
-					}
+					url: '../index/index?from=2'
 				});
 			},
 		},
