@@ -2,11 +2,7 @@
 	<view class="index">
 		<view class="setting_list">
 			<navigator url="userInfo/userInfo">
-				<view class="item_first">
-				<image class="icon" src="/static/icon/add-find.png"></image>
-				<text>完善个人信息</text>
-				<image class="arrow" src="/static/center/arrow.png"></image>
-			</view>
+				<list-icon subTitle="完善个人信息"></list-icon>
 			</navigator>
 			<navigator url="">
 				<list-item title="登录密码"></list-item> <!-- 传入一个静态的值 动态绑定 再前面加冒号： -->
@@ -24,6 +20,7 @@
 
 <script>
 	import listItem from "@/components/list/list-item.vue" //这里不能用list
+	import listIcon from "@/components/list/list-icon.vue"
 	export default {
 		data() {
 			return {
@@ -33,7 +30,7 @@
 			
 		},
 		components:{
-			listItem,
+			listItem,listIcon,
 		}
 	}
 </script>
@@ -41,37 +38,12 @@
 <style lang="scss" scoped>
 	.index{
 		background-color: #F5F5F5;
-		height: 1334upx;
+		height: 100vh;
 	}
 	.setting_list{
 			background-color: #F5F5F5;
 			height: 800upx;
 			
-			.item_first{
-				background-color: white;
-				height: 180upx;
-				position: relative;
-				.icon{
-					position: absolute;
-					top: 28upx;
-					left: 40upx;
-					height: 120upx;
-					width: 120upx;
-				}
-				text{
-					color: #999999;
-					position: absolute;
-					right: 88upx;
-					top: 76upx;
-				}
-				.arrow{
-					position: absolute;
-					right: 20upx;
-					top: 76upx;
-					height: 28upx;
-					width: 28upx;
-				}
-			}
 			#item_mid_top{
 				margin-top: 20upx;
 			}
