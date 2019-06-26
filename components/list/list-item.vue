@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view @click="tapClick">
 		<view class="item">
 		<view class="item-title">{{title}}</view>
 		<view class="item-subTitle">{{subTitle}}</view>
@@ -14,10 +14,13 @@
 	export default {
 		data(){
 			return {
-				
 			}
 		},
-		
+		methods:{
+			tapClick(){
+				this.$emit('didClick')
+			}
+		},
 		props:{
 			title: {
 				type:String,
@@ -28,8 +31,8 @@
 				default:""
 			},
 			isShowText:{
-				type: Boolean,
-				default: false
+				type:String,
+				required:false
 			}
 		},
 	}

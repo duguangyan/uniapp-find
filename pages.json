@@ -139,6 +139,12 @@
 				"navigationBarTitleText" : "用户认证"
 			}
         }
+        ,{
+            "path" : "pages/setting/modifyNickname/modifyNickname",
+            "style" : {
+				"navigationBarTitleText" : "昵称"
+			}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {

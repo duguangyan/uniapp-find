@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<view class="item">
-			<image class="icon" src="/static/icon/add-find.png"></image>
+		<view class="item" @click="tapClick">
+			<image class="icon" :src="avatar_path"></image>
 			<image class="icon-small" src="/static/center/camera.png" v-if="showCamera"></image>
 			<text>{{subTitle}}</text>
 			<image class="arrow" src="/static/center/arrow.png"></image>
@@ -16,9 +16,15 @@
 				
 			};
 		},
+		methods:{
+			tapClick(){
+				this.$emit('didClick')
+			}
+		},
 		props:{
 			subTitle:String,
-			showCamera:false
+			showCamera:{type:String,required:false},
+			avatar_path:{type:String,default:"/static/icon/add-find.png"}
 		}
 	}
 </script>
