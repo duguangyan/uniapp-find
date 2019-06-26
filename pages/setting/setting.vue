@@ -9,8 +9,13 @@
 			</navigator>
 			
 			<list-item title="支付密码"></list-item>
-			<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
-			<list-item title="用户认证" id="item_mid_bottom"></list-item>
+			<view @click="goIn">
+				<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
+			</view>
+			<view @click="goAuthentication">
+				<list-item title="用户认证" id="item_mid_bottom"></list-item>
+			</view>
+			
 			<list-item title="版本号" isShowText="true"></list-item>
 			<list-item title="清除缓存" isShowText="true"></list-item>
 			<button type="primary" class="logout" @click="logout">退出登录</button>
@@ -22,12 +27,20 @@
 	import listItem from "@/components/list/list-item.vue" //这里不能用list
 	import listIcon from "@/components/list/list-icon.vue"
 	import util     from "../../utils/util.js";
+	import api      from "../../utils/api.js";
 	export default {
 		data() {
 			return {
 			}
 		},
 		methods: {
+			// 去认证中心
+			goAuthentication(){
+				uni.navigateTo({
+					url:'./authentication/authentication'
+				})
+			},
+			// 退出登录
 			logout(){
 				try {
 					uni.clearStorageSync();
@@ -37,6 +50,50 @@
 				uni.reLaunch({
 					url: '../index/index'
 				});
+			},
+			goIn() {
+				let token = wx.getStorageSync('token');
+				let isTrue = token ? false : true;
+				
+				if (isTrue) {
+					uni.showModal({
+						title: '您尚未登录',
+						content: '是否前往登录页面',
+						confirmText: '前往',
+						// confirmColor: '#c81a29',
+						success: (res) => {
+							if (res.confirm) {
+								wx.navigateTo({
+									url: '../login/login',
+								})
+								return false;
+							} else if (res.cancel) {
+								console.log('用户点击取消')
+							}
+						}
+					})
+			
+					return false;
+				}
+				api.getInviteCode({}).then((res) => {
+					if (res.code == 200 || res.code == 0) {
+						if (res.data.status == 0) {
+							uni.navigateTo({
+								url: '../familyExplain/familyExplain?familyStatus=' + res.data.status,
+							})
+						} else if (res.data.status == 1) {
+							uni.navigateTo({
+								url: '../familyCenter/familyCenter',
+							})
+						} else {
+							uni.navigateTo({
+								url: '../family/family',
+							})
+						}
+			
+					}
+				})
+			
 			}
 		},
 		components:{

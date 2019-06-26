@@ -52,17 +52,24 @@ export default {
 		menu_2(ctx){
 			let menu_list = [
 				{
-					name:'首页',
-					name_code:'home',
-					icon:'/static/footer_icon/a2.png',
-					select_icon:'/static/footer_icon/a1.png',
+					name:'订单',
+					name_code:'findOrder',
+					icon:'/static/footer_icon/1.3.png',
+					select_icon:'/static/footer_icon/2.3.png',
 					size:'small'
 				},
 				{
-					name:'我的',
-					name_code:'my',
-					icon:'/static/footer_icon/d1.png',
-					select_icon:'/static/footer_icon/d2.png',
+					name:'消息',
+					name_code:'message',
+					icon:'/static/footer_icon/1.5.png',
+					select_icon:'/static/footer_icon/2.5.png',
+					size:'small'
+				},
+				{
+					name:'个人中心',
+					name_code:'findCenter',
+					icon:'/static/footer_icon/1.4.png',
+					select_icon:'/static/footer_icon/2.4.png',
 					size:'small'
 				},
 			]
@@ -71,28 +78,27 @@ export default {
 		menu_3(ctx){
 			let menu_list = [
 				{
-					name:'首页',
-					name_code:'home',
-					icon:'/static/footer_icon/a2.png',
-					select_icon:'/static/footer_icon/a1.png',
+					name:'订单',
+					name_code:'fetchOrder',
+					icon:'/static/footer_icon/1.3.png',
+					select_icon:'/static/footer_icon/2.3.png',
 					size:'small'
 				},
 				{
-					name:'发布',
-					name_code:'publish',
-					icon:'/static/footer_icon/f2.png',
-					select_icon:'/static/footer_icon/f1.png',
-					size:'big'
+					name:'消息',
+					name_code:'message',
+					icon:'/static/footer_icon/1.5.png',
+					select_icon:'/static/footer_icon/2.5.png',
+					size:'small'
 				},
 				{
-					name:'我的',
-					name_code:'my',
-					icon:'/static/footer_icon/d1.png',
-					select_icon:'/static/footer_icon/d2.png',
+					name:'个人中心',
+					name_code:'fetchCenter',
+					icon:'/static/footer_icon/1.4.png',
+					select_icon:'/static/footer_icon/2.4.png',
 					size:'small'
 				},
 			]
-			
 			ctx.commit("change_nav_list",menu_list)
 		},
 		menu_4(ctx){

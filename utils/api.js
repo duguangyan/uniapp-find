@@ -1,5 +1,5 @@
-// const apiUrl = 'https://devv2.yidap.com'; // 测试
- const apiUrl = 'https://apiv2.yidap.com';     // 正式
+ const apiUrl = 'https://devv2.yidap.com'; // 测试
+ //const apiUrl = 'https://apiv2.yidap.com';     // 正式
  const versionNumber = 'v3.0.4'; //版本号
 
  if (apiUrl == 'https://apiv2.yidap.com') {
@@ -534,8 +534,25 @@
  const apiVirtual = (params) => myRequest(params, `${apiUrl}/api/virtual`);
 
 
+// 返回data数据
+const returnData = (url)=>{
+	let data = {};
+			data['timestamp'] = new Date().getTime();
+			data['sign']= util.makeSign(url, data);
+			data['token']= uni.getStorageSync("token") || "";
+			data['deviceId']=uni.getStorageSync("deviceId");
+			data['platformType']=uni.getStorageSync("platformType");
+			data['versionCode']=uni.getStorageSync("v");
+	return data
+}
 
+// 用户认证
+const auditApply = (params) => {
+	return myRequest(params, `${apiUrl}/api/member/audit`)
+}	
  module.exports = {
+	auditApply,
+	returnData,
  	apiVirtual,
  	memberAvatarPath,
  	inviteCodeOrder,

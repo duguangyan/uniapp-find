@@ -70,7 +70,8 @@
  				isPassworld: false,
  				isLogin:false,
  				isCodeActive: false,
- 				codeText:"获取验证码"
+ 				codeText:"获取验证码",
+				from:0,
  			};
  		},
  		components: {
@@ -81,6 +82,11 @@
  				return this.$store.state.fromRest;
  			}
  		},
+		onLoad(options) {
+			if(options.from){
+				this.$data.from = options.from;
+			}
+		},
  		methods:{
  			goblack(){
  				uni.navigateBack({
@@ -188,8 +194,10 @@
  								this.$store.commit('setToken',{token: resData.data.token});
  								this.$store.commit('setUserInfo',{userInfo: resData.data});
  								this.$eventHub.$emit('doUserInfo',resData.data);
+								this.$eventHub.$emit('order',"order");
+								
  								uni.reLaunch({
- 									url:'../index/index'
+ 									url:'../index/index?menuFrom=' + this.$data.from
  								})
  								
  								
@@ -216,13 +224,14 @@
  								})
  								uni.setStorageSync('userInfo', resData.data);
  								this.$store.commit('setToken',{token: resData.data.token});
-								
  								this.$store.commit('setUserInfo',{userInfo: resData.data});
  								this.$eventHub.$emit('doUserInfo',res.data);
  								this.$eventHub.$emit('order',"order");
- 								uni.navigateBack({
- 									delta: 1
- 								});
+ 								
+								uni.reLaunch({
+									url:'../index/index?menuFrom=' + this.$data.from
+								})
+								
  							}
  						})
  					}
@@ -234,9 +243,6 @@
  					url: "/pages/resetPassworld/resetPassworld"
  				})
  			}
- 		},
- 		getUserInfo(){
- 			
  		}
  	}
  </script>

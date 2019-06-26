@@ -7,7 +7,6 @@
 			<view class="no-address-text text-gray">暂无收货地址</view>
 			<view class="text-999">您可以新增地址已方便收货</view>
 		</view>
-
 		<view class='consignee-address' v-if="!isEmpty">
 			<view class='btn-shadow address-right' v-if='hasAddressNum1>0'>
 				<view class='cf address-right-title'>

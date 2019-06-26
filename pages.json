@@ -2,6 +2,12 @@
     "pages" : [
         //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
         {
+            "path" : "pages/start/start",
+            "style" : {
+				"navigationBarTitleText" : "一鹿找"
+			}
+        },
+		{
             "path" : "pages/index/index",
             "style" : {
                 "navigationBarTitleText" : "一鹿找"
@@ -125,6 +131,12 @@
             "path" : "pages/integralmall/integralmall",
             "style" : {
 				"navigationBarTitleText" : "积分商城"
+			}
+        }
+        ,{
+            "path" : "pages/setting/authentication/authentication",
+            "style" : {
+				"navigationBarTitleText" : "用户认证"
 			}
         }
     ],

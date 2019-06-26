@@ -4,8 +4,13 @@
 		<task v-if="page_code=='task'"></task>
 		<order v-if="page_code=='order'"></order>
 		<center v-if="page_code=='center'"></center>
-		
+		<findCenter v-if="page_code=='findCenter'"></findCenter>
+		<findOrder v-if="page_code=='findOrder'"></findOrder>
+		<fetchOrder v-if="page_code=='fetchOrder'"></fetchOrder>
+		<fetchCenter v-if="page_code=='fetchCenter'"></fetchCenter>
+		<message v-if="page_code=='message'"></message>
 		<footerNav></footerNav>
+		
 	</view>
 </template>
 
@@ -14,6 +19,11 @@
 	import task from "./pages/task.vue";
 	import order from "./pages/order.vue";
 	import center from "./pages/center.vue";
+	import findOrder from "./pages/findOrder.vue";
+	import findCenter from "./pages/findCenter.vue";
+	import fetchCenter from "./pages/fetchCenter.vue";
+	import fetchOrder from "./pages/fetchOrder.vue";
+	import message from "./pages/message.vue";
 	import footerNav from "../../components/footer/footer_nav.vue";
 	export default {
 		data() {
@@ -26,7 +36,12 @@
 			task,
 			order,
 			center,
-			footerNav
+			footerNav,
+			findOrder,
+			findCenter,
+			message,
+			fetchCenter,
+			fetchOrder
 		},
 		computed: {
 			page_code() {
@@ -37,7 +52,27 @@
 			if(options.from){
 				this.$store.commit("change_page",options.from);
 			}
-			console.log('index onload')
+			//this.$store.dispatch('menu_2')
+			if(options.menuFrom){
+				let i = parseInt(options.menuFrom);
+				switch (i){
+					case 0:   // 我要找料
+						
+						break;
+					case 1:   // 我是找料员
+						this.$store.dispatch('menu_2')
+						break;
+					case 2:   // 我是配送员
+						this.$store.dispatch('menu_3')
+						break;	
+					case 3:   // 小鹿家人
+					
+						break;	
+					default:
+						break;
+				}
+			}
+			console.log(options)
 			// this.$store.dispatch('get_data')
 		},
 		onShow() {
