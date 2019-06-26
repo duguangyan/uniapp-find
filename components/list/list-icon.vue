@@ -40,6 +40,7 @@
 			left: 40upx;
 			height: 120upx;
 			width: 120upx;
+			border-radius: 60upx;
 		}
 		.icon-small{
 			position: absolute;

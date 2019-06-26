@@ -163,7 +163,7 @@
 			},
 			goSetting(){
 				uni.navigateTo({
-					url:"/pages/setting/setting?avatarPath="+this.avatar_path
+					url:"/pages/setting/setting?avatarPath="+this.avatar_path+"&nickName="+this.nick_name
 				})
 			},
 			//跳转下一个页面

@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<list-icon subTitle="修改头像" showCamera="true" @didClick="modifyHeadIcon()" :avatar_path="avatar_path"></list-icon>
-		<list-item title="昵称" subTitle="Eric" @didClick="modifyNickname()"></list-item>
+		<list-item title="昵称" :subTitle="nick_name" @didClick="modifyNickname()"></list-item>
 	</view>
 </template>
 
@@ -12,7 +12,8 @@
 	export default {
 		data() {
 			return {
-				avatar_path:""
+				avatar_path:"",
+				nick_name:"",
 			};
 		},
 		components:{
@@ -41,6 +42,12 @@
 		onLoad(options) {
 			console.log(options);
 			this.avatar_path = options.avatarPath;
+			this.nick_name = options.nickName;
+		},
+		onShow() {
+			this.$eventHub.$on('modifySuccess',(data)=>{
+				console.log(data)
+			})
 		}
 	}
 </script>
