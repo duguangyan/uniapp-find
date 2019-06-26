@@ -2,7 +2,7 @@
 	<view class="index">
 		<view class="center-top">
 			<view class="title">个人中心</view>
-			<image class="icon" :src="avatar_path" mode="" @click="changeAvatarPath"></image>
+			<image class="icon" :src="avatar_path" mode=""></image>
 			<view class="name">{{nick_name}}</view>
 			<button class="top-button recharge" type="primary" plain="true" @click="goRecharge(1)">余额充值</button>
 			<button class="top-button buy" type="default" @click="goRecharge(2)">购买鹿币</button>
@@ -44,7 +44,6 @@
 				</li>
 			</ul>
 		</view>
-
 		<view class="horizon_list">
 			<view class="family" @click="goIn">
 				<text class="title">小鹿家人</text>
@@ -60,8 +59,8 @@
 				</li>
 			</ul>
 		</view>
-		<text class="copyright">Copyright@2018-现在 \n 众皮联版权所有</text>
-
+		
+		<text class="copyright"> Copyright @2019  众皮联 版权所有 版本 {{v}}</text>
 	</view>
 </template>
 
@@ -71,6 +70,7 @@
 	export default {
 		data() {
 			return {
+				v:'', // 版本号
 				order_find: [{
 						img: "/static/center/find.png",
 						text: "找料中",
@@ -136,10 +136,11 @@
 					this.$data.balance = res.data.balance;
 					this.$data.marketing = res.data.marketing;
 					this.$data.virtual = res.data.virtual;
-
 					console.log(res.data);
 				}
 			})
+			// 版本号
+			this.$data.v = wx.getStorageSync('v');
 		},
 		methods: {
 			//跳转下一个页面

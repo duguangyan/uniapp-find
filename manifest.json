@@ -80,10 +80,11 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "",
+        "appid" : "wx95dd0020bb2c868f",
         "setting" : {
             "urlCheck" : true
-        }
+        },
+        "permission" : {}
     },
     "h5" : {
         "router" : {

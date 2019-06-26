@@ -358,7 +358,7 @@
 								})
 							}
 							data.fail = function(res) {
-								this.$data.isDisabled = false
+								_this.$data.isDisabled = false
 								util.errorTips(支付失败)
 							}
 							wx.requestPayment(data);

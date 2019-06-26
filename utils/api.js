@@ -1,11 +1,11 @@
- const apiUrl = 'https://devv2.yidap.com'; // 测试
-// const apiUrl = 'https://apiv2.yidap.com';     // 正式
+// const apiUrl = 'https://devv2.yidap.com'; // 测试
+ const apiUrl = 'https://apiv2.yidap.com';     // 正式
  const versionNumber = 'v3.0.4'; //版本号
 
  if (apiUrl == 'https://apiv2.yidap.com') {
- 	wx.setStorageSync('v', versionNumber + ' 正式');
+ 	uni.setStorageSync('v', versionNumber + ' 正式');
  } else {
- 	wx.setStorageSync('v', versionNumber + ' 测试');
+ 	uni.setStorageSync('v', versionNumber + ' 测试');
  }
  Promise.prototype.finally = function(callback) {
  	let P = this.constructor;

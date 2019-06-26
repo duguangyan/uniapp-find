@@ -4,7 +4,7 @@
         {
             "path" : "pages/index/index",
             "style" : {
-                "navigationBarTitleText" : "小鹿快找"
+                "navigationBarTitleText" : "一鹿找"
             }
         },
 		{
@@ -105,19 +105,27 @@
         }
         ,{
             "path" : "pages/chat/chat",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "聊天室"
+			}
         }
         ,{
             "path" : "pages/recharge/recharge",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "充值中心"
+			}
         }
         ,{
             "path" : "pages/giftCertificate/giftCertificate",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "我的礼券"
+			}
         }
         ,{
             "path" : "pages/integralmall/integralmall",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "积分商城"
+			}
         }
     ],
 	"permission": {
