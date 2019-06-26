@@ -127,6 +127,12 @@
 				"navigationBarTitleText" : "积分商城"
 			}
         }
+        ,{
+            "path" : "pages/setting/modifyNickname/modifyNickname",
+            "style" : {
+				"navigationBarTitleText" : "昵称"
+			}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {

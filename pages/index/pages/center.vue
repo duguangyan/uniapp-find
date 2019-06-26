@@ -6,9 +6,7 @@
 			<view class="name">{{nick_name}}</view>
 			<button class="top-button recharge" type="primary" plain="true" @click="goRecharge(1)">余额充值</button>
 			<button class="top-button buy" type="default" @click="goRecharge(2)">购买鹿币</button>
-			<navigator url="/pages/setting/setting">
-				<image class="setting" src="/static/center/setting.png"></image>
-			</navigator>
+			<image class="setting" src="/static/center/setting.png" @click="goSetting()"></image>
 			<image @click="goChatList" class="message" src="/static/center/message.png"></image>
 		</view>
 		<view class="wallet">
@@ -161,6 +159,11 @@
 						this.$data.virtual = res.data.virtual;
 						console.log(res.data);
 					}
+				})
+			},
+			goSetting(){
+				uni.navigateTo({
+					url:"/pages/setting/setting?avatarPath="+this.avatar_path
 				})
 			},
 			//跳转下一个页面

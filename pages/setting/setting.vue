@@ -1,9 +1,7 @@
 <template>
 	<view class="index">
 		<view class="setting_list">
-			<navigator url="userInfo/userInfo">
-				<list-icon subTitle="完善个人信息"></list-icon>
-			</navigator>
+			<list-icon subTitle="完善个人信息" :avatar_path="avatar_path" @didClick="goUserInfo()"></list-icon>
 			<navigator url="">
 				<list-item title="登录密码"></list-item> <!-- 传入一个静态的值 动态绑定 再前面加冒号： -->
 			</navigator>
@@ -25,6 +23,7 @@
 	export default {
 		data() {
 			return {
+				avatar_path:"/static/icon/add-find.png"
 			}
 		},
 		methods: {
@@ -37,10 +36,19 @@
 				uni.reLaunch({
 					url: '../index/index'
 				});
+			},
+			goUserInfo(){
+				uni.navigateTo({
+					url:'userInfo/userInfo?avatarPath='+this.avatar_path
+				})
 			}
 		},
 		components:{
 			listItem,listIcon,
+		},
+		onLoad(options) {
+			console.log(options);
+			this.avatar_path = options.avatarPath;
 		}
 	}
 </script>
