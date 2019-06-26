@@ -21,6 +21,7 @@
 <script>
 	import listItem from "@/components/list/list-item.vue" //这里不能用list
 	import listIcon from "@/components/list/list-icon.vue"
+	import util     from "../../utils/util.js";
 	export default {
 		data() {
 			return {
@@ -28,7 +29,14 @@
 		},
 		methods: {
 			logout(){
-				
+				try {
+					uni.clearStorageSync();
+				} catch (e) {
+					util.errorTips('退出登录失败，请稍后再试！');
+				}
+				uni.reLaunch({
+					url: '../index/index'
+				});
 			}
 		},
 		components:{

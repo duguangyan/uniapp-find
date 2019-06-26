@@ -118,7 +118,7 @@
 						title: "积分商城",
 					}
 				],
-				nick_name: "Eric",
+				nick_name: "游客",
 				avatar_path: "/static/footer_icon/2.1.png",
 				balance: 0,
 				marketing: 0,
