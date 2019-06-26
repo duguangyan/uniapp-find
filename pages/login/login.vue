@@ -174,10 +174,7 @@
  								validateCode:this.$data.code
  							}
  						}).then((res)=>{
- 							if(res.code==0){
- 								
- 								
- 								
+ 							if(res.code==0 || res.code == 200){
  								console.log("login:"+res);
  								let resData = res; 
 								
@@ -191,9 +188,9 @@
  								this.$store.commit('setToken',{token: resData.data.token});
  								this.$store.commit('setUserInfo',{userInfo: resData.data});
  								this.$eventHub.$emit('doUserInfo',resData.data);
- 								uni.navigateBack({
- 									delta: 1
- 								});
+ 								uni.reLaunch({
+ 									url:'../index/index'
+ 								})
  								
  								
  							}

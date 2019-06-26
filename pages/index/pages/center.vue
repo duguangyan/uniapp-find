@@ -1,8 +1,8 @@
 <template>
 	<view class="index">
 		<view class="center-top">
-			<view class="title">个人中心</view>
-			<image class="icon" :src="avatar_path" mode=""></image>
+			<!-- <view class="title">个人中心</view> -->
+			<image class="icon" :src="avatar_path"  mode="" @click="changeAvatarPath"></image>
 			<view class="name">{{nick_name}}</view>
 			<button class="top-button recharge" type="primary" plain="true" @click="goRecharge(1)">余额充值</button>
 			<button class="top-button buy" type="default" @click="goRecharge(2)">购买鹿币</button>
@@ -126,23 +126,43 @@
 
 			};
 		},
+		onLoad() {
+			
+		},
+		onShow() {
+			let xx = uni.getStorageSync('user_name');
+			if(uni.getStorageSync('user_name')!=''){
+				// 获取用户信息
+				this.getUserInfo();
+				// 版本号
+				this.$data.v = wx.getStorageSync('v');
+			}
+		},
 		created() {
-			api.getUserInfo({
-				method: "GET"
-			}).then((res) => {
-				if (res.code == 0) {
-					this.$data.nick_name = res.data.nick_name;
-					this.$data.avatar_path = res.data.avatar_path;
-					this.$data.balance = res.data.balance;
-					this.$data.marketing = res.data.marketing;
-					this.$data.virtual = res.data.virtual;
-					console.log(res.data);
-				}
-			})
+			// 获取用户信息
+			this.getUserInfo();
 			// 版本号
 			this.$data.v = wx.getStorageSync('v');
 		},
+		mounted() {
+			
+		},
 		methods: {
+			// 获取用户信息
+			getUserInfo(){
+				api.getUserInfo({
+					method: "GET"
+				}).then((res) => {
+					if (res.code == 0 || res.code == 200) {
+						this.$data.nick_name = res.data.nick_name;
+						this.$data.avatar_path = res.data.avatar_path;
+						this.$data.balance = res.data.balance;
+						this.$data.marketing = res.data.marketing;
+						this.$data.virtual = res.data.virtual;
+						console.log(res.data);
+					}
+				})
+			},
 			//跳转下一个页面
 			goNextPage(index) {
 				//util.successTips('index->' + index);
@@ -218,7 +238,7 @@
 											var ress = JSON.parse(res.data);
 											if (200 === ress.code || 0 === ress.code) {
 												_this.$data.avatar_path = ress.data;
-												uni.setStorageSync('avatar_path', ress.data);
+												uni.setStorageSync('avatarPath', ress.data);
 												api.memberAvatarPath({
 													method: 'POST',
 													data: {
@@ -295,13 +315,13 @@
 
 	.index {
 		background-color: #F6F6F6;
-		min-height: 1836upx;
+		padding-bottom: 100upx;
 	}
 
 	//top
 	.center-top {
 		width: 100%;
-		height: 400upx;
+		height: 320upx;
 		background-color: #F29800;
 
 		.title {
@@ -312,7 +332,8 @@
 		}
 
 		.icon {
-			background-color: pink;
+			border:1upx solid #fff;
+			border-radius: 50%; 
 			height: 120upx;
 			width: 120upx;
 			float: left;
@@ -324,12 +345,11 @@
 		.setting {
 			// background-color: pink;
 			float: right;
-			margin-top: 94upx;
+			margin-top: 95upx;
 			margin-right: 38upx;
 			width: 48upx;
 			height: 48upx;
 		}
-
 		.message {
 			float: right;
 			margin-top: 92upx;
@@ -342,7 +362,7 @@
 			color: white;
 			font-size: 32upx;
 			position: absolute;
-			top: 166upx;
+			top: 74upx;
 			left: 180upx;
 		}
 
@@ -351,7 +371,7 @@
 			border: 2upx solid white;
 			border-radius: 20upx;
 			position: absolute;
-			top: 230upx;
+			top: 140upx;
 			padding: 8upx 20upx;
 			height: 40upx;
 			font-size: 20upx;
@@ -374,7 +394,7 @@
 		border-radius: 8upx;
 		height: 180upx;
 		position: relative;
-		top: -60upx;
+		top: -80upx;
 		margin: 0upx 30upx;
 
 		.wallet-left {
