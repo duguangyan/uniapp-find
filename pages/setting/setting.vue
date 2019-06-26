@@ -13,7 +13,7 @@
 			<list-item title="用户认证" id="item_mid_bottom"></list-item>
 			<list-item title="版本号" isShowText="true"></list-item>
 			<list-item title="清除缓存" isShowText="true"></list-item>
-			<button type="primary" class="logout">退出登录</button>
+			<button type="primary" class="logout" @click="logout">退出登录</button>
 		</view>
 	</view>
 </template>
@@ -27,7 +27,9 @@
 			}
 		},
 		methods: {
-			
+			logout(){
+				
+			}
 		},
 		components:{
 			listItem,listIcon,

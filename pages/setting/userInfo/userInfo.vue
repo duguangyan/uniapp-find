@@ -1,6 +1,6 @@
 <template>
 	<view class="index">
-		<list-icon subTitle="修改头像" showCamera="true"></list-icon>
+		<list-icon subTitle="修改头像" showCamera="true" @click="modifyHeadIcon"></list-icon>
 		<list-item title="昵称" subTitle="Eric"></list-item>
 	</view>
 </template>
@@ -8,6 +8,7 @@
 <script>
 	import listItem from "@/components/list/list-item.vue"
 	import listIcon from "@/components/list/list-icon.vue"
+	
 	export default {
 		data() {
 			return {
@@ -16,6 +17,19 @@
 		},
 		components:{
 			listItem,listIcon
+		},
+		methods:{
+			modifyHeadIcon(){
+				uni.showActionSheet({
+					itemList:['拍照','B','C'],
+					success(res) {
+						console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
+					},
+					fail(res) {
+						console.log(res.errMsg);
+					}
+				})
+			}
 		}
 	}
 </script>
