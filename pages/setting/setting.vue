@@ -2,11 +2,13 @@
 	<view class="index">
 		<view class="setting_list">
 			<list-icon subTitle="完善个人信息" :avatar_path="avatar_path" @didClick="goUserInfo()"></list-icon>
-			<navigator url="">
-				<list-item title="登录密码"></list-item> <!-- 传入一个静态的值 动态绑定 再前面加冒号： -->
+			<navigator url="modifyPassword/modifyPassword">
+				<list-item title="登录密码"></list-item>
 			</navigator>
-			
-			<list-item title="支付密码"></list-item>
+			<navigator url="modifyPassword/modifyPassword">
+				<list-item title="支付密码"></list-item>
+			</navigator>
+
 			<view @click="goIn">
 				<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
 			</view>
@@ -29,7 +31,8 @@
 	export default {
 		data() {
 			return {
-				avatar_path:"/static/icon/add-find.png"
+				avatar_path:"/static/icon/add-find.png",
+				nick_name:""
 			}
 		},
 		methods: {
@@ -95,7 +98,7 @@
 			},
 			goUserInfo(){
 				uni.navigateTo({
-					url:'userInfo/userInfo?avatarPath='+this.avatar_path
+					url:'userInfo/userInfo?avatarPath='+this.avatar_path+"&nickName="+this.nick_name
 				})
 			}
 		},
@@ -105,6 +108,7 @@
 		onLoad(options) {
 			console.log(options);
 			this.avatar_path = options.avatarPath;
+			this.nick_name = options.nickName;
 		}
 	}
 </script>

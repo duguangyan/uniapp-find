@@ -2,7 +2,7 @@
 	<view class="index">
 		<text>可使用中英文(英文区分大小写)、数字(不可为纯数字或字符)、“-”和“_”，字数限制4-20个字符</text>
 		<view class="editContent">
-			<textarea value="" placeholder-style="color:#D3D3D3" placeholder="输入新昵称" />
+			<textarea v-model="nickName" placeholder-style="color:#D3D3D3" placeholder="输入新昵称" />
 		</view>
 		<button type="primary" @click="confirm()">确定</button>
 	</view>
@@ -13,6 +13,7 @@
 	export default {
 		data() {
 			return {
+				nickName:''
 			};
 		},
 		methods:{
@@ -20,13 +21,16 @@
 				api.changeNickName({
 					method: "POST",
 					data: {
-						nick_name: '大猩猩'
+						nick_name: this.nickName
 					},
 				}).then((res)=>{
 					if (res.code == 0) {
-						console.log("api");
+						console.log(this.nickName);
+						this.$eventHub.$emit('modifySuccess',this.nickName);
+						uni.navigateBack({
+							delta:1
+						})
 					}
-					
 					console.log(res)
 				})
 				

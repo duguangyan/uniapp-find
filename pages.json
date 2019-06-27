@@ -145,6 +145,10 @@
 				"navigationBarTitleText" : "昵称"
 			}
         }
+        ,{
+            "path" : "pages/setting/modifyPassword/modifyPassword",
+            "style" : {}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {
