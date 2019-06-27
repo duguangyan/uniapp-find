@@ -50,7 +50,6 @@
 					url: '../index/index'
 				});
 			},
-<<<<<<< HEAD
 			goIn() {
 				let token = wx.getStorageSync('token');
 				let isTrue = token ? false : true;
@@ -93,13 +92,11 @@
 			
 					}
 				})
-			
-=======
+			},
 			goUserInfo(){
 				uni.navigateTo({
 					url:'userInfo/userInfo?avatarPath='+this.avatar_path
 				})
->>>>>>> 4e95f1c48f4d6df4084197903737bab836090fcc
 			}
 		},
 		components:{
