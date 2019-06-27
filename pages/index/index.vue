@@ -57,7 +57,7 @@
 				let i = parseInt(options.menuFrom);
 				switch (i){
 					case 0:   // 我要找料
-						
+						this.$store.dispatch('menu_4')
 						break;
 					case 1:   // 我是找料员
 						this.$store.dispatch('menu_2')
@@ -66,7 +66,7 @@
 						this.$store.dispatch('menu_3')
 						break;	
 					case 3:   // 小鹿家人
-					
+						this.$store.dispatch('menu_4')
 						break;	
 					default:
 						break;

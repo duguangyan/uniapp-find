@@ -29,7 +29,7 @@
 				// 	url:'../login/login?from=' + index
 				// })
 				uni.navigateTo({
-					url:'../index/index'
+					url:'../index/index?menuFrom=' + index
 				})
 			}
 		}
