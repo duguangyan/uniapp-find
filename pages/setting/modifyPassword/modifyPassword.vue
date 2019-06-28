@@ -1,29 +1,88 @@
 <template>
 	<view class="index">
-		<text>修改登录密码</text>
+		<text>{{title}}</text>
 		<view class="editSection" id="id_mobile">
-			<image src="../../../static/center/contact.png" mode=""></image>
-			<textarea value="" placeholder="请输入您的手机号码" />
+			<image src="/static/center/contact.png" mode=""></image>
+			<input type="number" placeholder="请输入您的手机号码" v-model="mobile" @input="inputMobile"/>
 		</view>
 		<view class="editSection" id="id_verify">
-			<image src="../../../static/center/verify.png" mode=""></image>
-			<textarea value="" placeholder="请输入验证码" />
+			<image src="/static/center/verify.png" mode=""></image>
+			<input type="number" placeholder="请输入验证码" @input="inputVerify"/>
 		</view>
-		<button class="verifyButton">获取验证码</button>
+		<button class="verifyButton" :class="{verifyActive:isVerifyActive}" @click="getVerify">获取验证码</button>
 		<view class="editSection" id="id_password">
-			<image src="../../../static/center/password.png" mode=""></image>
-			<textarea value="" placeholder="请输入新密码" />
+			<image src="/static/center/password.png" mode=""></image>
+			<input type="number" placeholder="请输入新密码" @input="inputPassword"/>
 		</view>
-		<button class="commitButton" type="primary" disabled="true">提交</button>
+		<button class="commitButton" :class="{commitActive:isCommitActive}" type="primary" @click="commitPassword">提交</button>
 	</view>
 </template>
 
 <script>
+	import util from "../../../utils/util.js";
+ 	import api from "../../../utils/api.js";
 	export default {
 		data() {
 			return {
-				
+				title:'修改登录密码',
+				isVerifyActive:false,
+				isCommitActive:false,
+				mobile:'',
+				verify:'',
+				password:'',
 			};
+		},
+		onLoad(options) {
+			console.log(options);
+			if(options.index == 1){
+				this.$data.title = '修改支付密码'
+			}
+		},
+		methods:{
+			getVerify(){
+				if(this.$data.isVerifyActive){
+					console.log('isVerifyActive');
+					api.changeNickName({
+						method: "POST",
+					data: {
+						
+						},
+					}).then((res)=>{
+						if (res.code == 0) {
+							
+						}
+						console.log(res)
+					});
+				}
+			},
+			inputMobile(event){
+				// console.log(this.$data.mobile);
+				// console.log(util.vailPhone(this.$data.mobile));
+				console.log(util.vailPhone(event.target.value));
+				this.$data.mobile = event.target.value;
+				util.vailPhone(event.target.value) ? this.$data.isVerifyActive = true : this.$data.isVerifyActive = false;
+				this.judgeIsCommit();
+			},
+			inputVerify(event){
+				this.$data.verify = event.target.value;
+				this.judgeIsCommit();
+			},
+			inputPassword(event){
+				this.$data.passworld = event.target.value;
+				this.judgeIsCommit();
+			},
+			judgeIsCommit(){
+				if(util.vailPhone(this.$data.mobile)&&this.$data.verify!=""&&this.$data.passworld!=""){
+					this.$data.isCommitActive = true;
+				}else{
+					this.$data.isCommitActive = false;
+				}
+ 			},
+			commitPassword(){
+				if(this.$data.isCommitActive){
+					
+				}
+			},
 		}
 	}
 </script>
@@ -48,10 +107,10 @@
 			left: 10upx;
 			top: 12upx;
 		}
-		textarea{
+		input{
 			font-size: 28upx;
 			position: absolute;
-			top: 30upx;
+			top: 20upx;
 			left: 82upx;
 		}
 		.editSection{
@@ -73,14 +132,19 @@
 			top: 448upx;
 		}
 		.verifyButton{
-			border: 2upx solid #DDDDDD;
-			border-radius: 8upx;
-			color: #DDDDDD;
-			font-size: 28upx;
-			width: 200upx;
 			position: absolute;
 			top: 328upx; 
 			right: 60upx;
+			font-size: 28upx;
+			width: 200upx;
+			border: 2upx solid #DDDDDD;
+			border-radius: 8upx;
+			background-color: white;
+			color: #DDDDDD;
+		}
+		.verifyActive{
+			background-color: #F08D05;
+			color: white;
 		}
 		.commitButton{
 			background-color: #8E8E8E;
@@ -88,6 +152,9 @@
 			bottom:0upx; 
 			left: 60upx;
 			right: 60upx;
+		}
+		.commitActive{
+			background-color: #F08D05;
 		}
 		
 	}

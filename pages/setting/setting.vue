@@ -5,10 +5,8 @@
 			<navigator url="modifyPassword/modifyPassword">
 				<list-item title="登录密码"></list-item>
 			</navigator>
-			<navigator url="modifyPassword/modifyPassword">
-				<list-item title="支付密码"></list-item>
-			</navigator>
-
+			
+			<list-item title="支付密码" @didClick="goModifyPassword(1)"></list-item>
 			<view @click="goIn">
 				<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
 			</view>
@@ -99,6 +97,11 @@
 			goUserInfo(){
 				uni.navigateTo({
 					url:'userInfo/userInfo?avatarPath='+this.avatar_path+"&nickName="+this.nick_name
+				})
+			},
+			goModifyPassword(index){
+				uni.navigateTo({
+					url:'modifyPassword/modifyPassword?index=1'
 				})
 			}
 		},

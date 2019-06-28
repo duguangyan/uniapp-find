@@ -147,23 +147,30 @@
 		},
 		methods: {
 			// 获取用户信息
+			
 			getUserInfo(){
+				console.log("获取用户信息");
+				
 				api.getUserInfo({
 					method: "GET"
 				}).then((res) => {
+					console.log(res.data);
 					if (res.code == 0 || res.code == 200) {
 						this.$data.nick_name = res.data.nick_name;
 						this.$data.avatar_path = res.data.avatar_path;
 						this.$data.balance = res.data.balance;
 						this.$data.marketing = res.data.marketing;
 						this.$data.virtual = res.data.virtual;
-						console.log(res.data);
+						// console.log(res.data);
 					}
+		
+				}).catch((res)=>{
+					debugger
 				})
 			},
 			goSetting(){
 				uni.navigateTo({
-					url:"/pages/setting/setting?avatarPath="+this.avatar_path+"&nickName="+this.nick_name
+					url:"/pages/setting/setting?avatarPath="+this.$data.avatar_path+"&nickName="+this.$data.nick_name
 				})
 			},
 			//跳转下一个页面

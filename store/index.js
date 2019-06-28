@@ -16,7 +16,8 @@ const store = new Vuex.Store({
 		addressList:"",
 		keyword:'',
 		isPhoneX: false,
-		isAndroid: false
+		isAndroid: false,
+		nickName:'',
 	},
 	mutations: {
 		
@@ -77,8 +78,11 @@ const store = new Vuex.Store({
 			if(payload.hasOwnProperty('isAndroid')){
 				state.isAndroid = payload.isAndroid
 			}
+		},
+		updateNickName(state,payload){
+			console.log(payload)
+			state.nickName = payload
 		}
-		
 		
 	},
 	actions: {
