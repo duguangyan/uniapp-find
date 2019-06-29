@@ -5,7 +5,7 @@
 			<view>
 				<view class='find-order-detail-top bb-20 lh120 fs30'>
 					<!-- <image class='order-icon' src='../../public/images/order/order2.png'></image>  -->
-					<text class='mgl-30'>{{itemObj.status_label}}</text>
+					<text class='fs30 text-yellow'>{{itemObj.status_label}}</text>
 				</view>
 
 				<view class='find-order-detail-number fs30 pdl-30 bb-20 pdb-30' v-if='itemObj.can_delete ==1 || itemObj.can_comment == 1'>
@@ -15,13 +15,27 @@
 				</view>
 
 				<view class='find-order-detail-type bb-20 fs30'>
-					<view class='lh50'>物料类型: {{itemObj.cname}}</view>
-					<view class='lh50 describe'><text class='describe-title'>描述:</text> <text class='ellipsis-line3 describe-content'>{{itemObj.desc}}</text>
+					<view class='lh50'>
+						<text class="fs28">物料类型: </text>
+						<text class="fs24 text-999 mgl-20">{{itemObj.cname}} </text>
+						<text class='flr text-yellow fs24' v-if='itemObj.type == 1'>{{itemObj.find_type_label}}</text>
 					</view>
-					<view class='lh50 describe' v-if='itemObj.type == 2'><text class='describe-title'>数量:</text> <text class='ellipsis-line3 describe-content'>{{itemObj.fetch_num}}</text>
+					<view class='lh50 describe'>
+						<text class=' fs28'>物料描述:</text> 
+						<text class='ellipsis describe-content fs24 text-999 mgl-20'>{{itemObj.desc}}</text>
+						<text class='flr text-yellow fs24'>费用:￥{{itemObj.fee}}</text>
 					</view>
-					<view class='lh50' v-if='itemObj.type == 1'>找料方式: {{itemObj.find_type_label}}</view>
-					<view class='task-find-method-img'>
+					<view class='lh50'>
+						<text class="fs28">限时找料: </text>
+						<text class="fs24 text-999 mgl-20">{{itemObj.is_limit == 1?'三小时':''}} </text>
+					</view>
+					
+					<view class='lh50'>
+						<text class="fs28">比价优选: </text>
+						<text class="fs24 text-999 mgl-20"> 参考价格￥{{itemObj.reference_price}} </text>
+					</view>
+					
+					<view class='task-find-method-img' v-if="itemObj.find_type == 1">
 						<image v-for='(item, index) in itemObj.desc_img' :key='index' :src='item' :data-src="item" @click="previewImage"></image>
 					</view>
 				</view>
@@ -47,58 +61,78 @@
 						<text class='iconfont icon-gantan1'></text>寄样不支持到付,请客户自行承担寄样费用
 					</view>
 				</view>
-				<view class='lh90 bb-1 fs30 pdl-30' v-if='itemObj.get_address && itemObj.find_type!=3 && itemObj.find_type!=1'>
+				<view class='lh90 fs30 pdl-30' v-if='itemObj.get_address && itemObj.find_type!=3 && itemObj.find_type!=1'>
 					{{itemObj.find_type==2?'取样地址':'取料地址'}}
 				</view>
-				<view class='find-order-detail-address bb-20 fs30 pdl-30' v-if='itemObj.get_address && itemObj.find_type!=3&& itemObj.find_type!=1'>
+				<view class='find-order-detail-address bb1 fs30 pdl-30' v-if='itemObj.get_address && itemObj.find_type!=3&& itemObj.find_type!=1'>
 
 					<view v-if='itemObj.get_address'>
-						<view class='lh50'>
+						<view class='lh50 fs28' style='word-break:break-all;'>
+							收货人  {{itemObj.get_address.mobile||''}}
 							<text class='remark' v-if='itemObj.get_address.remark'>{{itemObj.get_address.remark || ''}}</text>
+						</view>
+						<view class='lh50 fs24 text-999'>
 							{{itemObj.get_address.address||''}} {{itemObj.get_address.name||''}} {{itemObj.get_address.room||''}}
 						</view>
-						<view class='lh50 text-999' style='word-break:break-all;'>
-							{{itemObj.get_address.consignee||''}} / {{itemObj.get_address.mobile||''}}
-						</view>
+						<!--
 						<view class='lh50 text-999' style='word-break:break-all;'>
 							{{itemObj.get_address.stall||''}}
-						</view>
+						</view> -->
 					</view>
 
 
-					<view v-if='itemObj.get_address.length>1' class='bb1 mg10' v-for='(item, index) in itemObj.get_address' :key='index'>
-						<view class='lh50'>
+					<view v-if='itemObj.get_address.length>1' class='mg10' v-for='(item, index) in itemObj.get_address' :key='index'>
+						<view class='lh50 fs28' style='word-break:break-all;'>
+							收货人{{item.mobile||''}}
 							<text class='remark' v-if='item.tag'>{{item.tag || ''}}</text>
+						</view>
+						
+						<view class='lh50 text-999'>
 							{{item.address||''}}
 						</view>
-						<view class='lh50 text-999' style='word-break:break-all;'>
-							{{item.consignee||''}} / {{item.mobile||''}}
-						</view>
-						<view class='lh50 text-999' style='word-break:break-all;'>
+						
+						<!-- <view class='lh50 text-999' style='word-break:break-all;'>
 							{{item.desc||''}}
-						</view>
+						</view> -->
 					</view>
 				</view>
-				<view class='lh90 bb-1 fs30 pdl-30' v-if='itemObj.shipping_address'>
+				<view class='lh90 fs30 pdl-30' v-if='itemObj.shipping_address'>
 					送料地址
 				</view>
-				<view class='find-order-detail-address bb-20 fs30 pdl-30' v-if='itemObj.shipping_address'>
-					<view class='lh50'>
+				<view class='find-order-detail-address bb-1 fs30 pdl-30' v-if='itemObj.shipping_address'>
+					<view class='lh50  fs28' style='word-break:break-all;'>
+						收货人 {{itemObj.shipping_address.mobile||''}}
 						<text class='remark' v-if='itemObj.shipping_address.remark'>{{itemObj.shipping_address.remark ||''}}</text>
+					</view>
+					<view class='lh50 text-999 fs24'>
+						
 						{{itemObj.shipping_address.city_str||''}} {{itemObj.shipping_address.address||''}}
 						{{itemObj.shipping_address.room||''}}
 
 					</view>
-					<view class='lh50 text-999' style='word-break:break-all;'>
-						{{itemObj.shipping_address.consignee||''}} / {{itemObj.shipping_address.mobile||''}}
-					</view>
-					<view class='lh50 text-999' style='word-break:break-all;'>
+					
+					<!-- <view class='lh50 text-999' style='word-break:break-all;'>
 						{{itemObj.shipping_address.stall||''}}
-					</view>
+					</view> -->
+					
+				</view>
+				<view class="bb-20 pdl-30 lh100">
+					<text class="fs28">配送方式 :</text> 
+					<!-- 0：小鹿，1: 超出5公里，10公里内 2：物流到付', -->
+					<text class="fs24 mgl-20 text-999" v-if="itemObj.shipping_type==2">物流到付</text>
+					<text class="fs24 mgl-20 text-999" v-if="itemObj.shipping_type==1">送货上门</text>
+					<text class="fs24 mgl-20 text-999" v-if="itemObj.shipping_type==0">送货上门</text>
 				</view>
 				<view class='find-order-detail-number fs30 pdl-30 bb-20 pdb-30' style='margin-top:30rpx;'>
-					<view class='lh50'>订单编号: {{itemObj.order_sn}}</view>
-					<view class='lh50'>下单时间: {{itemObj.created_at}}</view>
+					<view class='lh50'>
+						<text class="fs28">订单编号:</text>
+						<text class="fs24 text-999 mgl-20"> {{itemObj.order_sn}}</text>
+					</view>
+					<view class='lh50'>
+						<text class="fs28">下单时间:</text>
+						<text class="fs24 text-999 mgl-20">{{itemObj.created_at}}</text>
+						 
+					</view>
 					<view class='lh50' v-if='itemObj.admin'>下 单 人 : {{itemObj.admin.real_name}}</view>
 					<view class='lh50' v-if='itemObj.findman_name'> {{nav==1?'找 料 员':'取 料 员'}} : {{itemObj.findman_name}} <text v-if='itemObj.findman_mobile'>/
 							{{itemObj.findman_mobile}}</text></view>
@@ -113,25 +147,40 @@
 					<view class='lh50' v-if='itemObj.confirm_finish_at'> 客户确认收货时间 : {{itemObj.confirm_finish_at}}</view>
 				</view>
 
-				<view class='find-order-detail-price fs30 pdl-30 border-bottom pd-30'>
+				<!-- <view class='find-order-detail-price fs30 pdl-30 border-bottom pd-30'>
 					<view v-if="userType!=2"><text>服务费用</text><text class='flr'>￥{{itemObj.fee}}</text></view>
 					<view v-if="userType==2"><text>包月:使用次数</text><text class='flr'>{{itemObj.find_fee}}次</text></view>
-				</view>
+				</view> -->
 <!-- itemObj.can_comment==1|| -->
 				<view class='find-order-detail-btn bt-1 cf' v-if="itemObj.can_confirm==1||itemObj.can_delete==1||itemObj.can_refuse==1">
 					<button @click='delOrder(itemObj.id)' v-if='itemObj.can_delete==1'>删除</button>
-					<button style='border: 1rpx solid #666;color: #666;' @click='toReturn(itemObj.id)' v-if='itemObj.can_refuse==1'>退款</button>
+					<button @click='toReturn(itemObj.id)' v-if='itemObj.can_refuse==1'>退款</button>
 					<button @click='affirmOrder(itemObj.id)' v-if='itemObj.can_confirm==1' class='order-footer-btn-red'
 					 :data-index="index">确认收货</button>
-					<button :data-id='itemObj.findman_id' @click='goChat' v-if='itemObj.findman_id!=null && itemObj.can_comment!=1 && itemObj.can_delete!=1 &&itemObj.can_confirm!=1 && status!=2'
+					<!-- <button :data-id='itemObj.findman_id' @click='goChat' v-if='itemObj.findman_id!=null && itemObj.can_comment!=1 && itemObj.can_delete!=1 &&itemObj.can_confirm!=1 && status!=2'
 					 class='order-footer-btn-red order-chat'>
 						{{nav==1?'联系找料员':'联系取料员'}}</button>
 					<button :data-id='itemObj.distribution_id' @click='goChat' v-if='itemObj.distribution_id!=null && status==2' class='order-footer-btn-red order-chat'>
-						联系配送员</button>
+						联系配送员</button> -->
+						
+						<view class="cancat flr" v-if='itemObj.findman_id!=null && itemObj.can_comment!=1 && itemObj.can_delete!=1 &&itemObj.can_confirm!=1 && status!=2'>
+							<image src="../../static/icon/concat.png"></image>
+							<text>{{nav==1?'联系找料员':'联系取料员'}}</text>
+							<view class="btn-1" @click="goChat"></view>
+							<view class="btn-2" @click="contact"></view>
+						</view>
+						<view class="cancat flr" v-if='itemObj.distribution_id!=null && status==2'>
+							<image src="../../static/icon/concat.png"></image>
+							<text>联系配送员</text>
+							<view class="btn-1" @click="goChat"></view>
+							<view class="btn-2" @click="contact"></view>
+						</view>
 				</view>
 			</view>
 			<!-- 取料 -->
 		</view>
+		
+		
 		<view style='height:120rpx;'></view>
 
 
@@ -179,6 +228,18 @@
 		    this.getCompanyaddress();
 		},
 		methods: {
+			// 取聊天室
+			goChat(){
+				uni.navigateTo({
+					url:'../../chat/chat'
+				})
+			},
+			//  联系我们电话
+			contact() {
+				wx.makePhoneCall({
+					phoneNumber: '400-8088-156'
+				})
+			},
 			// 确认收货
 			affirmOrder(id) {
 			  let _this = this;
@@ -270,9 +331,7 @@
 						if (res.code = 200) {
 						  _this.$data.itemObj.can_refuse= 0;
 						  _this.$data.itemObj.status_label = '申请退款';
-							util.successTips(res.msg);
-							
-							 
+							util.successTips(res.msg); 
 						} else {
 						  util.errorTips(res.msg);
 						}
@@ -330,6 +389,40 @@
 </script>
 
 <style lang="scss" scoped>
+	.cancat{
+		margin-right: 10upx;
+		margin-top: 10upx;
+		width: 360upx;
+		height: 100upx;
+		position: relative;
+		text{
+			position: absolute;
+			top: 34upx;
+			left: 38upx;
+			font-size: 28upx;
+			color: #F29800;
+		}
+		image{
+			width: 360upx;
+			height: 100upx;
+			position: absolute;
+			left: 0;
+			left: 0;
+		}
+		.btn-1,.btn-2{
+			width: 80upx;
+			height: 100upx;
+			position: absolute;
+			top:0;
+		}
+		.btn-1{
+			right: 28upx;
+		}
+		.btn-2{
+			right: 120upx;
+		}
+		
+	}
 	.orde-detail{
 		background: #eee;
 	}
@@ -372,7 +465,10 @@
   letter-spacing:30rpx;
 }
 .describe-content{
-  left: 136rpx;
+  width: 300upx;
+	display: inline-block;
+	position: relative;
+	top: 14upx;
 }
 .find-order-detail-describe{
   position: absolute;
@@ -388,7 +484,6 @@
    position: relative;
 }
 .find-order-detail-address{
-  margin:30rpx 0 0 0; 
   padding-right:30rpx; 
   padding-bottom: 30rpx;
 }
@@ -401,19 +496,16 @@
   z-index: 999;
 }
 .find-order-detail-btn button {
-  display: block;
-  height: 70rpx;
-  line-height: 70rpx;
-  width: 180rpx;
-  text-align: center;
-  border: 1rpx solid #F29800;
-  color: #F29800;
-  border-radius: 10rpx; 
-  float: right;
-  margin: 30rpx 30rpx 30rpx 0;
-  font-size: 30rpx;
-  padding: 0 10rpx;
-  background-color: #fff;
+ margin-right: 20upx;
+ width: 180upx;
+ float: right;
+ line-height: 60upx;
+ font-size: 30upx;
+ height:60upx;
+ color: #fff;
+ background:#F29800;
+ border-radius:60upx;
+ margin-top: 30upx
 }
 .task-find-method-img{
 }
@@ -566,20 +658,5 @@
   top: -30rpx;
   color: #999;
 }
-	.find-order-detail-btn button{
-		display: block;
-		height: 70rpx;
-		line-height: 70rpx;
-		width: 180rpx;
-		text-align: center;
-		border: 1rpx solid #F29800;
-		color: #F29800;
-		border-radius: 10rpx;
-		float: right;
-		margin: 30rpx 30rpx 30rpx 0;
-		font-size: 30rpx;
-		padding: 0 10rpx;
-		background-color: #fff;
-
-	}
+	
 </style>

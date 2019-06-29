@@ -42,12 +42,8 @@
 		onLoad(options) {
 			// 获取上一级传值
 			let fromType = options.from; // 1找料订单 2去送订单
-			if (fromType == 1) {
-				this.$data.fromType = fromType;
-				this.$data.indexType = options.index;
-			} else if (fromType == 2) {
-				this.$data.fromType = fromType;
-			}
+			this.$data.fromType = fromType;
+			this.$data.indexType = options.index;
 		},
 		onShow() {
 			// 获取物料品类数据
@@ -100,15 +96,10 @@
 				checkType += obj.id2name + ">";
 				checkType += obj.id3name;
 				let cid = obj.id1 + ',' + obj.id2 + ',' + obj.id3;
-				if(this.$data.fromType == 1){ // 找料
-					let indexType = this.$data.indexType;
-					let data = {'cname':checkType,cid,'index':indexType}
-					this.$eventHub.$emit('classifyData', data);
-				}else if(this.$data.fromType == 2){
-					let data = {'cname':checkType,cid}
-					this.$eventHub.$emit('classifyData', data);
-				}
+				let indexType = this.$data.indexType;
 				
+				let data = {'cname':checkType,cid,'index':indexType}
+				this.$eventHub.$emit('classifyData', data);
 
 				// 返回上一页
 				uni.navigateBack({

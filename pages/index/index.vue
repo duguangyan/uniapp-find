@@ -25,6 +25,7 @@
 	import fetchOrder from "./pages/fetchOrder.vue";
 	import message from "./pages/message.vue";
 	import footerNav from "../../components/footer/footer_nav.vue";
+	import api from '../../utils/api.js';
 	export default {
 		data() {
 			return {
@@ -57,16 +58,39 @@
 				let i = parseInt(options.menuFrom);
 				switch (i){
 					case 0:   // 我要找料
+						uni.setStorageSync('myStatus',1);  // 1是4个栏目 2是3个栏目
 						this.$store.dispatch('menu_4')
 						break;
 					case 1:   // 我是找料员
+						uni.setStorageSync('myStatus',2);
 						this.$store.dispatch('menu_2')
 						break;
 					case 2:   // 我是配送员
+						uni.setStorageSync('myStatus',2);
 						this.$store.dispatch('menu_3')
 						break;	
 					case 3:   // 小鹿家人
+						uni.setStorageSync('myStatus',1);
 						this.$store.dispatch('menu_4')
+						// 获取小鹿家人状态
+						api.getInviteCode({}).then((res) => {
+							if (res.code == 200 || res.code == 0) {
+								if (res.data.status == 0) {
+									uni.navigateTo({
+										url: '../familyExplain/familyExplain?familyStatus=' + res.data.status,
+									})
+								} else if (res.data.status == 1) {
+									uni.navigateTo({
+										url: '../familyCenter/familyCenter',
+									})
+								} else {
+									uni.navigateTo({
+										url: '../family/family',
+									})
+								}
+						
+							}
+						})
 						break;	
 					default:
 						break;
@@ -90,6 +114,7 @@
 	.content {
 		text-align: center;
 		padding-bottom: 130upx;
+		height: 100%;
 	}
 
 	.logo {

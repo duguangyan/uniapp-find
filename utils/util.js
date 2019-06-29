@@ -264,6 +264,32 @@ function getQueryString(name) {
 import md5 from './md5.min.js';
 
 function makeSign(url, Obj) {
+	delete Obj['sign'];
+    delete Obj['deviceId'];
+    delete Obj['platformType'];
+    delete Obj['versionCode'];
+    Obj['timestamp'] = new Date().getTime();
+    let newKey = Object.keys(Obj).sort()
+    let newObj = {}
+    for (let i = 0; i < newKey.length; i++) {
+        newObj[newKey[i]] = Obj[newKey[i]]
+    }
+    let str = ''
+    for (let key in newObj) {
+        str += key + '=' + newObj[key] + '&'
+    }
+	let newUrl = '';
+	if (url.indexOf('https://devv2.yidap.com') > -1) {
+		newUrl = url.split('https://devv2.yidap.com')[1];
+	} else {
+		newUrl = url.split('https://apiv2.yidap.com')[1];
+	}
+    let newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian'
+    newStr = newStr.replace('sign=&', '')
+    console.log(newStr)
+    return md5(newStr)
+	
+	
 	// let newKey = Object.keys(Obj).sort()
 	// let newObj = {}
 	// for (let i = 0; i < newKey.length; i++) {
@@ -283,32 +309,35 @@ function makeSign(url, Obj) {
 	// newStr = newStr.replace('sign=&', '')
 	// console.log(newStr)
 	// return md5(newStr)
-	let newKey = Object.keys(Obj).sort()
-	let newObj = {}
-	for (let i = 0; i < newKey.length; i++) {
-	  newObj[newKey[i]] = Obj[newKey[i]]
-	}
-	let str = ''
-	for (let key in newObj) {
-	  if (newObj[key] == null) {
-	    str += key + '=&'
-	  }else if (typeof newObj[key] == 'object' && newObj[key]!=null){
-	      str += key + '=[object Object]&'
-	  }else{
-	    str += key + '=' + newObj[key] + '&'
-	  }
-	}
-	let newUrl='';
-	if (url.indexOf('https://devv2.yidap.com')>-1){
-	  newUrl = url.split('https://devv2.yidap.com')[1];
-	}else{
-	  newUrl = url.split('https://apiv2.yidap.com')[1];
-	} 
-	let newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian'
-	newStr = newStr.replace('sign=&', '')
-	console.log('newStr:->' + newStr)
 	
-	return md5(newStr)
+	
+	
+	// let newKey = Object.keys(Obj).sort()
+	// let newObj = {}
+	// for (let i = 0; i < newKey.length; i++) {
+	//   newObj[newKey[i]] = Obj[newKey[i]]
+	// }
+	// let str = ''
+	// for (let key in newObj) {
+	//   if (newObj[key] == null) {
+	//     str += key + '=&'
+	//   }else if (typeof newObj[key] == 'object' && newObj[key]!=null){
+	//       str += key + '=[object Object]&'
+	//   }else{
+	//     str += key + '=' + newObj[key] + '&'
+	//   }
+	// }
+	// let newUrl='';
+	// if (url.indexOf('https://devv2.yidap.com')>-1){
+	//   newUrl = url.split('https://devv2.yidap.com')[1];
+	// }else{
+	//   newUrl = url.split('https://apiv2.yidap.com')[1];
+	// } 
+	// let newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian'
+	// newStr = newStr.replace('sign=&', '')
+	// console.log('newStr:->' + newStr)
+	// 
+	// return md5(newStr)
 }
 
 function fmoney(s, n) {

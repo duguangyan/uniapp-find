@@ -110,7 +110,7 @@
 		onLoad(options) {
 			if(options.from){
 				this.$data.from = options.from;  // findPage找料   fetchPage取送
-				if(this.$data.from == 'findPage'){
+				if(this.$data.from == 'findPage' || this.$data.from == 'fetchPage'){
 					this.$data.findIndex = options.findIndex
 				}
 			}
@@ -255,7 +255,7 @@
 				}
 				// 来自取送任务
 				if(this.$data.from == 'fetchPage'){
-					let data = {'address':item};
+					let data = {'address':item,'findIndex':this.$data.findIndex};
 					this.$eventHub.$emit('fetchPage', data);
 				}
 				if(this.$data.from == 'taskPayPage'){

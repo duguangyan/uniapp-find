@@ -149,6 +149,34 @@
             "path" : "pages/setting/modifyPassword/modifyPassword",
             "style" : {}
         }
+        ,{
+            "path" : "pages/index/findPages/findOrderDetail/findOrderDetail",
+            "style" : {
+				"navigationBarTitleText" : "找料订单详情"
+			}
+        }
+        ,{
+            "path" : "pages/search/search",
+            "style" : {
+				"navigationBarTitleText" : "搜索页"
+			}
+        }
+        ,{
+            "path" : "pages/index/fetchPage/fetchOrderDetail/fetchOrderDetail",
+            "style" : {
+				"navigationBarTitleText" : "取送详情"
+			}
+        }
+        ,{
+            "path" : "pages/index/common/recordList/recordList",
+            "style" : {
+				"navigationBarTitleText" : "佣金明细"
+			}
+        }
+        ,{
+            "path" : "pages/index/common/cash/cash",
+            "style" : {}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {

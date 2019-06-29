@@ -1,6 +1,6 @@
 <template>
 	<view>
-		messgae1111111111
+		提现
 	</view>
 </template>
 
@@ -10,11 +10,6 @@
 			return {
 				
 			};
-		},
-		onLoad() {
-			uni.setNavigationBarTitle({
-				title: "消息列表"
-			})
 		}
 	}
 </script>

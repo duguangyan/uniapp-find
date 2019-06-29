@@ -550,7 +550,41 @@ const returnData = (url)=>{
 const auditApply = (params) => {
 	return myRequest(params, `${apiUrl}/api/member/audit`)
 }	
+
+// 找料订单列表
+const myOrderFindList = (params) => myRequest(params, `${apiUrl}/api/staff/find`);
+
+// 取料订单列表
+const myOrderFetchList = (params) => myRequest(params, `${apiUrl}/api/staff/fetch`);
+// 配送订单列表
+const myOrderShipList = (params) => myRequest(params, `${apiUrl}/api/staff/ship`);
+
+// 配送订单列表
+const findShowById = (params) => myRequest(params, `${apiUrl}/api/staff/find/show`);
+
+// 配送订单列表
+const findArea = (params) => myRequest(params, `${apiUrl}/api/area`);
+
+// 配送订单列表
+const orderSearch = (params) => myRequest(params, `${apiUrl}/api/order/search`);
+
+
+// 佣金悬赏记录
+const commissionRecord = (params) => myRequest(params, `${apiUrl}/find/api/commissions`);
+
+// 快送佣金明细
+const staffCommissions = (params) => myRequest(params, `${apiUrl}/api/staff/commissions`);
+
+
  module.exports = {
+	staffCommissions,
+	commissionRecord,
+	orderSearch,
+	findArea,
+	findShowById,
+	myOrderShipList,
+	myOrderFetchList,
+	myOrderFindList,
 	auditApply,
 	returnData,
  	apiVirtual,

@@ -8,13 +8,23 @@
 					</view>
 					<view class='task-find-list fs30' v-for='(item, index) in finds' :key='index'>
 						<view class='task-find-item'>
-							<view>物料品类：{{item.cname}}
-								<text class='flr'>金额:￥{{item.fee}}</text>
+							<view>
+								<text class="fs28">物料品类:</text> <text class="fs24 text-999 mgl-20">{{item.cname}}</text>
+								
+								<text class="flr text-yellow fs24" v-if='item.find_type==1'>按图找料</text>
+								<text class="flr text-yellow fs24" v-if='item.find_type==2'>按样找料</text>
+								<text class="flr text-yellow fs24" v-if='item.find_type==3'>按描述找料</text>
 							</view>
-							<view>物料描述：{{item.desc}}</view>
-							<view v-if='item.find_type==1'>找料方式：按图找料</view>
-							<view v-if='item.find_type==2'>找料方式：按样找料</view>
-							<view v-if='item.find_type==3'>找料方式：按描述找料</view>
+							<view>
+								<text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text>
+								<text class='flr text-yellow fs24'>金额:￥{{item.fee}}</text>
+							</view>
+							<view>
+								<text class="fs28">限时找料:</text> <text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':''}}</text>
+							</view>
+							<view>
+								<text class="fs28">比价优选:</text> <text class="fs24 text-999 mgl-20">参考价格￥{{item.reference_price}}</text>
+							</view>
 							<image class='task-find-img' src='../../static/icon/task_find.png'></image>
 						</view>
 						<view class='task-find-method'>
@@ -22,22 +32,22 @@
 								<image @click="imgYu" v-for='(imgItem, imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
 							</view>
 							<view class='task-find-method-getfind' v-if='item.find_type==2'>
-								<view>
-									取样地址：
-								</view>
+								<!-- <view>
+									取样地址:
+								</view> -->
 								<view>
 									<view class='fs24'>
-										<view class='remark' v-if="item.address && item.address.remark!=''">
+										<!-- <view class='remark' v-if="item.address && item.address.remark!=''">
 											{{item.address.remark||''}}
-										</view>
-										{{item.address.city_str ||''}} {{item.address.address||''}} {{item.address.room||''}}
+										</view> -->
+										<text class="fs28">取样地址:</text>	<text class="fs24 text-999 mgl-20">{{item.address.city_str ||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
 									</view>
-									<view class='fs24' style='word-break:break-all;'>
+									<!-- <view class='fs24' style='word-break:break-all;'>
 										{{item.address.consignee || ''}} / {{item.address.mobile || ''}}
 									</view>
 									<view class='fs24 text-999' style='word-break:break-all;'>
 										{{item.address.stall || ''}}
-									</view>
+									</view> -->
 								</view>
 							</view>
 
@@ -73,26 +83,26 @@
 					</view>
 					<view class='task-find-list fs30' v-for='(item ,index) in fetchs' :key='index'>
 						<view class='task-find-item'>
-							<view>物料品类：{{item.cname}} <text class='flr'>金额:￥{{item.fee}}</text></view>
-							<view>物料描述：{{item.desc}}</view>
+							<view><text class="fs28">物料品类:</text> <text class="fs24 text-999 mgl-20">{{item.cname}}</text> <text class='flr text-yellow fs24'>金额:￥{{item.fee}}</text></view>
+							<view><text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text></view>
 							<image class='task-find-img' src='../../static/icon/task_get.png'></image>
 						</view>
 						<view class='task-find-method'>
-							<view class='task-find-method-getfind fs30'>
-								<view>取料地址：</view>
+							<view class='task-find-method-getfind fecth-address fs30'>
+								<!-- <view>取料地址：</view> -->
 								<view class='fs24'>
-									<view class='remark' v-if="item.address.remark!=''">
+									<!-- <view class='remark' v-if="item.address.remark!=''">
 										{{item.address.remark||''}}
-									</view>
-									{{item.address.city_str ||''}} {{item.address.address||''}} {{item.address.room||''}}
-
+									</view> -->
+									<text class="fs28">取料地址:</text>
+									<text class="fs24 text-999 mgl-20">{{item.address.city_str ||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
 								</view>
-								<view class='fs24' style='word-break:break-all;'>
+								<!-- <view class='fs24' style='word-break:break-all;'>
 									{{item.address.consignee || ''}} / {{item.address.mobile || ''}}
 								</view>
 								<view class='fs24 text-999' style='word-break:break-all;'>
 									{{item.address.stall || ''}}
-								</view>
+								</view> -->
 							</view>
 						</view>
 					</view>
@@ -107,22 +117,23 @@
 					送料地址
 				</view>
 				<view class="cell-padding address flex flex-start" :data-index='2' @click='goConsigneeAddress'>
-					<text class="iconfont icon-dizhi fs40 text-gray mgr-20"></text>
+					<!-- <text class="iconfont icon-dizhi fs40 text-gray mgr-20"></text> -->
 					<text class='iconfont icon-jiantou address-icon'></text>
 					<view v-if="address!=''" class="flex-1 address-info fs30 pdt-30">
-						<view class='fs24'>
-							<view class='remark' v-if="address.remark!=''">
-								{{address.remark||''}}
-							</view>
-							{{address.city_str ||''}} {{address.address||''}} {{address.room||''}}
-
+						<view class='fs2'>
+							<!-- <view class='remark' v-if="address.remark!=''">
+								
+							</view> -->
+							
+							<text>收货人</text>  {{address.mobile || ''}} <text class='remark' v-if="address.remark!=''">{{address.remark||''}}</text>
 						</view>
-						<view class='fs24' style='word-break:break-all;'>
+						<view class="fs24 text-999">{{address.city_str ||''}} {{address.address||''}} {{address.room||''}}</view>
+						<!-- <view class='fs24' style='word-break:break-all;'>
 							{{address.consignee || ''}} / {{address.mobile || ''}}
 						</view>
 						<view class='fs24 text-999' style='word-break:break-all;'>
 							{{address.stall || ''}}
-						</view>
+						</view> -->
 					</view>
 					<view :data-index='2' @click='goConsigneeAddress' v-if="address==''" class="text-666 h100 lh100 flex-1 fetchsAddress">
 						点击添加取料地址
@@ -133,7 +144,7 @@
 			<view @click='goCoupon' class='task-get box-shadow cell-padding fs30 mgt-30 lh90 bottom-border coupon'>
 				<text v-if="couponList==''">使用优惠券</text>
 				<text v-if="couponList!=''">{{couponList.name}} {{couponList.coupon_data.value}}</text>
-				<text class='iconfont icon-jiantou'></text>
+				<text class='iconfont icon-jiantou flr'></text>
 			</view>
 
 			<view class='task-get box-shadow cell-padding fs30 mgt-30 pay-type'>
@@ -142,8 +153,8 @@
 					<view class='item cf' v-for="(item, index) in payTypeList" :key="index" @click='payTypeCheck' :data-index='index'>
 						<image class='fll' :src='item.icon'></image>
 						<text class='fll mgl-20 text' v-if="item.title=='微信支付'">{{item.title}} </text>
-						<text class='fll mgl-20 text' v-if="item.title=='余额'">{{item.title}} ￥{{balance_amount || '0'}}</text>
-						<text class='fll mgl-20 text' v-if="item.title=='鹿币'">{{item.title}} ￥{{virtual_amount || '0'}}</text>
+						<text class='fll mgl-20 text' v-if="item.title=='余额'">{{item.title}} (￥{{balance_amount || '0'}})</text>
+						<text class='fll mgl-20 text' v-if="item.title=='鹿币'">{{item.title}} (￥{{virtual_amount || '0'}})</text>
 						<view class='flr check-btn'>
 							<text v-if='payTypeCheckIndex == index' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
 							<text v-if='payTypeCheckIndex != index' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
@@ -181,10 +192,8 @@
 				Value: "", //输入的内容  
 				ispassword: true, //是否密文显示 true为密文， false为明文。
 				couponId: '',
-				payTypeList: [{
-						icon: '../../static/icon/wx.png',
-						title: '微信支付'
-					},
+				payTypeList: [
+					
 					{
 						icon: '../../static/icon/money.png',
 						title: '鹿币'
@@ -192,6 +201,10 @@
 					{
 						icon: '../../static/icon/icon-balance.png',
 						title: '余额'
+					},
+					{
+						icon: '../../static/icon/wx.png',
+						title: '微信支付'
 					},
 				],
 
@@ -238,11 +251,9 @@
 			this.getUserAsset();
 			// 获取Storage找料取料数据
 			let taskPayList = uni.getStorageSync('taskPayList');
-			let {
-				finds,
-				fetchs,
-				task_ids
-			} = taskPayList;
+			let finds    = taskPayList.finds;
+			let fetchs   = taskPayList.fetchs;
+			let task_ids = taskPayList.task_ids;
 			// 计算合计金额
 			let findsTotalPrice = 0;
 			let fetchsTotalPrice = 0;
@@ -253,12 +264,13 @@
 				fetchsTotalPrice += parseFloat(v.fee);
 			})
 
-			this.$data.taskPayList = taskPayList;
-			this.$data.finds = finds;
-			this.$data.fetchs = fetchs;
-			this.$data.task_ids = task_ids;
-			this.$data.findsTotalPrice = findsTotalPrice;
+			this.$data.taskPayList      = taskPayList;
+			this.$data.finds            = finds;
+			this.$data.fetchs           = fetchs;
+			this.$data.task_ids         = task_ids;
+			this.$data.findsTotalPrice  = findsTotalPrice;
 			this.$data.fetchsTotalPrice = fetchsTotalPrice;
+			
 		},
 		mounted() {
 			let _this = this;
@@ -321,7 +333,6 @@
 				this.$data.isDisabled = true;
 				let _this = this;
 				this.$data.payDates.task_ids = this.$data.task_ids;
-
 				// 获取优惠券信息
 				if (this.$data.couponList !='') {
 					this.$data.couponListPrice = Math.ceil(this.$data.couponList.value);
@@ -333,8 +344,8 @@
 					return false
 				}
 
-				// 支付方式 0：微信 1：余额 2：鹿币
-				if (this.$data.payTypeCheckIndex == 0) {
+				// 支付方式  0：鹿币  1：余额  2：微信 
+				if (this.$data.payTypeCheckIndex == 2) {
 					console.log("微信支付");
 					api.wxPayByOrder({
 						method: 'POST',
@@ -381,7 +392,7 @@
 						success: function(res) {
 							if (res.confirm) {
 								let data = '';
-								if (_this.$data.payTypeCheckIndex == 2) {   // 余额支付
+								if (_this.$data.payTypeCheckIndex == 1) {   // 余额支付
 									data = {
 										"type": "miniapp",
 										"asset_type": "balance",
@@ -390,14 +401,14 @@
 										"coupon_id": _this.$data.couponId,
 										"address_id": _this.$data.address.id,
 									}
-								} else if (_this.$data.payTypeCheckIndex == 1) {  // 鹿币支付
+								} else if (_this.$data.payTypeCheckIndex == 0) {  // 鹿币支付
 									data = {
 										"type": "miniapp",
 										"asset_type": "virtual",
 										'open_id': uni.getStorageSync('open_id'),
-										"task_id": _this.data.task_ids,
-										"coupon_id": _this.data.couponId,
-										"address_id": _this.data.fetchsAddress.id, // this.data.findsAddress.id
+										"task_id": _this.$data.task_ids,
+										"coupon_id": _this.$data.couponId,
+										"address_id": _this.$data.address.id, // this.data.findsAddress.id
 									}
 								}
 
@@ -433,6 +444,9 @@
 </script>
 
 <style lang="scss" scoped>
+	.fecth-address{
+		padding-left: 16upx;
+	}
 	.task-find {}
 
 	.fetchsAddress {
@@ -506,7 +520,7 @@
 	}
 
 	.task-find-method-getfind view {
-		padding-left: 30upx;
+		padding-left: 16upx;
 		display: block;
 	}
 
@@ -581,7 +595,7 @@
 
 	.address-icon {
 		position: absolute;
-		right: 100upx;
+		right: 24upx;
 		top: 36%;
 
 
@@ -591,7 +605,12 @@
 		position: relative;
 		padding-right: 150upx;
 		padding-bottom: 30upx;
-		left: 80upx;
+		
+		.address-info{
+			view{
+				margin-bottom: 10upx;
+			}
+		}
 	}
 
 	.icon-chahao {
@@ -613,8 +632,8 @@
 	}
 
 	.coupon {
-		text-align: right;
-		color: #ef8130;
+		text-align: left;
+		color: #333;
 	}
 
 	.coupon text:first-child {

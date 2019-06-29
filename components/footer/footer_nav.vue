@@ -37,33 +37,99 @@
 				// 	})
 				// 	return false
 				// }
-				if(index == 0){
-					uni.setNavigationBarTitle({
-						title: "一鹿找"
-					})
-				}else if(index == 1){
-					uni.setNavigationBarTitle({
-						title: "任务中心"
-					})
-				}else if(index == 2){
-					uni.setNavigationBarTitle({
-						title: "订单列表"
-					})
-				}else if(index == 3){
-					uni.setNavigationBarTitle({
-						title: "个人中心"
-					})
-					uni.setNavigationBarColor({
-						frontColor: '#ffffff',
-						backgroundColor: '#F29800',
-						animation: {
-							duration: 400,
-							timingFunc: 'easeIn'
-						}
-					})
-					
-					
+				let myStatus = uni.getStorageSync('myStatus');
+				if(myStatus == 1){
+					if(index == 0){
+						uni.setNavigationBarTitle({
+							title: "一鹿找"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#000000',
+							backgroundColor: '#FFFFFF',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+					}else if(index == 1){
+						uni.setNavigationBarTitle({
+							title: "任务中心"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#000000',
+							backgroundColor: '#FFFFFF',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+					}else if(index == 2){
+						uni.setNavigationBarTitle({
+							title: "订单列表"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#000000',
+							backgroundColor: '#FFFFFF',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+					}else if(index == 3){
+						uni.setNavigationBarTitle({
+							title: "个人中心"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#ffffff',
+							backgroundColor: '#F29800',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+					}
+				}else{
+					if(index == 0){
+						uni.setNavigationBarTitle({
+							title: "订单"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#000000',
+							backgroundColor: '#FFFFFF',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+					}else if(index == 1){
+						uni.setNavigationBarTitle({
+							title: "消息"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#000000',
+							backgroundColor: '#FFFFFF',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+					}else if(index == 2){
+						uni.setNavigationBarTitle({
+							title: "个人中心"
+						})
+						uni.setNavigationBarColor({
+							frontColor: '#ffffff',
+							backgroundColor: '#F29800',
+							animation: {
+								duration: 400,
+								timingFunc: 'easeIn'
+							}
+						})
+						
+						
+					}
 				}
+				
 				this.$store.commit("change_page",index)
 			}
 		},

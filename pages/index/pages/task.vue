@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="task-warp">
 		<view class="container box-shadow fs30" v-if='finds.length>0'>
 			<view class="bb-2 lh90 text-left " @click='parentCheck' data-nav='1'>
 				<text v-if='findsCheckAll' class="iconfont icon-dui fs40 text-yellow mgl-20"></text>
@@ -23,37 +23,48 @@
 
 					<view class='task-content pdr-20'>
 						<view>
-							<text>物料品类: {{item.cname}}</text>
-							<text class='flr pdr-30'>金额: ￥{{item.fee}}</text>
+							<text><text class="fs28">物料品类: </text> <text class="fs24 text-999 mgl-20">{{item.cname}}</text></text>
+							<text class="flr pdr-30 text-yellow" v-if='item.find_type == 1'>按图找料</text>
+							<text class="flr pdr-30 text-yellow" v-if='item.find_type == 2'>按样找料</text>
+							<text class="flr pdr-30 text-yellow" v-if='item.find_type == 3'>寄送样品</text>
 						</view>
 						<view>
-							<text style='width:450upx' class='ellipsis'>物料描述: {{item.desc}}</text>
+							<text class='ellipsis desc_1'><text class="fs28">物料描述: </text> <text class="fs24 text-999 mgl-20"> {{item.desc}}</text></text>
+							<text class='flr pdr-30 text-yellow task-price'>金额: ￥{{item.fee}}</text>
+							
+						</view>
+						
+						
+						<view class="">
+							<text class="fs28">限时找料:</text>
+							<text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':' '}}</text>
+							
 						</view>
 						<view>
-							<view v-if='item.find_type == 1'>找料方式: 按图找料</view>
-							<view v-if='item.find_type == 2'>找料方式: 按样找料</view>
-							<view v-if='item.find_type == 3'>找料方式: 寄送样品</view>
+							<text class="fs28">比价优选:</text>
+							<text class="fs24 text-999 mgl-20">参考价格￥{{item.reference_price}}</text>
 						</view>
 						<view v-if='item.find_type == 1'>
 							<image class='item-img' v-for='(imgItem , imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
 						</view>
 						<view v-if='item.find_type == 2'>
 
-							<view class='pdr-20'>
-								取样地址:
+							<view class='pdr-20 fs28'>
+								
 							</view>
 							<view v-if="item.address">
-								<view class='fs24 pdr-20' style='word-break:break-all;'>
-									<text class='remark' v-if="item.address.remark !=''">{{item.address.remark||''}}</text>
-									{{item.address.city_str||''}} {{item.address.address||''}} {{item.address.room||''}}
+								<view class='fs24 pdr-20 text-999' style='word-break:break-all;'>
+									<!-- <text class='remark' v-if="item.address.remark !=''">{{item.address.remark||''}}</text> -->
+								<text class="fs28 text-333">取样地址:</text>	
+								<text class="fs24 text-999 mgl-20">{{item.address.city_str||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
 
 								</view>
-								<view class='fs24 pdr-20 text-999' style='word-break:break-all;'>
+								<!-- <view class='fs24 pdr-20 text-999' style='word-break:break-all;'>
 									{{item.address.consignee||''}} / {{item.address.mobile||''}}
 								</view>
 								<view class='text-999 fs24 pdr-20' style='word-break:break-all;'>
 									{{item.address.stall ||''}}
-								</view>
+								</view> -->
 							</view>
 						</view>
 
@@ -103,7 +114,7 @@
 						<text v-if='item.check' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
 						<text v-if='!item.check' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-eb"></text>
 					</view>
-					<view class='check-edit' @click='edit' :data-index='index' :data-item='item' data-nav='2'>
+					<view class='check-edit fetch-edit' @click='edit' :data-index='index' :data-item='item' data-nav='2'>
 						<text>修改</text>
 					</view>
 					<view class='image-bg'>
@@ -111,28 +122,41 @@
 					</view>
 					<view class='task-content pdr-20'>
 						<view>
-							<text>物料品类: {{item.cname}}</text>
-							<text class='flr pdr-30'>金额: ￥{{item.fee}}</text>
+							<text>
+								<text class="fs28">物料品类:</text>
+								<text class="fs24 text-999 mgl-20">{{item.cname}}</text>
+							</text>
+							<text class='flr pdr-30 fetch-price'>金额: ￥{{item.fee}}</text>
 						</view>
 						<view>
-							<text style='width:450upx' class='ellipsis'>物料描述: {{item.desc}}</text>
+							<text style='width:450upx' class='ellipsis'>
+								<text class="fs28">物料描述:</text>
+								<text class="fs24 text-999 mgl-20">{{item.desc}}</text>
+							</text>
 						</view>
-						<view v-if='item.desc_img.length > 0'>
-							<image class='item-img' v-for='(imgItem, imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
+						
+						<view>
+							<text class="fs28">限时找料:</text>
+							<text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':' '}}</text>
 						</view>
 						<view v-if="item.address">
 							
-							<view class='pdr-20'>取料地址:</view>
-							<view class='fs24 pdr-20' style='word-break:break-all;' v-if="item.address">
-								<text class='remark' v-if='item.address.remark'>{{item.address.remark||''}}</text>
-								{{item.address.city_str||''}} {{item.address.address||''}} {{item.address.room||''}}
+							<!-- <view class='pdr-20'>取料地址:</view> -->
+							<view class='fs24 pdr-20 ellipsis address-fetch' style='word-break:break-all;' v-if="item.address">
+								<!-- <text class='remark' v-if='item.address.remark'>{{item.address.remark||''}}</text> -->
+								<text class="fs28">取料地址:</text>
+								<text class="fs24 text-999 mgl-20">{{item.address.city_str||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
 							</view>
-							<view class='fs24 pdr-20' style='word-break:break-all;'>
+							<!-- <view class='fs24 pdr-20' style='word-break:break-all;'>
 								{{item.address.consignee||''}} / {{item.address.mobile||''}}
 							</view>
 							<view class='text-999 fs24 pdr-20' style='word-break:break-all;'>
 								{{item.address.stall ||''}}
-							</view>
+							</view> -->
+						</view>
+						
+						<view v-if='item.desc_img.length > 0'>
+							<image class='item-img' v-for='(imgItem, imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
 						</view>
 					</view>
 				</view>
@@ -696,6 +720,24 @@
 </script>
 
 <style lang="scss" scoped>
+	.address-fetch{
+		width: 450upx;
+	}
+	.task-warp{ 
+		margin-bottom: 150upx;
+	}
+	.fetch-price{
+		position: relative;
+		top: 70upx;
+		color: #F29800;
+	}
+	.task-price{
+		position: relative;
+		top: -20upx;
+	}
+	.desc_1{
+		width: 400upx;
+	}
 	.touch-item {
 		font-size: 14px;
 		display: flex;
@@ -858,7 +900,14 @@
 
 	.check-edit text {
 		position: absolute;
-		right: 50upx;
-		top: 25%;
+		right: 40upx;
+		top: 136upx;
+		width:92upx;
+		height:36upx;
+		line-height: 36upx;
+		color: #F29800;
+		border: 1upx solid #F29800;
+		border-radius:20upx;
+		text-align: center;
 	}
 </style>

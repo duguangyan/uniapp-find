@@ -3,8 +3,8 @@
 		<view class="items">
 			<view class="item" v-for="(item ,index) in finds" :key='index'>
 				<view class="th">
-					<view class="mgl-20" @click="goClassify(index)"><text class="text-theme">*</text>物料类型: <text class=" mgl-20" v-if="item.cid!=''">{{item.cname}}</text><text
-						 class="text-999 mgl-20" v-if="item.cid==''">请选择物料类型</text> <text class='mgl-20 iconfont icon-jiantou'></text></view>
+					<view class="mgl-20" @click="goClassify(index)"><text class="text-theme">*</text>物料类型: <text class=" mgl-20 cname fs30" v-if="item.cid!=''">{{item.cname}}</text><text
+						 class="text-999 mgl-20 cname" v-if="item.cid==''">请选择物料类型</text> <text class='mgl-20 iconfont icon-jiantou'></text></view>
 					<view class='close_btn' v-if="finds.length>1" @click='closed(index)'>
 						<image src='../../static/icon/close_btn.png'></image>
 					</view>
@@ -15,6 +15,38 @@
 						</textarea>
 					</view>
 				</view>
+				
+				<view class="th area">
+					<view class="mgl-20" @click="goAreaText(index)"><text class="text-theme">*</text>服务区域: 
+						<text class="text-999 mgl-20 fs24 area-text">{{item.areaText}}</text> 
+						<text class="triangle-down"></text>
+					</view>
+				</view>
+				<view class="th">
+					<view class="mgl-20" @click="checkLimit(index)">限时找料: 
+						 <text v-if="item.is_limit == 1" class="iconfont icon-dui fs40 text-yellow mgl-20 mgr-20"></text>
+						 <text v-if="item.is_limit == 0" class="iconfont icon-dui fs40 text-eb mgl-20 mgr-20"></text>
+						 <text>限时三小时</text>
+					</view>
+				</view>
+				
+				<view class="th">
+					<view class="mgl-20 choosePrice">
+						<view>
+							<text @click="checkCompare(index)">
+								<text v-if="item.is_compare == 1" class="iconfont icon-dui fs40 text-yellow mgr-20"></text>
+								<text v-if="item.is_compare == 0" class="iconfont icon-dui fs40 text-eb mgr-20"></text>
+								比价优选
+							</text>
+							
+							<text class="mgl-30 fs30 reference_price">参考价格: </text>
+							<input type="number" :disabled="!item.is_compare" v-model="item.reference_price" placeholder="请输入参考价格" />
+						</view>
+					</view>
+				</view>
+				
+				
+				
 				<view class="nav flex">
 					<view class="flex-1" v-for="(navItem, navIndex) in navTexts" :key="navIndex" @click="checkNav(navIndex,index)">
 						<text v-if="item.checkIndex == navIndex" class="iconfont icon-dui fs40 text-yellow"></text>
@@ -22,28 +54,32 @@
 						<text class="mgl-20">{{navItem}}</text>
 					</view>
 				</view>
+				
+				
+				
 				<view class="upload" v-if="item.checkIndex == 0">
 
 					<upload :itemIndex="index" @imageUpload='imageUpload' :upLoadMaxNum='upLoadMaxNum' :files='item.files'></upload>
 
 				</view>
 				<view v-if="item.checkIndex == 1">
-					<view class="fs30 bottom-border">
+					<view class="fs30 bottom-border address-q">
 						<view class="cell-padding fs30 mgt-30">
 							<text class="text-theme">*</text>取样地址
 						</view>
 						<view class=" cell-padding address flex flex-start">
-							<text class="iconfont icon-dizhi fs40 text-gray mgr-20"></text>
+							<!-- <text class="iconfont icon-dizhi fs40 text-gray mgr-20"></text> -->
 							<text class='iconfont icon-jiantou address-icon'></text>
-							<view v-if="item.address != ''" @click='goConsigneeAddress(index)' class="flex-1 address-info fs24">
+							<view v-if="item.address != ''" @click='goConsigneeAddress(index)' class="flex-1 address-info address-q-i fs24">
 								<view>
+									<text> 收货人 {{item.address.mobile||''}}</text>
+								</view>
+								<view class="text-999">
 									<text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
 									{{item.address.address||''}} {{item.address.name||''}} {{item.address.room ||''}}
 
 								</view>
-								<view>
-									<text> {{item.address.consignee||''}} / {{item.address.mobile||''}}</text>
-								</view>
+								
 								<view>
 									<text class='text-999'>{{item.address.stall || ''}}</text>
 								</view>
@@ -55,26 +91,25 @@
 					</view>
 
 				</view>
-				<view v-if="item.checkIndex == 2">
+				<view v-if="item.checkIndex == 2" class="address-j">
 					<!--收货地址  -->
 					<view class="flex-1 address-info fs24 cell-padding">
 						<view v-for='(comItem, comIndex) in companyaddress' :key='comIndex' class='bb1 item-3'>
-
+							<view class="fs30 cf">寄样地址  <text class="flr text-red fs20"> 寄样不支持到付,请客户自行承担寄样费用</text>
+						</view>
 							<view>
-								<text class='remark' v-if='comItem.tag'>{{comItem.tag||''}}</text>
-								<text>{{comItem.address}}</text>
-							</view>
-							<view class='text-999'>
 								<view>
-									{{comItem.consignee || ''}} / {{comItem.mobile || ''}}
+									收货人 {{comItem.mobile || ''}} <text class='remark' v-if='comItem.tag'>{{comItem.tag||''}}</text>
 								</view>
 							</view>
+							<view class="text-999">
+								
+								<text>{{comItem.address}}</text>
+							</view>
+							
 							<view class='text-999'>
 								{{comItem.desc}}
 							</view>
-						</view>
-						<view class='text-red'>
-							<text class='iconfont icon-gantan1 text-yellow'></text>寄样不支持到付,请客户自行承担寄样费用
 						</view>
 
 					</view>
@@ -109,7 +144,7 @@
 			</view>
 		</view>
 
-		<view class='index-popup notes-popup' v-if="!isNotes">
+		<view class='index-popup notes-popup' v-if="isNotes">
 			<view class='index-popup-bg' @click='hiddenNotes'></view>
 			<view class='index-popup-content notes-btn-content'>
 				<view class='index-popup-title'>小鹿找料须知 <text class='iconfont icon-del1' @click='hiddenNotes'></text></view>
@@ -140,6 +175,11 @@
 				// 	url:'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/fawn/201906/fKzqX9IkpEcYMpUuunYLCtvW6wsCJVbHVAC3RRGb.png?x-oss-process=style/big',
 				// 	pct:'finish'
 				// }],
+				cid:'',
+				cname:'',
+				isCheckTime: false,
+				areaText:'请选择服务区域',
+				area_id :'',    // 区域ID
 				interval: '',
 				isPopup: false, // 提交任务
 				findDisabled: false, // 防止重复提交
@@ -159,7 +199,12 @@
 					address: '',
 					checkIndex: 0,
 					desc_img: [],
-					files:[]
+					files:[],
+					areaText:'请选择服务区域',
+					area_id:'',
+					is_compare:false,
+					is_limit:false,
+					reference_price:''
 				}],
 				taskEditItem:''
 			};
@@ -169,8 +214,9 @@
 		},
 		onLoad(optiosn) {
 			if(optiosn.taskEditItem){
-				this.$data.isNotes = false;
-				uni.setStorageSync('isFindNotes',true);
+				uni.setNavigationBarTitle({
+					title: "修改任务"
+				})
 				this.$data.taskEditItem = uni.getStorageSync('findItem');
 				let item = this.$data.taskEditItem;
 				this.$data.finds[0].id         = item.id;
@@ -178,10 +224,21 @@
 				this.$data.finds[0].cname      = item.cname;
 				this.$data.finds[0].check      = item.check;
 				this.$data.finds[0].find_type  = item.find_type;
+				this.$data.finds[0].checkIndex = item.find_type - 1;
+				
 				this.$data.finds[0].desc       = item.desc;
 				this.$data.finds[0].address_id = item.address_id;
 				this.$data.finds[0].address    = item.address;
-				this.$data.finds[0].checkIndex = item.find_type - 1;
+				this.$data.finds[0].area_id    = item.area_id;
+				this.$data.finds[0].is_compare = item.is_compare;
+				this.$data.finds[0].is_limit   = item.is_limit;
+				this.$data.finds[0].reference_price   = item.reference_price;
+				
+				// areaText:'请选择服务区域',
+				// area_id:'',
+				// is_compare:false,
+				// is_limit:false,
+				// reference_price:''
 				if(item.desc_img.length>0){
 					let desc_img = [];
 					item.desc_img.forEach((o,i)=>{
@@ -194,6 +251,10 @@
 					this.$data.finds[0].files = desc_img;
 				}
 				
+			}else{
+				uni.setNavigationBarTitle({
+					title: "立即找料"
+				})
 			}
 			// 获取公司地址
 			this.getCompanyaddress();
@@ -204,21 +265,87 @@
 		onShow() {
 			// 获取说明内容
 			this.getNeedKnow();
+			// 获取默认区域数据第一个
+			this.initArea();
 			// 判断是否显示说明弹窗
-			if (wx.getStorageSync('isFindNotes')) {
-				this.$data.isNotes = true
+			if(this.$data.taskEditItem == ''){
+				if (uni.getStorageSync('isFindNotes') == '') {
+					this.$data.isNotes = true
+				}
 			}
+			
 			this.$eventHub.$on('classifyData', (data) => {
 				console.log('classifyData:', data)
+				this.$data.cid = data.cid;
+				this.$data.cname = data.cname;
 				this.$data.finds[data.index].cid = data.cid;
 				this.$data.finds[data.index].cname = data.cname;
+				this.$eventHub.$off('classifyData');
 			})
 			this.$eventHub.$on('findPage', (data) => {
 				console.log('findPage:', data);
 				this.$data.finds[data.findIndex].address = data.address;
+				this.$eventHub.$off('findPage');
 			})
 		},
 		methods: {
+			// 比价优选
+			checkCompare(index){
+				this.$data.finds[index].is_compare = this.$data.finds[index].is_compare == 0?1:0;
+			},
+			// 限时找料
+			checkLimit(index){
+				this.$data.finds[index].is_limit = this.$data.finds[index].is_limit == 0?1:0;
+			},
+			// 初始化服务区域
+			initArea(){
+				api.findArea({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						if(this.$data.taskEditItem == ''){
+							this.$data.areaText = res.data[0].name;
+							this.$data.area_id  = res.data[0].id;
+							this.$data.finds[0].areaText = res.data[0].name;
+							this.$data.finds[0].area_id  = res.data[0].id;
+						}else{
+							
+							this.$data.area_id  = this.$data.finds[0].area_id;
+							res.data.forEach((o,i)=>{
+								if(o.id == this.$data.finds[0].area_id){
+									this.$data.finds[0].areaText = res.data[i].name
+								}
+							})
+						}
+						
+					}
+				})
+			},
+			// 选择服务区域
+			goAreaText(index){
+				let _this = this;
+				api.findArea({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						let arr    = res.data;
+						let newArr = [];
+						arr.forEach((o,i)=>{
+							newArr.push(o.name);
+						})
+						uni.showActionSheet({
+							itemList: newArr,
+							success: function (res) {
+								console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
+								_this.$data.finds[index].area_id  = arr[res.tapIndex].id;
+								_this.$data.finds[index].areaText = arr[res.tapIndex].name;
+								util.successTips('区域选择成功');
+							},
+							fail: function (res) {
+								console.log(res.errMsg);
+								util.successTips('区域选择失败');
+							}
+						});
+					}
+				})
+			},
+			
 			// 去地址选择页面
 			goConsigneeAddress(index) {
 				wx.navigateTo({
@@ -275,7 +402,8 @@
 					
 					finds[i].find_type = finds[i].checkIndex + 1;
 					finds[i].type = 1;
-					
+					finds[i].is_limit = finds[i].is_limit?1:0;
+					finds[i].is_compare = finds[i].is_compare?1:0;
 				}
 				
 				let task = {
@@ -369,12 +497,18 @@
 			// 继续添加找料
 			addFind() {
 				let data = {
-					cid: '',
+					cid: this.$data.cid,
+					cname:this.$data.cname,
 					desc: '',
 					address: this.$data.address,
 					checkIndex: this.$data.checkIndex,
 					desc_img: [],
-					files:[]
+					files:[],
+					areaText:this.$data.areaText,
+					area_id:this.$data.area_id,
+					is_compare:false,
+					is_limit:false,
+					reference_price:''
 				};
 				this.$data.finds.push(data);
 				console.log('finds:', this.$data.finds);
@@ -407,7 +541,7 @@
 			},
 			// 隐藏找料须知
 			hiddenNotes() {
-				this.$data.isNotes = true;
+				this.$data.isNotes = false;
 			},
 			// 获取找料须知
 			getNeedKnow() {
@@ -460,6 +594,69 @@
 </script>
 
 <style lang="scss" scoped>
+	.address-q-i{
+		margin-top: 0;
+	}
+	.address-q{
+		padding-left: 40upx;
+	}
+	.text-red{
+		position: relative;
+		top:-5upx;
+		right: 40upx;
+	}
+	.address-j{
+		padding-left: 60upx;
+	}
+	.address-info{
+		position: relative;
+		top: -30upx;
+		view{
+			line-height: 50upx;
+		}
+	}
+	.reference_price{
+		margin-left: 100upx;
+	}
+	.choosePrice{
+		position: relative;
+		margin-left: 38upx;
+		input{
+			border: 1upx solid #eee;
+			display: inline-block;
+			width: 200upx;
+			position: relative;
+			font-size: 24upx;
+			top: 20upx;
+			left: 20upx;
+			padding-left: 20upx;
+		}
+	}
+	.cname{
+		font-size: 24upx;
+	}
+	.area{
+		position: relative;
+		.triangle-down {
+			width: 0;
+			height: 0;
+			border-left: 4px solid transparent;
+			border-right: 4px solid transparent;
+			border-top: 6px solid #999;
+			position: absolute;
+			right: 50upx;
+			top: 44upx;
+		}
+		.area-text{
+			border: 1upx solid #eee; 
+			padding: 0 10upx;
+			width: 480upx;
+			height: 60upx;
+			line-height: 60upx;
+			display: inline-block;
+		}
+	}
+	
 	.add-find {
 		text-align: center;
 	}
@@ -491,16 +688,17 @@
 	}
 
 	.bb1 view {
-		margin: 20upx 0;
+		margin: 10upx 0;
 	}
 
 	.remark {
-		border: 1rpx solid #ef8130;
-		color: #ef8130;
+		border: 1rpx solid rgba(242,152,0,1);
+		color: rgba(242,152,0,1);
 		border-radius: 5rpx;
 		margin-right: 10rpx;
 		padding: 0 5rpx;
 		display: inline !important;
+		margin-left: 20upx;
 	}
 
 	.icon-gantan1 {
@@ -511,7 +709,7 @@
 
 	.address {
 		position: relative;
-		margin: 30upx 0;
+		margin: 10upx 0;
 
 		.no-address {
 			position: relative;
@@ -535,7 +733,7 @@
 		.address-info view {
 			width: 520upx;
 			position: relative;
-			left: 80upx;
+			
 			word-break: break-all
 		}
 	}
@@ -568,7 +766,7 @@
 					height: 90upx;
 					line-height: 90upx;
 					position: relative;
-
+					border-top: 1upx solid #eee; 
 					.close_btn image {
 						display: inline-block;
 						width: 56upx;
@@ -585,14 +783,17 @@
 					// height: 200upx;
 					border-top: 1upx solid #eee;
 					position: relative;
-
+					padding-top: 20upx;
 					.find-desc {
 						position: relative;
 						top: -38upx;
 						left: 166upx;
-						width: 450upx;
-						height: 200upx;
+						width: 500upx;
+						height: 230upx;
 						overflow: hidden;
+						background: #F5F5F5;
+						font-size: 24upx;
+						padding: 10upx;
 					}
 
 					.word-spacing {
@@ -739,7 +940,8 @@
 	}
 
 	.address-info {
-		padding:20upx 30upx;
+		padding:20upx 0upx;
+		margin-top: 20upx;
 		.text-red{
 			margin-top: 10upx;
 		}

@@ -6,9 +6,13 @@
 			<view class="fail"  v-if="item.pct == 'wait'">图片上传中...</view>
 			<view class="fail" v-if="item.pct == 'fail'">图片上传失败</view>
 		</view>
-		<view v-if="files.length<9" @click='uploadAll' class="upload-img-box">+</view>
+		<view v-if="files.length<9" @click='uploadAll' class="upload-img-box">
+			<image src="../../static/icon/upload_bg.png" mode=""></image>
+		</view>
+
 	</view>
 </template>
+
 
 <script>
 	import util from '../utils/util.js';
@@ -185,15 +189,16 @@
 		color: #fff;
 		background: #ccc;
 		margin: 10upx 36upx;
-		.img{
-			width: 100%;
-			height: 100%;
+		border-radius:10upx;
+		image{
+			width: 160upx;
+			height: 160upx;
 		}
 	}
 	/*删除icon  */
 	.delete-icon {
-		width: 44upx;
-		height: 44upx;
+		width: 44upx !important;
+		height: 44upx !important;
 		position: absolute;
 		right: -12upx;
 		top: -12upx;
