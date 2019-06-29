@@ -17,7 +17,8 @@ const store = new Vuex.Store({
 		keyword:'',
 		isPhoneX: false,
 		isAndroid: false,
-		nickName:'',
+		nickName:'游客',
+		avatarPath:''
 	},
 	mutations: {
 		
@@ -82,6 +83,9 @@ const store = new Vuex.Store({
 		updateNickName(state,payload){
 			console.log(payload)
 			state.nickName = payload
+		},
+		updateAvatarPath(state,payload){
+			state.avatarPath = payload
 		}
 		
 	},

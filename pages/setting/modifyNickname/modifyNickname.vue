@@ -18,9 +18,6 @@
 		},
 		methods:{
 			confirm(){
-				this.$store.commit('updateNickName',this.nickName);
-				console.log(this.$store.state.nickName)
-				return;
 				api.changeNickName({
 					method: "POST",
 					data: {
@@ -28,8 +25,7 @@
 					},
 				}).then((res)=>{
 					if (res.code == 0) {
-						// console.log(this.nickName);
-						// this.$eventHub.$emit('modifySuccess',this.nickName);
+						this.$store.commit('updateNickName',this.nickName);
 						uni.navigateBack({
 							delta:1
 						})

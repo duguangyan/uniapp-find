@@ -1,7 +1,7 @@
 <template>
 	<view class="index">
 		<view class="setting_list">
-			<list-icon subTitle="完善个人信息" :avatar_path="avatar_path" @didClick="goUserInfo()"></list-icon>
+			<list-icon subTitle="完善个人信息" :avatar_path="avatarPath" @didClick="goUserInfo()"></list-icon>
 			<navigator url="modifyPassword/modifyPassword">
 				<list-item title="登录密码"></list-item>
 			</navigator>
@@ -30,7 +30,6 @@
 		data() {
 			return {
 				avatar_path:"/static/icon/add-find.png",
-				nick_name:""
 			}
 		},
 		methods: {
@@ -96,7 +95,7 @@
 			},
 			goUserInfo(){
 				uni.navigateTo({
-					url:'userInfo/userInfo?avatarPath='+this.avatar_path+"&nickName="+this.nick_name
+					url:'userInfo/userInfo?avatarPath='+this.avatar_path
 				})
 			},
 			goModifyPassword(index){
@@ -111,7 +110,6 @@
 		onLoad(options) {
 			console.log(options);
 			this.avatar_path = options.avatarPath;
-			this.nick_name = options.nickName;
 		}
 	}
 </script>

@@ -3,7 +3,7 @@
 		<view class="center-top">
 			<!-- <view class="title">个人中心</view> -->
 			<image class="icon" :src="avatar_path"  mode="" @click="changeAvatarPath"></image>
-			<view class="name">{{nick_name}}</view>
+			<view class="name">{{nickName}}</view>
 			<button class="top-button recharge" type="primary" plain="true" @click="goRecharge(1)">余额充值</button>
 			<button class="top-button buy" type="default" @click="goRecharge(2)">购买鹿币</button>
 			<image class="setting" src="/static/center/setting.png" @click="goSetting()"></image>
@@ -116,12 +116,10 @@
 						title: "积分商城",
 					}
 				],
-				nick_name: "游客",
 				avatar_path: "/static/footer_icon/2.1.png",
 				balance: 0,
 				marketing: 0,
 				virtual: 0,
-
 			};
 		},
 		onLoad() {
@@ -142,25 +140,24 @@
 			// 版本号
 			this.$data.v = wx.getStorageSync('v');
 		},
-		mounted() {
-			
+		computed:{
+			nickName(){
+				return this.$store.state.nickName;
+			}
 		},
 		methods: {
 			// 获取用户信息
-			
 			getUserInfo(){
-				console.log("获取用户信息");
-				
 				api.getUserInfo({
 					method: "GET"
 				}).then((res) => {
 					console.log(res.data);
 					if (res.code == 0 || res.code == 200) {
-						this.$data.nick_name = res.data.nick_name;
 						this.$data.avatar_path = res.data.avatar_path;
 						this.$data.balance = res.data.balance;
 						this.$data.marketing = res.data.marketing;
 						this.$data.virtual = res.data.virtual;
+						this.$store.commit('updateNickName',res.data.nick_name);
 						// console.log(res.data);
 					}
 		
@@ -170,7 +167,7 @@
 			},
 			goSetting(){
 				uni.navigateTo({
-					url:"/pages/setting/setting?avatarPath="+this.$data.avatar_path+"&nickName="+this.$data.nick_name
+					url:"/pages/setting/setting?avatarPath="+this.$data.avatar_path
 				})
 			},
 			//跳转下一个页面

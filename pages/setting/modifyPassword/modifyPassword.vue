@@ -9,7 +9,7 @@
 			<image src="/static/center/verify.png" mode=""></image>
 			<input type="number" placeholder="请输入验证码" @input="inputVerify"/>
 		</view>
-		<button class="verifyButton" :class="{verifyActive:isVerifyActive}" @click="getVerify">获取验证码</button>
+		<button class="verifyButton" :class="{verifyActive:isVerifyActive}" @click="getVerify">{{codeText}}</button>
 		<view class="editSection" id="id_password">
 			<image src="/static/center/password.png" mode=""></image>
 			<input type="number" placeholder="请输入新密码" @input="inputPassword"/>
@@ -30,6 +30,8 @@
 				mobile:'',
 				verify:'',
 				password:'',
+				codeText:'获取验证码',
+				codeId:'00'
 			};
 		},
 		onLoad(options) {
@@ -42,17 +44,51 @@
 			getVerify(){
 				if(this.$data.isVerifyActive){
 					console.log('isVerifyActive');
-					api.changeNickName({
-						method: "POST",
-					data: {
-						
-						},
+					api.regSMS({
+ 						method:"POST",
+ 						data:{
+ 							mobile: this.$data.mobile
+ 						}
+ 					}).then((res)=>{
+ 						if(res.code == 0){
+ 							uni.showToast({
+ 								title: '短信发送成功',
+ 								icon:'none',
+ 								duration: 2000
+ 							});
+							this.$data.codeId = res.data.id;
+ 							this.$data.codeText = "重新获取";
+							console.log(res)
+ 						}
+ 					})
+				}
+			},
+			commitPassword(){
+				if(this.$data.isCommitActive){
+					api.restpwd({
+						method:"POST",
+ 						data:{
+							id: this.$data.codeId,
+ 							mobile: this.$data.mobile,
+							code: this.$data.verify,
+							password:this.$data.passworld,
+ 						}
 					}).then((res)=>{
-						if (res.code == 0) {
-							
-						}
 						console.log(res)
-					});
+ 						if(res.code == 0){
+							uni.showToast({
+								title:'修改密码成功',
+								icon:'success',
+								duration:2000,
+								success() {
+									uni.navigateBack({
+										delta:1
+									})
+								}
+							})
+						}
+						
+					})
 				}
 			},
 			inputMobile(event){
@@ -78,11 +114,7 @@
 					this.$data.isCommitActive = false;
 				}
  			},
-			commitPassword(){
-				if(this.$data.isCommitActive){
-					
-				}
-			},
+			
 		}
 	}
 </script>
