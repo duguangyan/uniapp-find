@@ -39,89 +39,68 @@
 			</view>
 
 			<!--取样地址  -->
-			<view class="padding b600 c999 bdb bdt" v-if="detailData.get_address && index !=1">{{index!=1&&index==2?'取':'送'}}料地址</view>
-			<view v-if="detailData.get_address && detailData.get_address.length>0" class="padding">
-				<view class="lh42">
-					
-					{{detailData.get_address.city_str}} {{ detailData.get_address.address}}
+			<view class="top20"></view>
+			<view class="get-address" v-if="detailData.get_address">
+				<view class="t1 fs28">寄料地址</view>
+				<view class="t2 fs24">
+					<text>收货人 {{detailData.get_address.mobile}}</text>
+					<text v-if="detailData.get_address.stall">{{detailData.get_address.stall}}</text>
+					<!-- <text class="stall">xxx</text> -->
 				</view>
-				<view class="flex align-item-start lh42">
-					<view class="c999 mgr30">{{detailData.get_address.consignee}} {{detailData.get_address.mobile}}</view>
-					<view class="flex-1 c999">
-						{{detailData.get_address.stall || ''}}
-					</view>
+				<view class="t3 fs24 text-999">
+					{{ detailData.get_address.address}}
 				</view>
 			</view>
 			<!--送料地址  -->
-			<view class="padding b600 c999 bdb bdt" v-if="detailData.shipping_address&& index ==3">送料地址</view>
-			<view class="padding">
-				<view class="lh42">
-					{{ detailData.shipping_address.city_str}} {{ detailData.shipping_address.address}}
+			<view class="get-address" v-if="detailData.shipping_address">
+				<view class="t1 fs28">寄料地址</view>
+				<view class="t2 fs24">
+					<text>收货人 {{detailData.shipping_address.mobile}}</text>
+					<text v-if="detailData.shipping_address.stall">{{detailData.shipping_address.stall}}</text>
+					<!-- <text class="stall">xxx</text> -->
 				</view>
-				<view class="flex align-item-start lh42">
-					<view class="c999 mgr30">{{detailData.shipping_address.consignee}} {{detailData.shipping_address.mobile}}</view>
-					<view class="flex-1 c999">
-						{{detailData.shipping_address.stall || ''}}
-					</view>
+				<view class="t3 fs24 text-999">
+					{{ detailData.shipping_address.address}}
 				</view>
 			</view>
 
+			<view class="pdl-30 bt-1 lh100">
+				<text class="fs28">配送方式:</text>
+				<text class="fs24 text-999 mgl-20">{{detailData.find_type_label}}</text>
+			</view>
 			
-			<view class="padding">
+			<view class="pdl-30 bt-1 top20 order_sn">
 				<view>
-					<text class="c999">订单编号： </text> {{detailData.order_sn}}
+					<text class="fs28">订单编号:</text> <text class="fs24 text-999 mgl-20">{{detailData.order_sn}}</text>
 				</view>
 				<view>
-					<text class="c999">下单时间：</text> {{detailData.created_at}}
-				</view>
-				<view v-if="detailData.findman_name">
-					<text class="c999">　找料员：</text> {{detailData.findman_name}}
-				</view>
-				<view v-if="detailData.find_at">
-					<text class="c999">找到物料：</text> {{detailData.find_at}}
-				</view>
-				<!--快递  -->
-
-				<view v-if="detailData.express_sn">
-					<text class="c999">　配送：</text> {{detailData.express_company}}/{{detailData.express_sn}}
-				</view>
-
-				<view v-if="detailData.distribution_name">
-					<text class="c999">　配送员：</text> {{detailData.distribution_name}}
-				</view>
-
-				<view v-if="detailData.confirm_shipping_at">
-					<text class="c999">确认送达： </text> {{detailData.shipping_at}}
-				</view>
-
-				<view v-if="detailData.confirm_finish_at">
-					<text class="c999">客户确认收货：</text> {{detailData.finish_at}}
+					<text class="fs28">下单时间:</text> <text class="fs24 text-999 mgl-20">{{detailData.created_at}}</text>
 				</view>
 			</view>
-
 			
-			<view class="padding">
-				<view class="flex">
-					<view class="c999">服务费用:</view>
-					<view>{{'￥' + detailData.fee}}</view>
+			<view class="flex-end order-handle cf">
+				<!--找料中  -->
+				<view v-if="detailData.find_status == 2" class="flex find-status">
+					<view :data-type='2' :data-id="item.id" @click='showForm'>{{nav==1?'找':'取'}}不到物料</view>
+					<view :data-type='1' :data-id="item.id" @click='showForm' class="ctheme warm-border">{{nav==1?'找':'取'}}到物料</view>
 				</view>
-			</view>
-			<view class="padding">
-				<view class="flex">
-					<view class="c999">备注:</view>
-					<view>{{ detailData.remark}}</view>
+			
+				<view v-if="detailData.find_status == 1" class="find-status flr" @click="receiptOrder(item.id)">
+					确认接单
 				</view>
-			</view>
-			<view class="space" />
-			<view class="pd30 flex flex-end">
-				<view class="normal-btn">找不到物料</view>
-				<view class="warm-btn mgl30">找到物料</view>
+				
+				<view class="cancat flr" v-if="detailData.find_status == 2">
+					<image src="/static/icon/concat.png"></image>
+					<text>联系客户</text>
+					<view class="btn-1" @click="goChat"></view>
+					<view class="btn-2" @click="contact"></view>
+				</view>
 			</view>
 
 
-			<button :data-id='detailData.user_id' @click='goChat' class='order-footer-btn-red order-chat'>
+			<!-- <button :data-id='detailData.user_id' @click='goChat' class='order-footer-btn-red order-chat'>
 				联系客户</button>
-			<view class='height40'></view>
+			<view class='height40'></view> -->
 		</view>
 	</view>
 </template>
@@ -169,6 +148,77 @@
 </script>
 
 <style lang="scss" scoped>
+	.order_sn{
+		height: 120upx;
+		line-height: 50upx;
+		padding-top: 20upx;
+		border-bottom: 1upx solid #f4f4f4; 
+	}
+	.top20{
+		border-top: 20upx solid #f4f4f4; 
+	}
+	.get-address{
+		border-top: 1upx solid #f4f4f4; 
+		padding: 10upx;
+		padding-left: 30upx;
+		.stall{
+			display: inline-block;
+			line-height: 24upx;
+			padding: 2upx 10upx;
+			height:28upx;
+			border-radius:4upx;
+			margin-left: 20upx;
+			border:1upx solid rgba(242,152,0,1);
+		}
+	}
+	.find-status{
+		
+		width:180upx;
+		height:60upx;
+		line-height: 60upx;
+		text-align: center;
+		border-radius:30upx;
+		border:2upx solid rgba(242,152,0,1);
+		color: #F29800;
+		font-size: 30upx;
+		margin-top: 30upx;
+		margin-right: 30upx;
+		
+	}
+	.cancat{
+		margin-right: 10upx;
+		margin-top: 10upx;
+		width: 360upx;
+		height: 100upx;
+		position: relative;
+		text{
+			position: absolute;
+			top: 28upx;
+			left: 38upx;
+			font-size: 28upx;
+			color: #F29800;
+		}
+		image{
+			width: 360upx;
+			height: 100upx;
+			position: absolute;
+			left: 0;
+			left: 0;
+		}
+		.btn-1,.btn-2{
+			width: 80upx;
+			height: 100upx;
+			position: absolute;
+			top:0;
+		}
+		.btn-1{
+			right: 28upx;
+		}
+		.btn-2{
+			right: 120upx;
+		}
+		
+	}
 	.find-order-detail{
 		height: 100%;
 		background: #eee;

@@ -105,27 +105,21 @@
 										</view> -->
 
 										<!-- 送料地址 -->
-										<view class="address-space">
+										<view class="address-space" v-if="item.get_address">
 											<view class="mgb-20">送料地址</view>
 
 											<view class="flex align-item-start lh42 mgb-20">
 												<view class="fs26 c999 mgr30"> 收货人 {{item.get_address.mobile}} <text v-if="item.get_address.remark" class="tag lh42 mgl-20">{{item.get_address.remark}}</text></view>
-
 												<!-- <view class="flex-1 fs26 c999">
 													{{item.get_address.stall || ''}}
 												</view> -->
 											</view>
-
 											<view class="fs26 lh42 text-666">
-
 												{{item.get_address.city_str}} {{ item.get_address.address}}
 											</view>
 										</view>
-
-
 									</view>
 								</view>
-
 							</view>
 							<!--按钮  -->
 							<view class="flex flex-end order-handle">
@@ -135,7 +129,7 @@
 									<view :data-type='1' :data-id="item.id" @click='showForm' class="ctheme warm-border">{{nav==1?'找':'取'}}到物料</view>
 								</view>
 
-								<view v-if="status == 1" class="flex find-status">
+								<view v-if="status == 1" class="flex find-status" @click="receiptOrder(item.id)">
 									<view>确认接单</view>
 								</view>
 							</view>
@@ -281,10 +275,38 @@
 			this.$data.nav = wx.getStorageSync('nav') || 1;
 			this.$data.status = wx.getStorageSync('status') || 1;
 			this.$data.orderList = [] 
+			
 			  // 获取数据
 			this.getMyOrders();
 		},
 		methods: {
+			// 确认接单
+			receiptOrder(id){
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确定接单?',
+					success: function (res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+							api.staffFindGet({
+								method:'POST',
+								data:{
+									id
+								}
+							}).then((res)=>{
+								if(res.code == 200 || res.code == 0){
+									_this.$data.status = 2; // 状态2 已接单
+									util.successTips("接单成功");
+								}
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
+			},
 			// 获取数据
 			  getMyOrders(){
 			   if(this.$data.nav == 1){
@@ -350,7 +372,7 @@
 				  let id = e.currentTarget.dataset.id;
 				  
 				  uni.navigateTo({
-					url: `../findPages/findOrderDetail/findOrderDetail?index=${this.$data.nav}&id=${id}&status=${this.$data.status}`,
+					url: "../index/findPages/findOrderDetail/findOrderDetail?index="+this.$data.nav+"&id="+id+"&status="+this.$data.status,
 				  })
 					
 				},

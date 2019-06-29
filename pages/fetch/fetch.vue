@@ -217,7 +217,12 @@
 			upload
 		},
 		onLoad(options) {
-			
+			// 判断是否显示说明弹窗
+			if(this.$data.taskEditItem == ''){
+				if (uni.getStorageSync('isFetchNotes') == "") {
+					this.$data.isNotes = true
+				}
+			}
 			if(options.taskEditItem){    // 编辑取送任务
 				uni.setNavigationBarTitle({
 					title: "修改任务"
@@ -268,12 +273,7 @@
 			this.initArea();
 		},
 		onShow() {
-			// 判断是否显示说明弹窗
-			if(this.$data.taskEditItem == ''){
-				if (uni.getStorageSync('isFetchNotes') == "") {
-					this.$data.isNotes = true
-				}
-			}
+			
 			
 			// 获取分类数据
 			this.$eventHub.$on('classifyData', (data) => {

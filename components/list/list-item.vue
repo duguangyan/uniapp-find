@@ -4,7 +4,7 @@
 		<view class="item-title">{{title}}</view>
 		<view class="item-subTitle">{{subTitle}}</view>
 		
-		<text class="item-text" v-if="isShowText">1.0.0</text>
+		<text class="item-text" v-if="isShowText">{{showText}}</text>
 		<image class="item-arrow" src="/static/center/arrow.png" v-else></image>
 	</view>
 	</view>
@@ -33,6 +33,10 @@
 			isShowText:{
 				type:String,
 				required:false
+			},
+			showText:{
+				type:String,
+				default:""
 			}
 		},
 	}

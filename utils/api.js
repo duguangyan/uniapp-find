@@ -575,8 +575,13 @@ const commissionRecord = (params) => myRequest(params, `${apiUrl}/find/api/commi
 // 快送佣金明细
 const staffCommissions = (params) => myRequest(params, `${apiUrl}/api/staff/commissions`);
 
+// 找料接单
+const staffFindGet = (params) => myRequest(params, `${apiUrl}/api/staff/find/get`);
+
+
 
  module.exports = {
+	staffFindGet,
 	staffCommissions,
 	commissionRecord,
 	orderSearch,

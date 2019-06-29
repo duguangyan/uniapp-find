@@ -1,7 +1,7 @@
 <template>
 	<view class="wx_content">
 		<view class="authentication">
-			<view class="nav flex">
+			<view class="nav flex" v-if="(userType == 0 || userType == 3) && (userStatus == 0 || userStatus == 3)">
 				<view class="flex-1" v-for="(item,index) in navArr" :key="index" @click="navCheck(index)">
 					<image :src="navIndex==index?item.activeImg:item.imgUrl"></image>
 					<view>{{item.name}}</view>
@@ -25,10 +25,16 @@
 					<view class="text">{{item.text}}</view>
 				</view>
 			</view>
-			<view class="btn-warp">
+			<!-- 状态0:未认证 1审核通过，2待审核 ，3审核不通过' -->
+			<view class="info text-red" v-if="userStatus !=0">
+				{{status_label}}
+			</view>
+			<view class="btn-warp" v-if="userStatus == 0">
 				<view class="btn" @click="save">提交</view>
 			</view>
-			
+			<view class="btn-warp" v-if="userStatus == 3">
+				<view class="btn" @click="save">重新提交</view>
+			</view>
 		</view>
 		
 		<view  v-if="showCon" class="modal-mask" @click="changeModalCancel">
@@ -55,6 +61,9 @@
 		data() {
 			return {
 				title: "用户认证",
+				userType:0,
+				userStatus:0,
+				status_label:'',
 				showCon:false,
 				navArr:[
 					{name:"个人用户",imgUrl:"https://static.yidap.com/miniapp/o2o/imgs/ic_certification_personl_no_select.png",activeImg:"https://static.yidap.com/miniapp/o2o/imgs/ic_certification_personl_select.png"},
@@ -75,6 +84,46 @@
 					{text:"请上传营业执照正面",img:"https://static.yidap.com/miniapp/o2o/imgs/ic_certifcation_card_back.png"}
 				]
 			}
+		},
+		onLoad(options) {
+			
+			let userAuthentication = uni.getStorageSync('userAuthentication');
+			
+			this.$data.userStatus   = userAuthentication.status;
+			this.$data.status_label = userAuthentication.status_label;
+			this.$data.arr[0].value = userAuthentication.consignee;
+			this.$data.arr[1].value = userAuthentication.mobile;
+			this.$data.arr[2].value = userAuthentication.address;
+			this.$data.arr[3].value = '';
+			this.$data.arr[4].value = userAuthentication.id_card_no;
+			if(userAuthentication.type == 1){
+				this.$data.ngImgTextArr[0].img = userAuthentication.id_card_front;
+				this.$data.ngImgTextArr[1].img = userAuthentication.id_card_back;
+				this.$data.bgImg[0] = userAuthentication.id_card_front;
+				this.$data.bgImg[1] = userAuthentication.id_card_back;
+			}else{
+				this.$data.ngImgTextArr[3].img = userAuthentication.id_card_front;
+				this.$data.bgImg[3] = userAuthentication.id_card_front;
+			}
+			
+			
+		},
+		onShow() {
+			this.$data.userType = uni.getStorageSync('userType');
+			if(this.$data.userType == 0 || this.$data.userType == 3){
+				uni.setNavigationBarTitle({
+					title: "用户认证"
+				})
+			}else if(this.$data.userType == 1){
+				uni.setNavigationBarTitle({
+					title: "认证找料员"
+				})
+			}else if(this.$data.userType == 2){
+				uni.setNavigationBarTitle({
+					title: "认证配送员"
+				})
+			}
+			
 		},
 		methods:{
 			changeModalCancel(){
@@ -133,33 +182,59 @@
 			checkImg(index){
 				let _this = this;
 				uni.chooseImage({
-					count: 1, //默认9
-					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album','camera'], //从相册选择
-					success: function (res) {
-						console.log(JSON.stringify(res.tempFilePaths));
-						let tempFilePaths = res.tempFilePaths;
-						let url = "https://webapi.yidapi.com.cn/app/common/upload";
-						uni.uploadFile({
-							url,
-							filePath: tempFilePaths[0],
+					count: 1,
+					sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+					success: (res) => {
+						// 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+						const access_token = wx.getStorageSync('access_token') || '';
+						let data = {};
+						data.file = '[object Object]';
+						data.type = 'big';
+						let timestamp = Date.parse(new Date());
+						data.timestamp = timestamp;
+						data.sign = util.makeSign(api.apiUrl + '/api/upload', data);
+						data.deviceId = "wx";
+						data.platformType = "2";
+						data.versionCode = '4.0';
+						// 上传图片，返回链接地址跟id,返回进度对象
+						let uploadTask = wx.uploadFile({
+							url: `${api.apiUrl}/api/upload`,
+							filePath: res.tempFilePaths[0],
 							name: 'file',
-							formData: api.returnData(url),
-							success: function (uploadFileRes) {
-								console.log(uploadFileRes.data);
-								console.log("--------------------");
-								let img = JSON.parse(uploadFileRes.data).data;
-								_this.$data.ngImgTextArr[index].img = img; 
-								_this.$data.bgImg[index] = img; 
-								util.successTips("图片上传成功");
-							}
-						});
+							header: {
+								'content-type': 'multipart/form-data',
+								'Accept': 'application/json',
+								'Authorization': `Bearer ${access_token}`
+							},
+							formData: data,
+							success: (res) => {
+								console.log('图片上传');
+								console.log(res);
+								var ress = JSON.parse(res.data);
+								if (200 === ress.code || 0 === ress.code) {
+									let img = JSON.parse(res.data).data;
+									_this.$data.ngImgTextArr[index].img = img; 
+									_this.$data.bgImg[index] = img; 
+									util.successTips("图片上传成功");
 				
+								} else {
+									util.errorTips('上传错误');
+								}
+				
+							},
+							fail(err) {
+								console.log(err)
+							},
+							complete() {
+				
+							}
+						})
 					}
-				});
+				})
 			},
 			save(){
-				
+				let _this = this;
 				let province,city,county;
 				if(this.$data.arr[2].value != ""){
 					 province = this.$data.arr[2].value.split("省")[0] + "省";
@@ -184,28 +259,22 @@
 						return false;
 					}
 				}
-				
+				let data = {
+						from:1,
+						type:this.$data.navIndex + 1,
+						consignee:this.$data.arr[0].value,
+						mobile:this.$data.arr[1].value,
+						address:_this.$data.arr[2].value + _this.$data.arr[3].value,
+						id_card_no:this.$data.arr[4].value,
+						id_card_back:this.$data.bgImg[1],
+						id_card_front:this.$data.bgImg[0]
+					}
+				if(_this.$data.navIndex == 1){
+					data.id_card_front = this.$data.bgImg[2]
+				}
 				api.auditApply({
 					method:"POST",
-					data:{
-						type:this.$data.navIndex,
-						buyerName:this.$data.arr[0].value,
-						mobile:this.$data.arr[1].value,
-						identificationCard:this.$data.arr[4].value,
-						idCardBackImg:this.$data.bgImg[1],
-						idCardFrontImg:this.$data.bgImg[0],
-						
-						province,
-						city,
-						county,
-						buyerAddressDetail:this.$data.arr[3].value,
-						
-						
-						businessLicence:this.$data.bgImg[2],
-						businessNumber:this.$data.arr[4].value,
-						companyName:this.$data.arr[0].value,
-						corporationName:this.$data.arr[1].value
-					}
+					data,
 				}).then((res)=>{
 					util.successTips("提交审核成功");
 					setTimeout(()=>{
@@ -221,8 +290,15 @@
 </script>
 
 <style lang="scss" scoped>
-	.wx_content{
+	.info{
+		line-height: 100upx;
+		padding-left: 30upx;
+		border-top: 20upx solid #f4f4f4;
 		background: #fff;
+		
+	}
+	.wx_content{
+		background: #f4f4f4;
 		height: 100%;
 	}
 	.height160{
@@ -233,8 +309,8 @@
 		background: #fff;
 		margin-bottom: 240upx;
 		.btn-warp{
-			background: #fff;
-			padding-bottom: 40upx;
+			background: #f4f4f4;
+			padding-bottom: 100upx;
 			.btn{
 				height: 80upx;
 				line-height: 80upx;

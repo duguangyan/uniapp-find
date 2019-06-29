@@ -6,16 +6,19 @@
 				<list-item title="登录密码"></list-item>
 			</navigator>
 			
-			<list-item title="支付密码" @didClick="goModifyPassword(1)"></list-item>
-			<view @click="goIn">
-				<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
-			</view>
-			<view @click="goAuthentication">
-				<list-item title="用户认证" id="item_mid_bottom"></list-item>
+			<view class="bb20">
+				<list-item title="支付密码" @didClick="goModifyPassword(1)"></list-item>
 			</view>
 			
-			<list-item title="版本号" isShowText="true"></list-item>
-			<list-item title="清除缓存" isShowText="true"></list-item>
+			<view @click="goIn" v-if="userType == 0 || userType == 3">
+				<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
+			</view>
+			<view @click="goAuthentication" class="bb20">
+				<list-item :title="authent" id="item_mid_bottom"></list-item>
+			</view>
+			
+			<list-item title="版本号" isShowText="true" :showText='v'></list-item>
+			<list-item title="清除缓存" isShowText="true" :showText='currentSize' @didClick="clearSync"></list-item>
 			<button type="primary" class="logout" @click="logout">退出登录</button>
 		</view>
 	</view>
@@ -30,14 +33,56 @@
 		data() {
 			return {
 				avatar_path:"/static/icon/add-find.png",
+				v:'',
+				currentSize:'',
+				userType:0,
+				authent:'用户认证',
+				userStatus:0,
+				userAuthentication:''
 			}
 		},
+		onShow() {
+			let _this = this;
+			this.$data.userType = uni.getStorageSync('userType');
+			if(this.$data.userType == 0 || this.$data.userType == 3){
+				this.$data.authent = '用户认证';
+			}else if(this.$data.userType == 1){
+				this.$data.authent = '认证找料员';
+			}else if(this.$data.userType == 2){
+				this.$data.authent = '认证配送员';
+			}
+			uni.getStorageInfo({
+				success: function (res) {
+					// console.log(res.keys);
+					// console.log(res.currentSize);
+					// console.log(res.limitSize);
+					_this.$data.currentSize =  res.currentSize  + ' kb';
+				}
+			});
+			// 用户认证信息
+			this.auditApply();
+		},
 		methods: {
+			auditApply(){
+				api.auditApply({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.userAuthentication = res;
+					}
+					
+				})
+			},
+			// 清除缓存
+			clearSync(){
+				
+			},
 			// 去认证中心
 			goAuthentication(){
-				uni.navigateTo({
-					url:'./authentication/authentication'
-				})
+				if(this.$data.userAuthentication.code == 0 || this.$data.userAuthentication.code == 200){
+					uni.setStorageSync('userAuthentication',this.$data.userAuthentication.data);
+					uni.navigateTo({
+						url:'./authentication/authentication'
+					})
+				}
 			},
 			// 退出登录
 			logout(){
@@ -110,11 +155,15 @@
 		onLoad(options) {
 			console.log(options);
 			this.avatar_path = options.avatarPath;
+			this.$data.v = uni.getStorageSync('v');
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	.bb20{
+		border-bottom: 20upx solid #F5F5F5;
+	}
 	.index{
 		background-color: #F5F5F5;
 		height: 100vh;

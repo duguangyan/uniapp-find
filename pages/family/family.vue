@@ -106,9 +106,8 @@
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: (res) => {
         // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-        const access_token = wx.getStorageSync('token') || '';
+        const access_token = wx.getStorageSync('access_token') || '';
 				
-				debugger
         let data = {};
         data.file = '[object Object]';
         data.type = 'big';
@@ -116,7 +115,7 @@
         data.timestamp = timestamp;
         data.sign = util.makeSign(api.apiUrl + '/api/upload', data);
         data.deviceId = "wx";
-        data.platformType = "1";
+        data.platformType = "2";
         data.versionCode = '4.0';
         // 上传图片，返回链接地址跟id,返回进度对象
         let uploadTask = wx.uploadFile({
@@ -188,7 +187,7 @@
       id_card_front: imgBg1,
       id_card_back: imgBg2
     }
-    if(this.data.id != ''){
+    if(this.$data.id != ''){
       data.id = this.$data.id
     }
     api.getInviteCode({
@@ -200,6 +199,9 @@
 				this.$data.isExamine = true;
 				this.$data.status_label = res.data.status_label;
 				this.$data.remark = res.data.remark;
+				uni.navigateBack({
+					delta:1
+				})
       }
     })
     

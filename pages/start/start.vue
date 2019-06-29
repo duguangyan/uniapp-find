@@ -25,6 +25,7 @@
 		},
 		methods:{
 			goNextPage(index){
+				uni.setStorageSync('userType',index);
 				// uni.navigateTo({
 				// 	url:'../login/login?from=' + index
 				// })

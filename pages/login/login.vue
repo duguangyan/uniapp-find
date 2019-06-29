@@ -187,6 +187,10 @@
  								uni.setStorageSync("token",resData.data.token);
  								uni.setStorageSync("access_token",resData.data.access_token);
  								uni.setStorageSync("avatarPath",resData.data.avatar_path);
+ 								uni.setStorageSync("user_name",resData.data.user_name);
+ 								uni.setStorageSync("nick_name",resData.data.nick_name);
+								this.$store.commit('updateNickName',resData.data.nick_name);
+								this.$store.commit('updateAvatarPath',resData.data.avatar_path);
  								api.getUserInfo().then((res)=>{
  									resData.data.name = name
  								})
@@ -219,6 +223,9 @@
 								uni.setStorageSync("avatarPath",resData.data.avatar_path);
 								uni.setStorageSync("user_name",resData.data.user_name);
 								uni.setStorageSync("nick_name",resData.data.nick_name);
+								this.$store.commit('updateNickName',resData.data.nick_name);
+								this.$store.commit('updateAvatarPath',resData.data.avatar_path);
+								
  								api.getUserInfo().then((res)=>{
  									resData.data.name = res.data.name;
  								})

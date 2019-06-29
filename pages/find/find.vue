@@ -11,7 +11,7 @@
 				</view>
 				<view class="td">
 					<view class="mgl-20"><text class="text-theme">*</text> <text class="word-spacing">描 述 : </text>
-						<textarea v-if="isNotes" class="flex-1 find-desc" v-model="item.desc" placeholder='(注：请详细描述物料的名称、用途、材质、交货时间)'>
+						<textarea v-if="!isNotes" class="flex-1 find-desc" v-model="item.desc" placeholder='(注：请详细描述物料的名称、用途、材质、交货时间)'>
 						</textarea>
 					</view>
 				</view>

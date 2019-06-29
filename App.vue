@@ -4,7 +4,6 @@
 	export default {
 		onLaunch: function () {
 			console.log('App Launch')
-			
 			 uni.login({
 				success: function (res) {
 				  console.log(res);

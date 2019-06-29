@@ -51,7 +51,7 @@
 		},
 		onLoad(options) {
 			if(options.from){
-				this.$store.commit("change_page",options.from);
+				this.$store.commit("change_page",options.from); 
 			}
 			//this.$store.dispatch('menu_2')
 			if(options.menuFrom){
@@ -66,7 +66,7 @@
 						this.$store.dispatch('menu_2')
 						break;
 					case 2:   // 我是配送员
-						uni.setStorageSync('myStatus',2);
+						uni.setStorageSync('myStatus',3);
 						this.$store.dispatch('menu_3')
 						break;	
 					case 3:   // 小鹿家人

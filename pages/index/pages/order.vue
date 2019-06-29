@@ -14,7 +14,7 @@
 				<view class='order-nav fs30 lh90 border-bottom'>
 					<text v-for="(item, index) in checkNavs" :key="index" @click='checkNav' :data-index='index' :class="orderNavNum==index?'nav-active':'order-text'">{{item}}</text>
 				</view>
-				<scroll-view scroll-x="true" class='order-nav order-nav-1 order-child-nav fs30 lh90'>
+				<scroll-view scroll-x="true" scroll-left="scrolLeft"  class='order-nav order-nav-1 order-child-nav fs30 lh90'>
 					<view class="order-nav-1-warp">
 						<text v-for="(item, index) in checkChildNavs" :key="index" @click='checkChildNav' :data-index='index' :class="orderChildNavNum==index?'nav-child-active':''">{{item}}</text>
 					</view>
@@ -266,6 +266,7 @@
 				shopLoading: true, // 载入动画
 				orderList: [], // 页面数据
 				page: 1, // 第几页
+				scrolLeft:0,  //滚动位置
 			};
 		},
 		onLoad(options) {
@@ -303,6 +304,7 @@
 				this.$data.isSearch = true;
 				this.$data.orderChildNavNum = 0;
 				console.log(this.$data.searchValue);
+				this.$data.scrolLeft = 0;
 				if(this.$data.searchValue == ''){
 					util.errorTips('搜索关键字不能为空');
 					return false;
