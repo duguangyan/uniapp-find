@@ -188,7 +188,6 @@
 					</view>
 				</form>
 			</view>
-
 			<!-- 填写找不到物料原因 -->
 			<view v-if="formtype == '2'" class="form-box-2" @touchmove="preventD">
 				<text @click='close' class="iconfont icon-guanbi close"></text>
@@ -266,8 +265,9 @@
 		},
 	
 		onLoad(options) {
+			
 			uni.setNavigationBarTitle({
-				title: "我的订单"
+				title: "找料订单"
 			})
 		},
 		onShow() {

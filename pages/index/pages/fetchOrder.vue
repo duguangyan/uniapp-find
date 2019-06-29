@@ -272,8 +272,9 @@
 		},
 	
 		onLoad(options) {
+			
 			uni.setNavigationBarTitle({
-				title: "我的订单"
+				title: "配送订单"
 			})
 		},
 		onShow() {
