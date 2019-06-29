@@ -175,7 +175,21 @@
         }
         ,{
             "path" : "pages/index/common/cash/cash",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText" : "佣金提现"
+			}
+        }
+        ,{
+            "path" : "pages/index/common/bindAlipay/bindAlipay",
+            "style" : {
+				"navigationBarTitleText" : "绑定支付宝"
+			}
+        }
+        ,{
+            "path" : "pages/index/common/cashRecord/cashRecord",
+            "style" : {
+				"navigationBarTitleText" : "提现记录"
+			}
         }
     ],
 	"permission": {

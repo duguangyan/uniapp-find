@@ -37,7 +37,8 @@
 				now_amount:'',
 				total_amount:'',
 				list:[],
-				footerText:'没有更多信息了'
+				footerText:'没有更多信息了',
+				page:1,
 			};
 		},
 		onLoad(options) {
@@ -71,7 +72,7 @@
 						this.$data.now_amount = res.data.now_amount;
 						this.$data.total_amount = res.data.total_amount;
 						this.$data.list = this.$data.list.concat(res.data.list);
-						if(res.data.list<10){
+						if(res.data.list.length<10){
 							this.$data.footerText = '没有更多信息了'
 						}else{
 							this.$data.footerText = '点击加载更多'
