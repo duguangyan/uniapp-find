@@ -2,8 +2,8 @@
 	<view class="index">
 		<view class="center-top">
 			<!-- <view class="title">个人中心</view> -->
-			<image class="icon" :src="avatar_path"  mode="" @click="changeAvatarPath"></image>
-			<view class="name">{{nick_name}}</view>
+			<image class="icon" :src="avatarPath"  mode="" @click="changeAvatarPath"></image>
+			<view class="name">{{nickName}}</view>
 			<image class="setting" src="/static/center/setting.png" @click="goSetting()"></image>
 		</view>
 		<view class="wallet">
@@ -108,8 +108,6 @@
 					// 	title: "积分商城",
 					// }
 				],
-				nick_name: "游客",
-				avatar_path: "/static/footer_icon/2.1.png",
 				balance: 0, // 佣金
 				replace:0,  // 代采款
 				marketing: 0,
@@ -117,8 +115,13 @@
 				userInfo:'',   // 用户信息 
 			};
 		},
-		onLoad() {
-			
+		computed:{
+			avatarPath(){
+				return this.$store.state.avatarPath;
+			},
+			nickName(){
+				return this.$store.state.nickName;
+			},
 		},
 		onShow() {
 			let xx = uni.getStorageSync('user_name');
@@ -155,8 +158,9 @@
 					console.log(res.data);
 					if (res.code == 0 || res.code == 200) {
 						this.$data.userInfo = res.data;
-						this.$data.nick_name = res.data.nick_name;
-						this.$data.avatar_path = res.data.avatar_path;
+						this.$store.commit('updateNickName',res.data.nick_name);
+						this.$store.commit('updateAvatarPath',res.data.avatar_path);
+						this.$store.commit('updateMobile',res.data.user_name);
 						this.$data.balance = res.data.balance;
 						this.$data.marketing = res.data.marketing;
 						this.$data.virtual = res.data.virtual;
@@ -166,7 +170,7 @@
 			},
 			goSetting(){
 				uni.navigateTo({
-					url:"/pages/setting/setting?avatarPath="+this.$data.avatar_path+"&nickName="+this.$data.nick_name
+					url:"/pages/setting/setting"
 				})
 			},
 			//跳转下一个页面
