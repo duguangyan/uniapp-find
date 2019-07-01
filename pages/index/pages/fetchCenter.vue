@@ -2,8 +2,8 @@
 	<view class="index">
 		<view class="center-top">
 			<!-- <view class="title">个人中心</view> -->
-			<image class="icon" :src="avatar_path"  mode="" @click="changeAvatarPath"></image>
-			<view class="name">{{nick_name}}</view>
+			<image class="icon" :src="avatarPath"  mode="" @click="changeAvatarPath"></image>
+			<view class="name">{{nickName}}</view>
 			<image class="setting" src="/static/center/setting.png" @click="goSetting()"></image>
 		</view>
 		<view class="wallet">
@@ -12,24 +12,13 @@
 				<text class="wallet_down">{{virtual}}</text>
 			</view>
 			<view class="wallet-right">
-				<text class="wallet_up">余额(元)</text>
+				<text class="wallet_up">配送(单)</text>
 				<text class="wallet_down">{{balance}}</text>
 			</view>
 			<view class="wallet-separator"></view>
 		</view>
-		<view class="order find">
-			<text class="order_text">找料订单</text>
-			<text class="order_check" @click="goOrderPage(-1,0)">查看全部订单</text>
-			<view class="horizon_separator"></view>
-			<ul>
-				<li v-for="(item,index) in order_find" :key='index' @click="goOrderPage(index,0)">
-					<image class="order_image" :src="item.img" mode=""></image>
-					<text class="order_item_text">{{item.text}}</text>
-				</li>
-			</ul>
-		</view>
 		<view class="order fectch">
-			<text class="order_text">取料订单</text>
+			<text class="order_text">配送订单</text>
 			<text class="order_check" @click="goOrderPage(-1,1)">查看全部订单</text>
 			<view class="horizon_separator"></view>
 			<ul>
@@ -43,7 +32,7 @@
 			<view class="items">
 				<view class="item" v-for="(item, index) in contents" :key='index'>
 					<button class="navigator-text fs30 pdl-30" style="background-color:#fff;border:none;height:115rpx;line-height:115rpx;text-align:left;"
-					 open-type="contact">客服</button>
+					 open-type="contact">在线客服</button>
 					<image class="arrow" src="/static/center/arrow.png"></image>
 				</view>
 			</view>
@@ -60,38 +49,21 @@
 		data() {
 			return {
 				v:'', // 版本号
-				order_find: [{
-						img: "/static/center/find.png",
-						text: "找料中",
-					},
-					{
-						img: "/static/center/deliver.png",
-						text: "待收货",
-					},
-					{
-						img: "/static/center/receive.png",
-						text: "待评价",
-					},
-					{
-						img: "/static/center/evaluate.png",
-						text: "已完成",
-					}
-				],
 				order_fetch: [{
-						img: "/static/center/find.png",
-						text: "取料中",
+						img: "/static/center/fetchCenter/pendingReceipt.png",
+						text: "待接单",
 					},
 					{
-						img: "/static/center/deliver.png",
+						img: "/static/center/fetchCenter/pendingDelivery.png",
+						text: "待配送",
+					},
+					{
+						img: "/static/center/fetchCenter/pendingReceivegoods.png",
 						text: "待收货",
 					},
 					{
-						img: "/static/center/receive.png",
-						text: "待评价",
-					},
-					{
 						img: "/static/center/evaluate.png",
-						text: "已完成",
+						text: "待评价",
 					}
 				],
 				contents: [
@@ -108,16 +80,19 @@
 					// 	title: "积分商城",
 					// }
 				],
-				nick_name: "游客",
-				avatar_path: "/static/footer_icon/2.1.png",
 				balance: 0,
 				marketing: 0,
 				virtual: 0,
 
 			};
 		},
-		onLoad() {
-			
+		computed:{
+			avatarPath(){
+				return this.$store.state.avatarPath;
+			},
+			nickName(){
+				return this.$store.state.nickName;
+			},
 		},
 		onShow() {
 			let xx = uni.getStorageSync('user_name');
@@ -148,8 +123,9 @@
 				}).then((res) => {
 					console.log(res.data);
 					if (res.code == 0 || res.code == 200) {
-						this.$data.nick_name = res.data.nick_name;
-						this.$data.avatar_path = res.data.avatar_path;
+						this.$store.commit('updateNickName',res.data.nick_name);
+						this.$store.commit('updateAvatarPath',res.data.avatar_path);
+						this.$store.commit('updateMobile',res.data.user_name);
 						this.$data.balance = res.data.balance;
 						this.$data.marketing = res.data.marketing;
 						this.$data.virtual = res.data.virtual;
@@ -162,7 +138,7 @@
 			},
 			goSetting(){
 				uni.navigateTo({
-					url:"/pages/setting/setting?avatarPath="+this.$data.avatar_path+"&nickName="+this.$data.nick_name
+					url:"/pages/setting/setting"
 				})
 			},
 			//跳转下一个页面
@@ -317,7 +293,8 @@
 
 	.index {
 		background-color: #F6F6F6;
-		padding-bottom: 100upx;
+		// padding-bottom: 100upx;
+		height: 100vh;
 	}
 
 	//top
@@ -508,12 +485,8 @@
 		}
 	}
 
-	.find {
-		top: -40upx;
-	}
-
 	.fectch {
-		top: -20upx;
+		top: -40upx;
 	}
 
 	//列表
@@ -531,7 +504,7 @@
 
 			display: -webkit-flex;
 			flex-direction: column;
-			margin-top: 20upx;
+			margin-top: 0upx;
 			padding-left: 0upx;
 			.item {
 				position: relative;

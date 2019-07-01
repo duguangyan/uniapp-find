@@ -32,7 +32,6 @@
 	export default {
 		data() {
 			return {
-				avatar_path:"/static/icon/add-find.png",
 				v:'',
 				currentSize:'',
 				userType:0,
@@ -40,6 +39,11 @@
 				userStatus:0,
 				userAuthentication:''
 			}
+		},
+		computed:{
+			avatarPath(){
+				return this.$store.state.avatarPath;
+			},
 		},
 		onShow() {
 			let _this = this;
@@ -140,7 +144,7 @@
 			},
 			goUserInfo(){
 				uni.navigateTo({
-					url:'userInfo/userInfo?avatarPath='+this.avatar_path
+					url:'userInfo/userInfo'
 				})
 			},
 			goModifyPassword(index){
@@ -153,8 +157,6 @@
 			listItem,listIcon,
 		},
 		onLoad(options) {
-			console.log(options);
-			this.avatar_path = options.avatarPath;
 			this.$data.v = uni.getStorageSync('v');
 		}
 	}

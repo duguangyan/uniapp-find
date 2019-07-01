@@ -18,7 +18,8 @@ const store = new Vuex.Store({
 		isPhoneX: false,
 		isAndroid: false,
 		nickName:'游客',
-		avatarPath:''
+		avatarPath:'/static/center/headIcon.png',
+		mobile:'10086'
 	},
 	mutations: {
 		
@@ -86,6 +87,9 @@ const store = new Vuex.Store({
 		},
 		updateAvatarPath(state,payload){
 			state.avatarPath = payload
+		},
+		updateMobile(state,payload){
+			state.mobile = payload
 		}
 		
 	},

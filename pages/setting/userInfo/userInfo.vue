@@ -1,7 +1,12 @@
 <template>
 	<view class="index">
 		<list-icon subTitle="修改头像" showCamera="true" @didClick="modifyHeadIcon()" :avatar_path="avatarPath"></list-icon>
-		<list-item title="昵称" :subTitle="nickName" @didClick="modifyNickname()"></list-item>
+		<view class="bb20">
+				<list-item title="昵称" :subTitle="nickName" @didClick="modifyNickname()"></list-item>
+		</view>
+		<view class="bb20">
+				<list-item title="绑定手机号码" isShowText="true" :subTitle="mobile" v-if="isBindMobile" ></list-item>
+		</view>
 	</view>
 </template>
 
@@ -14,6 +19,7 @@
 	export default {
 		data() {
 			return {
+				isBindMobile:false,
 			};
 		},
 		computed:{
@@ -23,9 +29,22 @@
 			avatarPath(){
 				return this.$store.state.avatarPath;
 			},
+			mobile(){
+				return this.$store.state.mobile;
+			}
 		},
 		components:{
 			listItem,listIcon
+		},
+		onShow() {
+			this.$data.userType = uni.getStorageSync('userType');
+			if(this.$data.userType == 0 || this.$data.userType == 3){
+				this.$data.isBindMobile = false;
+			}else if(this.$data.userType == 1){
+				this.$data.isBindMobile = true;
+			}else if(this.$data.userType == 2){
+				this.$data.isBindMobile = true;
+			}
 		},
 		methods:{
 			modifyHeadIcon(){
@@ -99,10 +118,6 @@
 				});
 			},
 		},
-		onLoad(options) {
-			console.log(options);
-			this.avatar_path = options.avatarPath;
-		},
 	}
 </script>
 
@@ -110,6 +125,9 @@
 	.index{
 		background-color: #F5F5F5;
 		height: 100vh;
+	}
+	.bb20{
+		border-top: 20upx solid #F5F5F5;
 	}
 
 </style>
