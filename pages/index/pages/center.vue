@@ -160,9 +160,6 @@
 						this.$store.commit('updateNickName',res.data.nick_name);
 						// console.log(res.data);
 					}
-		
-				}).catch((res)=>{
-					debugger
 				})
 			},
 			goSetting(){

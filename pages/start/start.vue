@@ -25,13 +25,13 @@
 		},
 		methods:{
 			goNextPage(index){
-				uni.setStorageSync('userType',index);
-				// uni.navigateTo({
-				// 	url:'../login/login?from=' + index
-				// })
+				uni.setStorageSync('userType',index); // 用户类型
 				uni.navigateTo({
-					url:'../index/index?menuFrom=' + index
+					url:'../login/login?from=' + index
 				})
+				// uni.navigateTo({
+				// 	url:'../index/index?menuFrom=' + index
+				// })
 			}
 		}
 	}

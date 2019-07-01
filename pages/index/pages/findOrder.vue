@@ -2,17 +2,25 @@
 	<view class="find-order">
 		<view>
 			<view class="fixed-block fs30">
+				<view class="search">
+					<view class="warp">
+						<image src="../../static/icon/search-bg.png" mode=""></image>
+						<input class="fs24" type="text" v-model="searchValue" placeholder="请输入关键字">
+						<text class="btn" @click="doSearch"></text>
+					</view>
+				</view>
 				<view class="select-section">
 					<view class="flex select-order">
 						<view @click='getOrderData' :data-nav="1" class="relative" :class="nav == 1 ? 'selected' : ''">找料订单</view>
 						<view @click='getOrderData' :data-nav="2" class="relative" :class="nav == 2 ? 'selected' : ''">取料订单</view>
 					</view>
-
 					<scroll-view :scroll-x="true" class="status-section find-section">
 						<view v-if="nav==1" v-for='(item, index) in navTexts.find' :key="index" @click='getOrderTypeData' :data-type="index"
 						 :class="status == index ? 'selected' : ''">{{item}}</view>
 						<view v-if="nav==2" v-for='(item, index) in navTexts.fetch' :key="index" @click='getOrderTypeData' :data-type="index"
-						 :class="status == index ? 'selected' : ''">{{item}}</view>
+						 :class="status == index ? 'selected' : ''">
+							{{item}}
+						 </view>
 					</scroll-view>
 				</view>
 			</view>
@@ -124,14 +132,21 @@
 							<!--按钮  -->
 							<view class="flex flex-end order-handle">
 								<!--找料中  -->
-								<view v-if="status == 2" class="flex find-status">
+								<!-- <view v-if="status == 2" class="flex find-status">
 									<view :data-type='2' :data-id="item.id" @click='showForm'>{{nav==1?'找':'取'}}不到物料</view>
 									<view :data-type='1' :data-id="item.id" @click='showForm' class="ctheme warm-border">{{nav==1?'找':'取'}}到物料</view>
-								</view>
+								</view> -->
 
-								<view v-if="status == 1" class="flex find-status" @click="receiptOrder(item.id)">
+								<view v-if="status == 1" class="flex find-status mgr-20" @click="receiptOrder(item.id)">
 									<view>确认接单</view>
 								</view>
+								<view class="cancat flr" v-if="status != 1">
+									<image src="../../static/icon/concat.png"></image>
+									<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
+									<view class="btn-1" @click.stop="goChat"></view>
+									<view class="btn-2" @click.stop="contact"></view>
+								</view>
+								
 							</view>
 						</view>
 					</block>
@@ -142,8 +157,6 @@
 				</view>
 			</view>
 		</view>
-
-
 		<view v-if="formshow" class="pop-window" @touchmove="preventD">
 			<!-- 填写地址 -->
 			<view v-if="formtype =='1'" class="form-box-1">
@@ -220,9 +233,7 @@
             </view>
         </form>
     </view>
-
 </view>
-
 
 <view  v-if="showCon" class="modal-mask" @click="changeModalCancel">
     <view class="modal-dialog">
@@ -272,6 +283,9 @@
 		},
 		onShow() {
 			
+			
+		},
+		mounted(){
 			this.$data.nav = wx.getStorageSync('nav') || 1;
 			this.$data.status = wx.getStorageSync('status') || 1;
 			this.$data.orderList = [] 
@@ -309,38 +323,27 @@
 			},
 			// 获取数据
 			  getMyOrders(){
-			   if(this.$data.nav == 1){
-				 api.myOrderFindList({
-				   data: {
-					 page: this.$data.page,
-					 status: this.$data.status
-				   }
-				 }).then((res) => {
-				   if(res.data.length <=0) this.$data.isFullLoad = true;
-				   this.$data.orderList = this.$data.orderList.concat(res.data);
-				 })
-			   } else if (this.$data.nav == 2){
-				 api.myOrderFetchList({
-				   data: {
-					 page: this.$data.page,
-					 status: this.$data.status
-				   }
-				 }).then((res) => {
-				   if (res.data.length <= 0) this.$data.isFullLoad = true;
-				   this.$data.orderList = this.$data.orderList.concat(res.data);
-				 })
-			   } else if (this.$data.nav == 3){
-				 api.myOrderShipList({
-				   data: {
-					 page: this.$data.page,
-					 status: this.$data.status
-				   }
-				 }).then((res) => {
-				   if (res.data.length <= 0) this.$data.isFullLoad = true;
-				   this.$data.orderList = this.$data.orderList.concat(res.data);
-				 })
-			   }
-				
+				  if(this.$data.nav == 1){
+					   api.myOrderFindList({
+						 data: {
+							 page: this.$data.page,
+							 status: this.$data.status
+						 }
+					  }).then((res) => {
+							 if(res.data.length <=0) this.$data.isFullLoad = true;
+							 this.$data.orderList = this.$data.orderList.concat(res.data);
+					  })
+				  }else if(this.$data.nav == 2){
+					   api.myOrderFetchList({
+						 data: {
+							 page: this.$data.page,
+							 status: this.$data.status
+						 }
+					  }).then((res) => {
+							 if(res.data.length <=0) this.$data.isFullLoad = true;
+							 this.$data.orderList = this.$data.orderList.concat(res.data);
+					  })
+				  }
 			  },
 			  
 			  // 大类选择
@@ -367,10 +370,8 @@
 				
 				// 查看详情
 				seeDetail(e) {
-
 				  let index = e.currentTarget.dataset.index;
 				  let id = e.currentTarget.dataset.id;
-				  
 				  uni.navigateTo({
 					url: "../index/findPages/findOrderDetail/findOrderDetail?index="+this.$data.nav+"&id="+id+"&status="+this.$data.status,
 				  })
@@ -404,6 +405,40 @@
 </script>
 
 <style lang="scss" scoped>
+	.cancat{
+		margin-right: 10upx;
+		width: 360upx;
+		height: 100upx;
+		position: relative;
+		top: 0upx;
+		text{
+			position: absolute;
+			top: 34upx;
+			left: 38upx;
+			font-size: 28upx;
+			color: #F29800;
+		}
+		image{
+			width: 360upx;
+			height: 100upx;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.btn-1,.btn-2{
+			width: 80upx;
+			height: 100upx;
+			position: absolute;
+			top:0;
+		}
+		.btn-1{
+			right: 28upx;
+		}
+		.btn-2{
+			right: 120upx;
+		}
+		
+	}
 	.empty{
 		image{
 			width: 180upx;
@@ -432,6 +467,7 @@
 	}
 .empty{
 	text-align: center;
+	margin-top: 100upx;
 }
 .fixed-block {
     position: fixed;
@@ -486,13 +522,13 @@
     padding: 0 10upx;
 }
 
-.status-section view.selected, .select-order view.selected {
+.status-section view.selected, .select-order view.selected{
     color: #F29800;
     border-bottom: 4upx #F29800 solid;
 }
 
 .item-container {
-    padding: 200upx 0 30upx;
+    padding: 290upx 0 30upx;
 	text-align: left;
 }
 
@@ -575,7 +611,7 @@
 }
 
 .order-handle {
-    padding: 30upx 20upx 30upx 30upx;
+    height: 120upx;
 }
 
 .find-status view {
@@ -645,5 +681,38 @@
       text-align: center;
       font-weight: 500;
     }
-
+.search{
+			height: 100upx;
+			border-bottom: 1upx solid #f4f4f4;
+			.warp{
+				position: relative;
+				
+				image{
+					width: 750upx;
+					height: 100upx;
+					position: absolute;
+					top: 0;
+					left: 0;
+				}
+				input{
+					width: 500upx;
+					position: absolute;
+					top: 20upx;
+					left: 100upx;
+					height: 60upx;
+					text-align: left;
+					line-height: 66upx;
+					z-index: 999;
+				}
+				text{
+					position: absolute;
+					display: block;
+					width: 200upx;
+					height: 100upx;
+					right: 0;
+					top: 0;
+					z-index: 99999;
+				}
+			}
+		}
 </style>

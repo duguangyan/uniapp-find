@@ -2,12 +2,12 @@
 	<view class="upload-box">
 		<view v-if="files.length>0" class="upload-img-box relative" v-for="(item, index) in files" :key="index">
 			<image class="img" :src="item.url"></image>
-			<image @click='deleteItem(index)' class="delete-icon" src='../../static/icon/del.png'></image>
+			<image @click='deleteItem(index)' class="delete-icon" src='/static/icon/del.png'></image>
 			<view class="fail"  v-if="item.pct == 'wait'">图片上传中...</view>
 			<view class="fail" v-if="item.pct == 'fail'">图片上传失败</view>
 		</view>
 		<view v-if="files.length<9" @click='uploadAll' class="upload-img-box">
-			<image src="../../static/icon/upload_bg.png" mode=""></image>
+			<image src="/static/icon/upload_bg.png" mode=""></image>
 		</view>
 
 	</view>

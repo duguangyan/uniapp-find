@@ -559,8 +559,12 @@ const myOrderFetchList = (params) => myRequest(params, `${apiUrl}/api/staff/fetc
 // 配送订单列表
 const myOrderShipList = (params) => myRequest(params, `${apiUrl}/api/staff/ship`);
 
-// 配送订单列表
+// 找料订单详情
 const findShowById = (params) => myRequest(params, `${apiUrl}/api/staff/find/show`);
+
+// 配送订单详情
+const shipShowById = (params) => myRequest(params, `${apiUrl}/api/staff/ship/show`);
+
 
 // 配送订单列表
 const findArea = (params) => myRequest(params, `${apiUrl}/api/area`);
@@ -578,9 +582,38 @@ const staffCommissions = (params) => myRequest(params, `${apiUrl}/api/staff/comm
 // 找料接单
 const staffFindGet = (params) => myRequest(params, `${apiUrl}/api/staff/find/get`);
 
+// 供应商搜索
+const staffSupplierSearch = (params) => myRequest(params, `${apiUrl}/api/staff/supplier/search`);
+
+// 找到物料信息
+const staffFindFound = (params) => myRequest(params, `${apiUrl}/api/staff/find/found`);
+
+// 找不到物料订单
+const staffFindUnfound = (params) => myRequest(params, `${apiUrl}/api/staff/find/unfound`);
+
+// 找不到物料订单
+const staffShipSearch = (params) => myRequest(params, `${apiUrl}/api/staff/ship/search`);
+
+// 配送订单接单
+const staffShipGet = (params) => myRequest(params, `${apiUrl}/api/staff/ship/get`);
+
+// 确认送达 送货上门
+const staffShipConfirm = (params) => myRequest(params, `${apiUrl}/api/staff/ship/confirm`);
+
+// 确认送达 物流
+const staffShipExpress = (params) => myRequest(params, `${apiUrl}/api/staff/ship/express`);
+
 
 
  module.exports = {
+	staffShipExpress,
+	staffShipConfirm,
+	staffShipGet, 
+	shipShowById,
+	staffShipSearch,
+	staffFindUnfound,
+	staffFindFound,
+	staffSupplierSearch,
 	staffFindGet,
 	staffCommissions,
 	commissionRecord,

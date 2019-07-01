@@ -2,16 +2,20 @@
 	<view class="find-order">
 		<view>
 			<view class="fixed-block fs30">
+				<view class="search">
+					<view class="warp">
+						<image src="../../static/icon/search-bg.png" mode=""></image>
+						<input class="fs24" type="text" v-model="searchValue" placeholder="请输入关键字">
+						<text class="btn" @click="doSearch"></text>
+					</view>
+				</view>
 				<view class="select-section">
-					<view class="flex select-order">
+					<!-- <view class="flex select-order">
 						<view @click='getOrderData' :data-nav="1" class="relative" :class="nav == 1 ? 'selected' : ''">找料订单</view>
 						<view @click='getOrderData' :data-nav="2" class="relative" :class="nav == 2 ? 'selected' : ''">取料订单</view>
-					</view>
-
+					</view> -->
 					<scroll-view :scroll-x="true" class="status-section find-section">
-						<view v-if="nav==1" v-for='(item, index) in navTexts.find' :key="index" @click='getOrderTypeData' :data-type="index"
-						 :class="status == index ? 'selected' : ''">{{item}}</view>
-						<view v-if="nav==2" v-for='(item, index) in navTexts.fetch' :key="index" @click='getOrderTypeData' :data-type="index"
+						<view v-for='(item, index) in navTexts' :key="index" @click='getOrderTypeData' :data-type="index"
 						 :class="status == index ? 'selected' : ''">{{item}}</view>
 					</scroll-view>
 				</view>
@@ -20,7 +24,7 @@
 			<view class="item-container">
 				<!-- 订单数据为空 -->
 				<view class="empty" v-if="orderList.length === 0">
-					<image src="../../../static/icon/no_order.png"></image>
+					<image src="/static/icon/no_order.png"></image>
 					<view class="tc">
 						<text class="c999 fs34">您还没有相关订单</text>
 					</view>
@@ -105,39 +109,40 @@
 										</view> -->
 
 										<!-- 送料地址 -->
-										<view class="address-space">
+										<view class="address-space" v-if="item.shipping_address">
 											<view class="mgb-20">送料地址</view>
 
 											<view class="flex align-item-start lh42 mgb-20">
-												<view class="fs26 c999 mgr30"> 收货人 {{item.get_address.mobile}} <text v-if="item.get_address.remark" class="tag lh42 mgl-20">{{item.get_address.remark}}</text></view>
-
+												<view class="fs26 c999 mgr30"> 收货人 {{item.shipping_address.mobile}} <text v-if="item.shipping_address.remark" class="tag lh42 mgl-20">{{item.shipping_address.remark}}</text></view>
 												<!-- <view class="flex-1 fs26 c999">
 													{{item.get_address.stall || ''}}
 												</view> -->
 											</view>
-
 											<view class="fs26 lh42 text-666">
-
-												{{item.get_address.city_str}} {{ item.get_address.address}}
+												{{item.shipping_address.city_str}} {{ item.shipping_address.address}}
 											</view>
 										</view>
-
-
 									</view>
 								</view>
-
 							</view>
 							<!--按钮  -->
 							<view class="flex flex-end order-handle">
 								<!--找料中  -->
-								<view v-if="status == 2" class="flex find-status">
+								<!-- <view v-if="status == 2" class="flex find-status">
 									<view :data-type='2' :data-id="item.id" @click='showForm'>{{nav==1?'找':'取'}}不到物料</view>
 									<view :data-type='1' :data-id="item.id" @click='showForm' class="ctheme warm-border">{{nav==1?'找':'取'}}到物料</view>
-								</view>
+								</view> -->
 
-								<view v-if="status == 1" class="flex find-status">
+								<view v-if="status == 1" class="flex find-status mgr-20" @click="receiptOrder(item.id)">
 									<view>确认接单</view>
 								</view>
+								<view class="cancat flr" v-if="status != 1">
+									<image src="../../static/icon/concat.png"></image>
+									<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
+									<view class="btn-1" @click.stop="goChat"></view>
+									<view class="btn-2" @click.stop="contact"></view>
+								</view>
+								
 							</view>
 						</view>
 					</block>
@@ -148,8 +153,6 @@
 				</view>
 			</view>
 		</view>
-
-
 		<view v-if="formshow" class="pop-window" @touchmove="preventD">
 			<!-- 填写地址 -->
 			<view v-if="formtype =='1'" class="form-box-1">
@@ -194,7 +197,6 @@
 					</view>
 				</form>
 			</view>
-
 			<!-- 填写找不到物料原因 -->
 			<view v-if="formtype == '2'" class="form-box-2" @touchmove="preventD">
 				<text @click='close' class="iconfont icon-guanbi close"></text>
@@ -227,9 +229,7 @@
             </view>
         </form>
     </view>
-
 </view>
-
 
 <view  v-if="showCon" class="modal-mask" @click="changeModalCancel">
     <view class="modal-dialog">
@@ -252,73 +252,108 @@
 	export default {
 		data() {
 			return {
+				searchValue:'',
 				params: {
 					task_type: 1,
 					type: -1,
 				},
 			    page: 1,
-			    status: 1,
-			    nav:1,
+			    status: 0,
 			    multiIndex: [7, 0, 8],
 			    orderList:[],
 			    isFullLoad:false,
 			    address:'',
 			    name:'',
-				navTexts:{
-					find:['全部','待接单','待找料','待确认','待评价','已完成'],
-					fetch:['全部','待接单','待找料','待确认','待评价','已完成']
-				}
+				navTexts:['全部','待接单','派送中','待收货','待评价','已完成']
 			};
 		},
 	
 		onLoad(options) {
 			
 			uni.setNavigationBarTitle({
-				title: "配送订单"
+				title: "找料订单"
 			})
 		},
 		onShow() {
-			
-			this.$data.nav = wx.getStorageSync('nav') || 1;
-			this.$data.status = wx.getStorageSync('status') || 1;
+			console.log('onShow')
+			// 获取分类数据
+			this.$data.status = wx.getStorageSync('status') || 0;
 			this.$data.orderList = [] 
+			
 			  // 获取数据
 			this.getMyOrders();
 		},
+		mounted(){
+			console.log('mounted')
+			
+		},
 		methods: {
+			
+			// 搜索
+			doSearch(){
+				
+				this.$data.scrolLeft = 0;
+				if(this.$data.searchValue == ''){
+					util.errorTips('搜索关键字不能为空');
+					return false;
+				}
+				this.$data.page = 1;
+				api.staffShipSearch({
+					data:{
+						page:this.$data.page,
+						keyword:this.$data.searchValue
+					}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.orderList = [];
+						this.$data.orderList = this.$data.orderList.concat(res.data);
+					}
+					
+				})
+			},
+			
+			// 确认接单
+			receiptOrder(id){
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确定接单?',
+					success: function (res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+							api.staffShipGet({
+								method:'POST',
+								data:{
+									id
+								}
+							}).then((res)=>{
+								if(res.code == 200 || res.code == 0){
+									_this.$data.status = 2; // 状态2 已接单
+									util.successTips("接单成功");
+								}
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
+			},
 			// 获取数据
 			  getMyOrders(){
-			   if(this.$data.nav == 1){
-				 api.myOrderFindList({
-				   data: {
-					 page: this.$data.page,
-					 status: this.$data.status
-				   }
-				 }).then((res) => {
-				   if(res.data.length <=0) this.$data.isFullLoad = true;
-				   this.$data.orderList = this.$data.orderList.concat(res.data);
-				 })
-			   } else if (this.$data.nav == 2){
-				 api.myOrderFetchList({
-				   data: {
-					 page: this.$data.page,
-					 status: this.$data.status
-				   }
-				 }).then((res) => {
-				   if (res.data.length <= 0) this.$data.isFullLoad = true;
-				   this.$data.orderList = this.$data.orderList.concat(res.data);
-				 })
-			   } else if (this.$data.nav == 3){
-				 api.myOrderShipList({
-				   data: {
-					 page: this.$data.page,
-					 status: this.$data.status
-				   }
-				 }).then((res) => {
-				   if (res.data.length <= 0) this.$data.isFullLoad = true;
-				   this.$data.orderList = this.$data.orderList.concat(res.data);
-				 })
-			   }
+				  let s  = 0;
+				  if(this.$data.status >= 1){
+					  s =  this.$data.status+1;
+				  }
+				   api.myOrderShipList({
+					 data: {
+						 page: this.$data.page,
+						 status:s
+					 }
+				   }).then((res) => {
+					 if(res.data.length <=0) this.$data.isFullLoad = true;
+					 this.$data.orderList = this.$data.orderList.concat(res.data);
+				   })
 				
 			  },
 			  
@@ -326,7 +361,7 @@
 				getOrderData(e) {
 					this.$data.nav = e.currentTarget.dataset.nav;
 					uni.setStorageSync('nav',this.$data.nav);
-					uni.setStorageSync('status', 1);
+					uni.setStorageSync('status', 0);
 					this.$data.isFullLoad = false;
 					this.$data.page = 1;
 					this.$data.status = 1;
@@ -346,12 +381,10 @@
 				
 				// 查看详情
 				seeDetail(e) {
-
 				  let index = e.currentTarget.dataset.index;
 				  let id = e.currentTarget.dataset.id;
-				  
 				  uni.navigateTo({
-					url: `../fetchPages/fetchOrderDetail/fetchOrderDetail?index=${this.$data.nav}&id=${id}&status=${this.$data.status}`,
+					url: "../index/fetchPage/fetchOrderDetail/fetchOrderDetail?id="+id
 				  })
 					
 				},
@@ -383,6 +416,40 @@
 </script>
 
 <style lang="scss" scoped>
+	.cancat{
+		margin-right: 10upx;
+		width: 360upx;
+		height: 100upx;
+		position: relative;
+		top: 0upx;
+		text{
+			position: absolute;
+			top: 34upx;
+			left: 38upx;
+			font-size: 28upx;
+			color: #F29800;
+		}
+		image{
+			width: 360upx;
+			height: 100upx;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.btn-1,.btn-2{
+			width: 80upx;
+			height: 100upx;
+			position: absolute;
+			top:0;
+		}
+		.btn-1{
+			right: 28upx;
+		}
+		.btn-2{
+			right: 120upx;
+		}
+		
+	}
 	.empty{
 		image{
 			width: 180upx;
@@ -411,6 +478,7 @@
 	}
 .empty{
 	text-align: center;
+	margin-top: 100upx;
 }
 .fixed-block {
     position: fixed;
@@ -465,13 +533,13 @@
     padding: 0 10upx;
 }
 
-.status-section view.selected, .select-order view.selected {
+.status-section view.selected, .select-order view.selected{
     color: #F29800;
     border-bottom: 4upx #F29800 solid;
 }
 
 .item-container {
-    padding: 200upx 0 30upx;
+    padding: 220upx 0 30upx;
 	text-align: left;
 }
 
@@ -554,7 +622,7 @@
 }
 
 .order-handle {
-    padding: 30upx 20upx 30upx 30upx;
+    height: 120upx;
 }
 
 .find-status view {
@@ -624,5 +692,38 @@
       text-align: center;
       font-weight: 500;
     }
-
+.search{
+			height: 100upx;
+			border-bottom: 1upx solid #f4f4f4;
+			.warp{
+				position: relative;
+				
+				image{
+					width: 750upx;
+					height: 100upx;
+					position: absolute;
+					top: 0;
+					left: 0;
+				}
+				input{
+					width: 500upx;
+					position: absolute;
+					top: 20upx;
+					left: 100upx;
+					height: 60upx;
+					text-align: left;
+					line-height: 66upx;
+					z-index: 999;
+				}
+				text{
+					position: absolute;
+					display: block;
+					width: 200upx;
+					height: 100upx;
+					right: 0;
+					top: 0;
+					z-index: 99999;
+				}
+			}
+		}
 </style>

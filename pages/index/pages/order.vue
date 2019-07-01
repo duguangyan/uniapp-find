@@ -24,7 +24,8 @@
 			<view class='no-order-data' v-if="orderList.length<=0">
 				<image src='../../static/icon/no_order.png'></image>
 				<view class='text-666 text-center fs30 mgt-50'>你还没有相关订单</view>
-				<view class='do-order' @click='doOrder'>去下单</view>
+				<view class='do-order' @click='doOrder(1)'>添加找料订单</view>
+				<view class='do-order' @click='doOrder(2)'>添加取送订单</view>
 			</view>
 			<view class='order-content'>
 				<view class='task-find' v-for="(item, index) in orderList" :key="index">
@@ -120,16 +121,16 @@
 								<view class='order-footer-btn bt-2 cf' v-if='item.can_refuse==1||item.can_confirm==1||item.can_delete==1 ||item.can_comment==1'>
 
 
-									<button @click.stop='toReturn(item.id)' v-if='item.can_refuse==1'>退款</button>
+									<button @click.stop='toReturn(item.id)' v-if='item.can_refuse==1'>申请退款</button>
 									<button @click.stop='affirmOrder(item.id,index)' v-if='item.can_confirm==1' class='order-footer-btn-red'>确认收货</button>
 									<button @click.stop='toComment(item.id)' v-if='item.can_comment==1'>评价</button>
 									<button @click.stop='toDel(item.id)' v-if='item.can_delete==1'>删除</button>
 
-									<view class="cancat flr" v-if="orderChildNavNum == 0">
+									<view class="cancat flr" v-if="item.can_refuse != 1">
 										<image src="../../static/icon/concat.png"></image>
 										<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
-										<view class="btn-1" @click="goChat"></view>
-										<view class="btn-2" @click="contact"></view>
+										<view class="btn-1" @click.stop="goChat"></view>
+										<view class="btn-2" @click.stop="contact"></view>
 									</view>
 								</view>
 								
@@ -148,7 +149,6 @@
 		 bindcancel="delCancel">
 			<input class='bt-1 lh50 pdt-30' type='text' placeholder='请填写取消订单的原因' @click='delModelInput'></input>
 		</dialog> -->
-
 
 		<view v-if="isCommentModel" class="comment-model">
 			<view class="comment-model-bg"></view>
@@ -475,13 +475,16 @@
 			},
 
 			// 去下单
-			doOrder() {
-				uni.reLaunch({
-					url: '../index/index',
-					success: function() {
-						_this.$store.commit("change_page", 1);
-					}
-				});
+			doOrder(index) {
+				if(index == 1){ // 去找料订单
+					uni.navigateTo({
+						url:'../../../../find/find'
+					})
+				}else{          // 去取送订单
+					uni.navigateTo({
+						url:'../../../../fetch/fetch'
+					})
+				}
 			},
 			// 退款
 			toReturn(id) {
@@ -515,12 +518,6 @@
 							util.errorTips('用户点击取消');
 						}
 					}
-				}).catch((res)=>{
-					for (let i = 0; i < _this.$data.orderList.length; i++) {
-						if (_this.$data.orderList[i].id == id) {
-							_this.$data.orderList[i].can_refuse = 0;
-						}
-					}
 				})
 
 			},
@@ -534,6 +531,10 @@
 				this.$data.orderList = [];
 				this.$data.page = 1;
 				this.getList(this.$data.orderNavNum + 1, i, this.$data.page);
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300
+				});
 			},
 			// 一级nav切换
 			checkNav(e) {
@@ -548,6 +549,10 @@
 				this.$data.page = 1;
 				this.$data.orderChildNavNum = 0;
 				this.getList(i + 1, this.$data.orderChildNavNum, this.$data.page);
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300
+				})
 			},
 			// 获取订单列表
 			getList(index, status, page) {
@@ -636,9 +641,9 @@
 	.cancat{
 		margin-right: 10upx;
 		width: 360upx;
-		height: 100upx;
+		// height: 100upx;
 		position: relative;
-		
+		top: -20upx;
 		text{
 			position: absolute;
 			top: 34upx;
@@ -974,9 +979,10 @@
 		line-height: 60upx;
 		font-size: 30upx;
 		height:60upx;
-		color: #fff;
-		background:#F29800;
+		color: #F29800;
+		background:#fff;
 		border-radius:30upx;
+		border: 1upx solid #F29800;
 	}
 
 	.order-footer-btn-red {
@@ -999,14 +1005,13 @@
 		width: 114upx;
 		height: 144upx;
 		text-align: center;
-		margin-top: 370upx;
-
+		margin-top: 470upx;
 	}
 
 	.do-order {
-		width: 200upx;
-		height: 60upx;
-		line-height: 60upx;
+		width: 240upx;
+		height: 80upx;
+		line-height: 80upx;
 		text-align: center;
 		margin: 0 auto;
 		background-color: #F29800;
