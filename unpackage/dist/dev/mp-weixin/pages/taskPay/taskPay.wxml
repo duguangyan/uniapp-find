@@ -1,0 +1,2 @@
+<import src="./taskPay.vue.wxml" />
+    <template is="0a126082" data="{{ ...$root['0'], $root }}"/>

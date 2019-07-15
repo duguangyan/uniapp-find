@@ -1,0 +1,2 @@
+<import src="./cashRecord.vue.wxml" />
+    <template is="393778e0" data="{{ ...$root['0'], $root }}"/>

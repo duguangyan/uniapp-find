@@ -1,0 +1,2 @@
+setCssToHead(["@charset \x22UTF-8\x22;\n.",[1],"index.",[1],"data-v-7cf71d4a { background-color: #F5F5F5; height: 100vh; }\n.",[1],"bb20.",[1],"data-v-7cf71d4a { border-top: ",[0,20]," solid #F5F5F5; }\n",],undefined,{path:"./pages/setting/userInfo/userInfo.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/setting/userInfo/userInfo.wxml') } }));

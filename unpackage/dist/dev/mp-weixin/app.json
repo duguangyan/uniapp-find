@@ -1,0 +1,55 @@
+{
+  "pages": [
+    "pages/start/start",
+    "pages/index/index",
+    "pages/login/login",
+    "pages/resetPassworld/resetPassworld",
+    "pages/familyCenter/familyCenter",
+    "pages/setting/setting",
+    "pages/familyExplain/familyExplain",
+    "pages/family/family",
+    "pages/find/find",
+    "pages/classify/classify",
+    "pages/address/address",
+    "pages/addressNew/addressNew",
+    "pages/fetch/fetch",
+    "pages/taskPay/taskPay",
+    "pages/taskPaySuccess/taskPaySuccess",
+    "pages/orderDetail/orderDetail",
+    "pages/setting/userInfo/userInfo",
+    "pages/chatList/chatList",
+    "pages/chat/chat",
+    "pages/recharge/recharge",
+    "pages/giftCertificate/giftCertificate",
+    "pages/integralmall/integralmall",
+    "pages/setting/authentication/authentication",
+    "pages/setting/modifyNickname/modifyNickname",
+    "pages/setting/modifyPassword/modifyPassword",
+    "pages/index/findPages/findOrderDetail/findOrderDetail",
+    "pages/search/search",
+    "pages/index/fetchPage/fetchOrderDetail/fetchOrderDetail",
+    "pages/index/common/recordList/recordList",
+    "pages/index/common/cash/cash",
+    "pages/index/common/bindAlipay/bindAlipay",
+    "pages/index/common/cashRecord/cashRecord",
+    "pages/activity/spike/spike",
+    "pages/activity/rush/rush",
+    "pages/activity/promo/promo",
+    "pages/activity/spell/spell",
+    "pages/rechargeSuccess/rechargeSuccess",
+    "pages/protocol/protocol"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "小鹿快找",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {},
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  }
+}
