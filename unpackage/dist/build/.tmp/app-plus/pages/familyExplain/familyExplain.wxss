@@ -45,8 +45,7 @@
   line-height: 88rpx;
   text-align: center;
   background: #F29800;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   color: #fff;
   font-size: 32rpx;
   margin: 040rpx auto;

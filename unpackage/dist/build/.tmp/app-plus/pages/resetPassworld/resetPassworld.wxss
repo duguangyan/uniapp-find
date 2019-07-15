@@ -54,8 +54,7 @@ page.data-v-08cc62f8 {
   width: 680rpx;
   background: #999;
   line-height: 80rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   margin: 0 auto;
   margin-top: 50rpx;
   color: #fff;
@@ -69,8 +68,7 @@ page.data-v-08cc62f8 {
   width: 480rpx;
   background: #eee;
   margin-left: 40rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   margin-top: 40rpx;
   position: relative;
 }
@@ -81,8 +79,7 @@ page.data-v-08cc62f8 {
     width: 180rpx;
     background: #e2e2e2;
     font-size: 24rpx;
-    -webkit-border-radius: 10rpx;
-            border-radius: 10rpx;
+    border-radius: 10rpx;
     right: -200rpx;
     color: #fff;
     text-align: center;
@@ -122,8 +119,7 @@ page.data-v-08cc62f8 {
   width: 680rpx;
   background: #eee;
   margin: 0 auto;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   margin-top: 100rpx;
   position: relative;
 }

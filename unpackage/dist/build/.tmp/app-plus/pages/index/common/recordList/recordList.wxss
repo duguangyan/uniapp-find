@@ -50,8 +50,7 @@
       text-align: center;
       background: #F29800;
       color: #fff;
-      -webkit-border-radius: 60rpx;
-              border-radius: 60rpx;
+      border-radius: 60rpx;
       margin: 0 auto;
       font-size: 38rpx;
 }

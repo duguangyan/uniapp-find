@@ -1,5 +1,3 @@
-<import src="/components/list/list-icon.vue.wxml" />
-<import src="/components/list/list-item.vue.wxml" />
 <import src="/pages/index/pages/home.vue.wxml" />
 <import src="/pages/index/pages/task.vue.wxml" />
 <import src="/pages/index/pages/order.vue.wxml" />
@@ -10,10 +8,12 @@
 <import src="/pages/index/pages/fetchCenter.vue.wxml" />
 <import src="/pages/index/pages/msg.vue.wxml" />
 <import src="/components/footer/footer_nav.vue.wxml" />
+<import src="/components/list/list-icon.vue.wxml" />
+<import src="/components/list/list-item.vue.wxml" />
 <import src="/components/upload.vue.wxml" />
 <import src="/components/uni-number-box/uni-number-box.vue.wxml" />
 <import src="/components/uni-list-item/uni-list-item.vue.wxml" />
-<import src="/common/slots.wxml" />
 <import src="/components/uni-icon/uni-icon.vue.wxml" />
 <import src="/components/uni-badge/uni-badge.vue.wxml" />
+<import src="/common/slots.wxml" />
 

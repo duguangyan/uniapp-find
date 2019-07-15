@@ -1,6 +1,10 @@
 {
     "pages" : [
         //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+		    "path" : "pages/protocol/protocol",
+		    "style" : {}
+		},
         {
             "path" : "pages/start/start",
             "style" : {
@@ -219,10 +223,7 @@
             "path" : "pages/rechargeSuccess/rechargeSuccess",
             "style" : {}
         }
-        ,{
-            "path" : "pages/protocol/protocol",
-            "style" : {}
-        }
+        
     ],
 	"permission": {
 		"scope.userLocation": {

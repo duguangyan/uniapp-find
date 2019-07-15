@@ -91,8 +91,7 @@
     margin-top: 10rpx;
 }
 .lately-search .content .li.data-v-1705cba8 {
-      -webkit-border-radius: 10rpx;
-              border-radius: 10rpx;
+      border-radius: 10rpx;
       background: #eee;
       padding: 4rpx 8rpx;
       margin-right: 20rpx;
@@ -139,8 +138,7 @@
   opacity: .6;
   height: 80rpx;
   width: 620rpx;
-  -webkit-border-radius: 100rpx;
-          border-radius: 100rpx;
+  border-radius: 100rpx;
 }
 .search_content .title.data-v-1705cba8 {
   height: 140rpx;
@@ -191,8 +189,7 @@
   right: 160rpx;
   top: 20rpx;
   color: #fff;
-  -webkit-border-radius: 50%;
-          border-radius: 50%;
+  border-radius: 50%;
   z-index: 999999;
   background: #999;
 }

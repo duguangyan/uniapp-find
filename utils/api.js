@@ -1,7 +1,7 @@
-  const apiUrl = 'https://apibeta.yidap.com'; // 体验
+ // const apiUrl = 'https://apibeta.yidap.com'; // 体验
  // const apiUrl = 'https://devv2.yidap.com'; // 测试
- //const apiUrl = 'https://apiv2.yidap.com';     // 正式
- const versionNumber = 'v4.0.2'; //版本号
+ const apiUrl = 'https://apiv2.yidap.com';     // 正式
+ const versionNumber = 'v2.0.8'; //版本号
 
  if (apiUrl == 'https://apiv2.yidap.com') {
  	uni.setStorageSync('v', versionNumber + ' 正式');

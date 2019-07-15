@@ -58,8 +58,7 @@ page.data-v-30fd41a1 {
   width: 320rpx;
   text-align: center;
   border: 1rpx solid #666;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   margin-left: 240rpx;
   margin-top: 60rpx;
 }

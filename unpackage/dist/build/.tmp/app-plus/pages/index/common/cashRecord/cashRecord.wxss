@@ -39,8 +39,7 @@
 }
 .record .items .item.data-v-021eb63a {
       margin: 0 20rpx 20rpx 20rpx;
-      -webkit-border-radius: 10rpx;
-              border-radius: 10rpx;
+      border-radius: 10rpx;
       background: #fff;
       padding: 20rpx;
       position: relative;

@@ -565,8 +565,7 @@
 } */
 /*一般圆角  */
 .radius-10 {
-    -webkit-border-radius: 10rpx;
-            border-radius: 10rpx;
+    border-radius: 10rpx;
 }
 /*公共阴影  */
 .shadow {
@@ -817,8 +816,7 @@
     z-index: 2;
 }
 .box-shadow{
-  -webkit-border-radius:10rpx;
-          border-radius:10rpx;
+  border-radius:10rpx;
   margin: 20rpx;
   -webkit-box-shadow: 0 2rpx 10rpx rgba(102, 102, 102, .3);
           box-shadow: 0 2rpx 10rpx rgba(102, 102, 102, .3);

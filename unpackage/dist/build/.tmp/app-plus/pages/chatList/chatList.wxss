@@ -48,16 +48,14 @@
 .chat-list .items .item .item-1 image.data-v-cb4880b6 {
   width: 96rpx;
   height: 96rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
 }
 .chat-list .items .item .item-1 .spot.data-v-cb4880b6 {
   position: absolute;
   width: 20rpx;
   height: 20rpx;
   background: #C81A29;
-  -webkit-border-radius: 50%;
-          border-radius: 50%;
+  border-radius: 50%;
   top: -5rpx;
   right: 2rpx;
 }

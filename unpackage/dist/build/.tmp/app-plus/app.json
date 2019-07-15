@@ -36,7 +36,8 @@
     "pages/activity/rush/rush",
     "pages/activity/promo/promo",
     "pages/activity/spell/spell",
-    "pages/rechargeSuccess/rechargeSuccess"
+    "pages/rechargeSuccess/rechargeSuccess",
+    "pages/protocol/protocol"
   ],
   "subPackages": [],
   "window": {
@@ -52,5 +53,5 @@
     "autoclose": false
   },
   "appname": "一鹿找",
-  "compilerVersion": "2.0.1"
+  "compilerVersion": "2.1.0"
 }

@@ -87,8 +87,7 @@
   line-height: 60rpx;
   width: 90rpx;
   background-color: #c8c8c8;
-  -webkit-border-radius: 20rpx;
-          border-radius: 20rpx;
+  border-radius: 20rpx;
   position: absolute;
   top: 20rpx;
   left: 28rpx;
@@ -123,8 +122,7 @@
   width: 130rpx;
   height: 50rpx;
   line-height: 50rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   text-align: center;
   border: 1rpx solid #666;
   color: #333;

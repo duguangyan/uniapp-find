@@ -85,8 +85,7 @@ page.data-v-00eac98c {
   text-align: center;
   color: #fff;
   background: #F29800;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
 }
 .submit view.data-v-00eac98c {
   padding-bottom: 30rpx;

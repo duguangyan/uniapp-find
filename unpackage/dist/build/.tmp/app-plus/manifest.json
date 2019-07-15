@@ -7,8 +7,8 @@
   "id": "__UNI__6F097C0",
   "name": "一鹿找",
   "version": {
-    "name": "2.0.7",
-    "code": 207
+    "name": "2.0.8",
+    "code": 208
   },
   "description": "皮箱行业一站式找料取送业务",
   "launch_path": "__uniappservice.html",
@@ -98,7 +98,7 @@
     },
     "allowsInlineMediaPlayback": true,
     "uni-app": {
-      "compilerVersion": "2.0.1",
+      "compilerVersion": "2.1.0",
       "control": "webview",
       "nvueCompiler": "weex"
     }

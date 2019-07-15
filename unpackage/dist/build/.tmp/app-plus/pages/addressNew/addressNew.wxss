@@ -51,8 +51,7 @@
 .address-form {
   background: #fff;
   margin: 0 30rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
   padding: 10rpx 30rpx 30rpx 30rpx;
 }
 .address-form > view:last-of-type {
@@ -130,8 +129,7 @@
   margin: 0 30rpx;
   width: 690rpx;
   margin-top: 75rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
 }
 .address-switch {
   -webkit-transform: scale(0.6);
@@ -167,8 +165,7 @@
   overflow: hidden;
   z-index: 9999;
   background: #f9f9f9;
-  -webkit-border-radius: 5rpx;
-          border-radius: 5rpx;
+  border-radius: 5rpx;
 }
 .modal-title {
   padding-top: 30rpx;

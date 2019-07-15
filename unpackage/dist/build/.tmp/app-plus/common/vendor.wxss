@@ -151,8 +151,7 @@
     left: 40rpx;
     height: 120rpx;
     width: 120rpx;
-    -webkit-border-radius: 60rpx;
-            border-radius: 60rpx;
+    border-radius: 60rpx;
 }
 .item .icon-small.data-v-6d73fbb5 {
     position: absolute;
@@ -247,8 +246,7 @@
   color: #fff;
   background: #ccc;
   margin: 10rpx 36rpx;
-  -webkit-border-radius: 10rpx;
-          border-radius: 10rpx;
+  border-radius: 10rpx;
 }
 .upload-img-box image.data-v-fb2aeb18 {
     width: 160rpx;
@@ -322,8 +320,7 @@
     right: -50%;
     bottom: -50%;
     border: 1px solid #c8c7cc;
-    -webkit-border-radius: 12rpx;
-            border-radius: 12rpx;
+    border-radius: 12rpx;
     -webkit-transform: scale(0.5);
         -ms-transform: scale(0.5);
             transform: scale(0.5);
@@ -378,8 +375,7 @@
   -webkit-appearance: none;
   background-color: #fff;
   background-image: none;
-  -webkit-border-radius: 4px;
-          border-radius: 4px;
+  border-radius: 4px;
   border: 1px solid #c0c4cc;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -453,8 +449,7 @@
 .show-box .clear.data-v-c2e67bdc {
   color: #fff;
   background-color: #c0c4cc;
-  -webkit-border-radius: 50%;
-          border-radius: 50%;
+  border-radius: 50%;
   padding: 1.5px 3px 2px 3px;
 }
 .show-box .list-container.data-v-c2e67bdc {
@@ -500,8 +495,7 @@
   border-bottom-color: #fff;
 }
 .show-box .list-container .list.data-v-c2e67bdc {
-  -webkit-border-radius: 4px;
-          border-radius: 4px;
+  border-radius: 4px;
   border: 1px solid #dcdfe6;
   width: 100%;
   max-height: 10em;
@@ -578,8 +572,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-/* components/Dialog/dialog.wxss */
-.wx-mask.data-v-36677628 {
+.wx_dialog_container .wx-mask.data-v-3a3ef837 {
   position: fixed;
   z-index: 1000;
   top: 0;
@@ -588,7 +581,7 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.3);
 }
-.wx-dialog.data-v-36677628 {
+.wx_dialog_container .wx-dialog.data-v-3a3ef837 {
   position: fixed;
   z-index: 5000;
   width: 80%;
@@ -600,15 +593,14 @@
       transform: translate(-50%, -50%);
   background-color: #FFFFFF;
   text-align: center;
-  -webkit-border-radius: 3px;
-          border-radius: 3px;
+  border-radius: 3px;
   overflow: hidden;
 }
-.wx-dialog-title.data-v-36677628 {
+.wx_dialog_container .wx-dialog-title.data-v-3a3ef837 {
   font-size: 36rpx;
   padding-top: 20rpx;
 }
-.wx-dialog-content.data-v-36677628 {
+.wx_dialog_container .wx-dialog-content.data-v-3a3ef837 {
   padding: 30rpx 20rpx;
   min-height: 40rpx;
   font-size: 32rpx;
@@ -619,7 +611,7 @@
   /* height: 500rpx; */
   overflow: scroll;
 }
-.wx-dialog-footer.data-v-36677628 {
+.wx_dialog_container .wx-dialog-footer.data-v-3a3ef837 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -629,17 +621,17 @@
       -ms-flex-align: center;
           align-items: center;
   position: relative;
-  line-height: 45px;
-  font-size: 17px;
+  line-height: 45rpx;
+  font-size: 17rpx;
 }
-.wx-dialog-footer.data-v-36677628::before {
+.wx_dialog_container .wx-dialog-footer.data-v-3a3ef837::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
-  height: 1px;
-  border-top: 1px solid #D5D5D6;
+  height: 1rpx;
+  border-top: 1rpx solid #D5D5D6;
   color: #D5D5D6;
   -webkit-transform-origin: 0 0;
   -ms-transform-origin: 0 0;
@@ -648,7 +640,7 @@
   -ms-transform: scaleY(0.5);
       transform: scaleY(0.5);
 }
-.wx-dialog-btn.data-v-36677628 {
+.wx_dialog_container .wx-dialog-btn.data-v-3a3ef837 {
   display: block;
   -webkit-flex: 1;
   -webkit-box-flex: 1;
@@ -658,21 +650,21 @@
   position: relative;
   background: #F29800;
 }
-.wx-dialog-footer .wx-dialog-btn.data-v-36677628:nth-of-type(1) {
+.wx_dialog_container .wx-dialog-footer .wx-dialog-btn.data-v-3a3ef837:nth-of-type(1) {
   color: #fff;
 }
-.wx-dialog-footer .wx-dialog-btn.data-v-36677628:nth-of-type(2) {
+.wx_dialog_container .wx-dialog-footer .wx-dialog-btn.data-v-3a3ef837:nth-of-type(2) {
   color: #fff;
   background-color: #F29800;
 }
-.wx-dialog-footer .wx-dialog-btn.data-v-36677628:nth-of-type(2):after {
+.wx_dialog_container .wx-dialog-footer .wx-dialog-btn.data-v-3a3ef837:nth-of-type(2):after {
   content: " ";
   position: absolute;
   left: 0;
   top: 0;
-  width: 1px;
+  width: 1rpx;
   bottom: 0;
-  border-left: 1px solid #D5D5D6;
+  border-left: 1rpx solid #D5D5D6;
   color: #D5D5D6;
   -webkit-transform-origin: 0 0;
   -ms-transform-origin: 0 0;

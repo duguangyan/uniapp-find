@@ -70,8 +70,7 @@
       left: 40rpx;
       top: 40rpx;
       bottom: 40rpx;
-      -webkit-border-radius: 10rpx;
-              border-radius: 10rpx;
+      border-radius: 10rpx;
 }
 .authentication .image.data-v-1b290f3a {
     width: 100%;
@@ -163,8 +162,7 @@
   overflow: hidden;
   z-index: 9999;
   background: #f9f9f9;
-  -webkit-border-radius: 5rpx;
-          border-radius: 5rpx;
+  border-radius: 5rpx;
 }
 .modal-title.data-v-1b290f3a {
   padding-top: 30rpx;
