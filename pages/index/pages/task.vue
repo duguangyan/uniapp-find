@@ -17,9 +17,9 @@
 					<view class='check-edit' @click='edit' :data-index='index' :data-item='item' data-nav='1'>
 						<text>修改</text>
 					</view>
-					<view class='image-bg'>
+					<!-- <view class='image-bg'>
 						<image src='/static/icon/task_find.png'></image>
-					</view>
+					</view> -->
 
 					<view class='task-content pdr-20'>
 						<view>
@@ -117,9 +117,9 @@
 					<view class='check-edit fetch-edit' @click='edit' :data-index='index' :data-item='item' data-nav='2'>
 						<text>修改</text>
 					</view>
-					<view class='image-bg'>
+					<!-- <view class='image-bg'>
 						<image src='/static/icon/task_get.png'></image>
-					</view>
+					</view> -->
 					<view class='task-content pdr-20'>
 						<view>
 							<text>
@@ -187,11 +187,14 @@
 			</view>
 		</view>
 
-		<view class='no-data' v-if='finds.length<=0 &&fetchs.length<=0'>
+		<view class='no-data' v-if='hasFinds && hasFetchs'>
 			<image src='../../static/icon/no_order1.png'></image>
 			<view class='no-data-text'>你没有相关任务</view>
-			<view class='no-data-btn' @click='goIndex'>
-				去添加任务
+			<view class='no-data-btn' @click='goIndex(1)'>
+				添加找料订单
+			</view>
+			<view class='no-data-btn' @click='goIndex(2)'>
+				添加取送订单
 			</view>
 		</view>
 
@@ -205,6 +208,8 @@
 	export default {
 		data() {
 			return {
+				hasFinds:false,
+				hasFetchs:false,
 				finds: [],
 				fetchs: [],
 				startX: 0, //开始坐标
@@ -232,6 +237,7 @@
 			
 		},
 		mounted() {
+			
 			// 初始化选择按钮
 			this.$data.findsCheckAll = true;
 			this.$data.fetchsCheckAll = true;
@@ -241,23 +247,45 @@
 			this.init();
 			// 获取取送任务编辑信息
 			this.$eventHub.$on('editData', (data) => {
-				if(data.task[0].type == 1){
-					this.$data.finds.forEach((o,i)=>{
-						if(o.id == data.task[0].id){
-							this.$data.finds[i] = data.task[0] 
-						}
-					})
-				}else{
-					this.$data.fetchs.forEach((o,i)=>{
-						if(o.id == data.task[0].id){
-							this.$data.fetchs[i] = data.task[0] 
-						}
-					})
-				}
+				
+				// 初始化选择按钮
+				this.$data.findsCheckAll = true;
+				this.$data.fetchsCheckAll = true;
+				this.$data.isCheckAll = true;
+				this.$data.finds = [];
+				this.$data.fetchs = [];
+				this.init();
+				
+				// if(data.task[0].type == 1){
+				// 	this.$data.finds.forEach((o,i)=>{
+				// 		if(o.id == data.task[0].id){
+				// 			this.$data.finds[i] = data.task[0] 
+				// 		}
+				// 	})
+				// }else{
+				// 	this.$data.fetchs.forEach((o,i)=>{
+				// 		if(o.id == data.task[0].id){
+				// 			this.$data.fetchs[i] = data.task[0] 
+				// 		}
+				// 	})
+				// }
 				
 			})
 		},
 		methods: {
+			// 回到首页
+			goIndex(index){
+				if(index == 1){ // 去找料订单
+					uni.navigateTo({
+						url:'../../../../find/find'
+					})
+				}else{          // 去取送订单
+					uni.navigateTo({
+						url:'../../../../fetch/fetch'
+					})
+				}
+				
+			},
 			// 获取公司地址
 			getCompanyaddress() {
 				api.getCompanyaddress({}).then((res) => {
@@ -271,10 +299,15 @@
 				let cancelCheckFetchsIds = uni.getStorageSync('cancelCheckFetchsIds') || [];
 				api.getTaskInit({}).then((res) => {
 					if (res.code == 200 || res.code == 0) {
+						
 						let finds = res.data.find;
 						let findsLength = res.data.find.length;
 						let fetchs = res.data.fetch;
 						let fetchsLength = res.data.fetch.length;
+						
+						this.$data.hasFinds = finds.length<=0?true:false;
+						this.$data.hasFetchs = finds.length<=0?true:false;
+						
 						finds.forEach((v, i) => {
 							v.isTouchMove = false;
 							finds[i].address = finds[i].address ? finds[i].address : null;
@@ -872,16 +905,18 @@
 	}
 
 	.no-data-btn {
-		width: 200upx;
-		height: 60upx;
-		line-height: 60upx;
+		width: 240upx;
+		height: 80upx;
+		line-height: 80upx;
 		text-align: center;
-		color: #fff;
-		background-color: #F29800;
-		border-radius: 10upx;
-		font-size: 36upx;
 		margin: 0 auto;
-		margin-top: 50upx;
+		background-color: #F29800;
+		-webkit-border-radius: 10upx;
+		border-radius: 10upx;
+		color: #fff;
+		font-size: 30upx;
+		margin-top: 40upx;
+
 	}
 
 	.task-content-le {

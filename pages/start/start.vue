@@ -26,6 +26,7 @@
 		methods:{
 			goNextPage(index){
 				uni.setStorageSync('userType',index); // 用户类型
+				this.$store.commit('change_page',0);   // 第一个页面
 				uni.navigateTo({
 					url:'../login/login?from=' + index
 				})

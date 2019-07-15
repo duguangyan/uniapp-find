@@ -23,7 +23,8 @@
 
 
 		<view class='item'>
-			<view class="navigator-box section-order">
+			<view class="navigator-box section-order"> 
+			 <!-- open-type="share" -->
 				<button class="navigator-text fs30 pdl-30" open-type="share" style="background-color:#fff;border:none;height:115rpx;line-height:115rpx;text-align:left;font-weight: 600;">
 					立即 <text style='color:#FFA40A'>推广小鹿家人</text>
 					<text class="fs24 text-666 mgr-30 flr" style='font-weight: 500;'>注册小鹿家人，增添更大收益</text>
@@ -127,14 +128,35 @@
 						
 					}
 				})
+			},
+			share(){
+				let _this = this;
+				uni.share({
+					provider: 'weixin',
+					type: 5,
+					imageUrl: 'https://static.yidap.com/miniapp/o2o/imgs/ic_launcher.png',
+					title: '众皮联小鹿快找',
+					miniProgram: {
+							id: 'gh_abcdefg',
+							path: '/pages/index/index?invite_code=' + _this.$data.familyInfo.code,
+							type: 0,
+							webUrl: 'http://m.yidap.com'
+					},
+					success: ret => {
+							console.log(JSON.stringify(ret));
+					}
+			});	
+			
 			}
+			
+			
 		},
 		onShareAppMessage: function() {
 			var that = this;
 			// 设置菜单中的转发按钮触发转发事件时的转发内容
 			var onShareAppMessage = {
 				title: "众皮联小鹿快找", // 默认是小程序的名称(可以写slogan等)
-				path: '/pages/index/index?invite_code=' + this.data.familyInfo.code,
+				path: '/pages/index/index?invite_code=' + that.$data.familyInfo.code,
 				// 默认是当前页面，必须是以‘/’开头的完整路径
 				imageUrl: 'https://static.yidap.com/miniapp/o2o/imgs/ic_launcher.png', //自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
 				success: (res) => {

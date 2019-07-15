@@ -1,50 +1,49 @@
 <template>
-	<view>
-		<view class="fs30 address-form pd-30 btn-shadow">
+	<view class="new-address">
+		<view class="fs30 address-form">
 			<view class="flex lh90 address-list">
-				<view><text class='text-theme'>*</text><text class='spacing'>联系人</text></view>:
-				<input class='address-input' placeholder='联系人姓名' v-model='addressInfo.consignee'>
+				<view><text class='text-theme'>*</text><text class='spacing'>收货人</text></view>:
+				<input class='address-input' placeholder='收货人姓名' v-model='addressInfo.consignee'>
 				</input>
 			</view>
 
 			<view class="flex lh90 address-list">
-				<view><text class='text-theme'>*</text>手机号码:</view>
-				<input class='address-input' placeholder='联系人手机号码' maxlength='11' v-model='addressInfo.mobile'>
+				<view><text class='text-theme'>*</text>联系电话:</view>
+				<input class='address-input' placeholder='收货人手机号码' maxlength='11' v-model='addressInfo.mobile'>
 				</input>
 			</view>
 
 			<view class="flex lh90 address-list" @click='getMapAddress'>
-				<view><text class='text-theme'>*</text><text class='spacing1'>地址</text></view>:
+				<view><text class='text-theme'>*</text><text>所在地区:</text></view>
 				<input class='address-input ellipsis' placeholder='请填写地址' :disabled="true" v-model="addressInfo.address">
 				</input>
+				<text class="iconfont icon-jiantou1"></text>
 			</view>
 
 			<view class="flex lh90 address-list">
-				<view><text class='text-theme display-none'>*</text>详细门牌:</view>
+				<view><text class='text-theme display-none'>*</text>详细地址:</view>
 				<input class='address-input' placeholder='例如: 1栋16楼116室XXX公司' v-model='addressInfo.room'>
 				</input>
 			</view>
 			<view class="flex lh90 address-list">
-				<view><text class='text-theme display-none'>*</text><text class='spacing1'>名称</text></view>:
+				<view><text class='text-theme display-none'>*</text><text>名称:</text></view>
 				<input class='address-input' placeholder='公司名称、档口名称等' v-model='addressInfo.stall'>
 				</input>
 			</view>
 
 			<view class="flex lh90 address-list">
-				<view><text class='text-theme display-none'>*</text><text class='spacing1'>标签</text></view>:
-				<input class='address-input' placeholder='不超过两个字,例如:找料、送料' maxlength='2' v-model='addressInfo.remark'>
+				<view><text class='text-theme display-none'>*</text><text>标签:</text></view>
+				<input class='address-input' placeholder='不超过两个字,例如:找料、送料' v-model='addressInfo.remark'>
 				</input>
 			</view>
-			<view class='check-btn mgt-20' @click='doCheck'>
-				<text v-if='check' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
-				<text v-if='!check' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
-				<text class="mgl-20">设置默认</text>
-
+			<view class='check-btn mgt-20 mgb-20'><!-- @click='doCheck' -->
+				<text class="mgl-20">设为默认地址</text>
+				<switch class="flr" color="#F29800" @change="switchChange" />
 			</view>
 		</view>
 
 		<view @click='saveSubmit' hover-class="hover-style" class="bottom-fixed btn-shadow h100 text-center lh100 text-white fs30">
-			完成
+			保存
 		</view>
 
 		<view v-if="showCon" class="modal-mask">
@@ -55,11 +54,10 @@
 				</view>
 				<view class="modal-footer">
 					<view class="btn-cancel" @click="changeModalCancel">取消</view>
-					<button open-type="openSetting" class="btn-confirm button-on-view" style="padding:0upx;" @click="changeModalCancel">设置</button>
+					<button open-type="openSetting" class="btn-confirm button-on-view" style="padding:0upx;" @click="changeModal">设置</button>
 				</view>
 			</view>
 		</view>
-
 	</view>
 </template>
 
@@ -113,6 +111,10 @@
 
 		},
 		methods: {
+			switchChange: function (e) {
+				console.log('switch2 发生 change 事件，携带值为', e.target.value)
+				this.$data.check =  e.target.value;
+			},
 			// 请求输出编辑信息
 			getAddressInfo(id) {
 				api.infoAddress({
@@ -145,6 +147,12 @@
 					util.errorTips('请确认地址信息');
 					return false;
 				}
+				if (addressInfo.remark.length>2) {
+					util.errorTips('标签信息不超过2个字');
+					return false;
+				}
+				
+				
 				this.$data.addressInfo.is_default = this.$data.check ? 1 : 0
 				// 判断新增还是编辑
 				if (type == 'new') {
@@ -159,6 +167,8 @@
 						} else {
 							util.errorTips(res.msg);
 						}
+					}).catch((res)=>{
+						util.errorTips(res.msg || res.message);
 					})
 				} else if (type == 'edit') {
 					// 编辑提交
@@ -173,6 +183,8 @@
 						} else {
 							util.errorTips(res.msg);
 						}
+					}).catch((res)=>{
+						util.errorTips(res.msg || res.message);
 					})
 				}
 
@@ -181,9 +193,12 @@
 			doCheck() {
 				this.$data.check = !this.$data.check
 			},
+			changeModal(){
+				this.$data.showCon = false;
+			},
 			// 关闭授权
 			changeModalCancel() {
-				_this.$data.showCon = false;
+				this.$data.showCon = false;
 			},
 			// 获取用户当前地址
 			getUserMapAddress() {
@@ -265,6 +280,15 @@
 </script>
 
 <style lang="scss">
+	.icon-jiantou1{
+		position: absolute;
+		right: -20upx;
+		top: 5upx;
+		font-size: 50upx;
+	}
+	.new-address{
+		background: #f4f4f4;
+	}
 	.bottom-fixed {
 		position: fixed;
 		left: 0;
@@ -287,6 +311,7 @@
 		background: #fff;
 		margin: 0 30upx;
 		border-radius: 10upx;
+		padding: 10upx 30upx 30upx 30upx;
 	}
 
 	.address-form>view:last-of-type {
@@ -354,7 +379,6 @@
 
 	.address-input {
 		width: 470upx;
-		background-color: #eee;
 		height: 90upx;
 		padding-left: 10upx;
 	}
@@ -369,6 +393,7 @@
 
 	.address-list {
 		margin: 15upx 0;
+		position: relative;
 	}
 
 	.display-none {

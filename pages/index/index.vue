@@ -9,6 +9,7 @@
 		<fetchOrder v-if="page_code=='fetchOrder'"></fetchOrder>
 		<fetchCenter v-if="page_code=='fetchCenter'"></fetchCenter>
 		<message v-if="page_code=='message'"></message>
+		<view class="height120"></view>
 		<footerNav></footerNav>
 		
 	</view>
@@ -23,9 +24,10 @@
 	import findCenter from "./pages/findCenter.vue";
 	import fetchCenter from "./pages/fetchCenter.vue";
 	import fetchOrder from "./pages/fetchOrder.vue";
-	import message from "./pages/message.vue";
+	import message from "./pages/msg.vue";
 	import footerNav from "../../components/footer/footer_nav.vue";
 	import api from '../../utils/api.js';
+	import util from '../../utils/util.js';
 	export default {
 		data() {
 			return {
@@ -50,6 +52,10 @@
 			}
 		},
 		onLoad(options) {
+			if(options.invite_code){
+				uni.setStorageSync('invite_code',options.invite_code)
+			}
+			util.successTips('options.invite_code:'+options.invite_code);
 			if(options.from){
 				this.$store.commit("change_page",options.from); 
 			}
@@ -97,6 +103,15 @@
 				}
 			}
 			console.log(options)
+			// 注册页面过来的
+			// if(options.authentication){
+			// 	if(options.authentication == 1){
+			// 		uni.navigateTo({
+			// 			url:'../setting/authentication/authentication'
+			// 		})
+			// 	}
+			// }
+			
 			// this.$store.dispatch('get_data')
 		},
 		onShow() {
@@ -110,11 +125,15 @@
 </script>
 
 <style lang="scss" scoped>
-	 
+	 .height120{
+	 	height: 120upx;
+	 }
 	.content {
 		text-align: center;
 		padding-bottom: 130upx;
 		height: 100%;
+		width: 750upx;
+		overflow-x: hidden;
 	}
 
 	.logo {

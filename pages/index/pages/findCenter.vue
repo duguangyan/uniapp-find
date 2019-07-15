@@ -7,11 +7,11 @@
 			<image class="setting" src="/static/center/setting.png" @click="goSetting()"></image>
 		</view>
 		<view class="wallet">
-			<view class="wallet-left" @click="goRecordList">
+			<view class="wallet-left" @click="goRecordList(1)">
 				<text class="wallet_up">佣金(元)</text>
-				<text class="wallet_down">{{virtual}}</text>
+				<text class="wallet_down">{{commission}}</text>
 			</view>
-			<view class="wallet-right">
+			<view class="wallet-right" @click="goRecordList(2)">
 				<text class="wallet_up">代采款(元)</text>
 				<text class="wallet_down">{{replace}}</text>
 			</view>
@@ -61,37 +61,37 @@
 			return {
 				v:'', // 版本号
 				order_find: [{
+						img: "/static/center/jiedan.png",
+						text: "待接单",
+					},
+					{
 						img: "/static/center/find.png",
-						text: "找料中",
+						text: "待找料",
 					},
 					{
 						img: "/static/center/deliver.png",
-						text: "待收货",
-					},
-					{
-						img: "/static/center/receive.png",
-						text: "待评价",
+						text: "待确认",
 					},
 					{
 						img: "/static/center/evaluate.png",
-						text: "已完成",
+						text: "待评价",
 					}
 				],
 				order_fetch: [{
+						img: "/static/center/jiedan.png",
+						text: "待接单",
+					},
+					{
 						img: "/static/center/find.png",
-						text: "取料中",
+						text: "待取料",
 					},
 					{
 						img: "/static/center/deliver.png",
-						text: "待收货",
-					},
-					{
-						img: "/static/center/receive.png",
-						text: "待评价",
+						text: "待确认",
 					},
 					{
 						img: "/static/center/evaluate.png",
-						text: "已完成",
+						text: "待评价",
 					}
 				],
 				contents: [
@@ -108,8 +108,9 @@
 					// 	title: "积分商城",
 					// }
 				],
-				balance: 0, // 佣金
+				balance: 0, // 余额
 				replace:0,  // 代采款
+				commission:0, //佣金
 				marketing: 0,
 				virtual: 0,
 				userInfo:'',   // 用户信息 
@@ -143,9 +144,9 @@
 		},
 		methods: {
 			// 取佣金页面
-			goRecordList(){
+			goRecordList(index){
 				uni.navigateTo({
-					url:'../index/common/recordList/recordList?type=commission&num=' + this.$data.userInfo.commission
+					url:'../index/common/recordList/recordList?index='+index+'&type=commission&num=' + this.$data.userInfo.commission
 				})
 			},
 			// 获取用户信息
@@ -165,6 +166,7 @@
 						this.$data.marketing = res.data.marketing;
 						this.$data.virtual = res.data.virtual;
 						this.$data.replace = res.data.replace;
+						this.$data.commission = res.data.commission;
 					}
 				})
 			},
@@ -198,7 +200,7 @@
 				uni.setStorageSync('method', nav);
 				uni.setStorageSync('status', index + 1);
 				uni.redirectTo({
-					url: '../index/index?from=2'
+					url: '../index/index?from=0'
 				});
 			},
 			// 跳转IM列表
@@ -359,6 +361,9 @@
 			margin-right: 38upx;
 			width: 48upx;
 			height: 48upx;
+			position: relative;
+			z-index: 99999;
+			top: -50upx;
 		}
 		.message {
 			float: right;
@@ -371,9 +376,10 @@
 		.name {
 			color: white;
 			font-size: 32upx;
-			position: absolute;
-			top: 100upx;
-			left: 180upx;
+			position: relative;
+			top: 90upx;
+			left: 40upx;
+			text-align: left
 		}
 
 		.top-button {

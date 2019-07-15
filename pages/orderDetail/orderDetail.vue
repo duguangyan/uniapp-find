@@ -25,10 +25,10 @@
 						<text class='ellipsis describe-content fs24 text-999 mgl-20'>{{itemObj.desc}}</text>
 						<text class='flr text-yellow fs24'>费用:￥{{itemObj.fee}}</text>
 					</view>
-					<view class='lh50'>
+					<!-- <view class='lh50'>
 						<text class="fs28">限时找料: </text>
-						<text class="fs24 text-999 mgl-20">{{itemObj.is_limit == 1?'三小时':''}} </text>
-					</view>
+						<text class="fs24 text-999 mgl-20">{{itemObj.limit_time_text}} </text>
+					</view> -->
 					
 					<view class='lh50'>
 						<text class="fs28">比价优选: </text>
@@ -40,10 +40,9 @@
 					</view>
 				</view>
 
-				<view class='type3' v-if='itemObj.find_type==3'>
+				<view class='type3' v-if="itemObj.find_type==3">
 					<view class='fs30 title'>寄样地址: </view>
 					<view v-for='(item, index) in companyaddress' :key='index' class='bb1 mg10 con'>
-
 						<view>
 							<text class='remark' v-if='item.tag'>{{item.tag||''}}</text>
 							<text>{{item.address}}</text>
@@ -123,7 +122,7 @@
 					<text class="fs24 mgl-20 text-999" v-if="itemObj.shipping_type==1">送货上门</text>
 					<text class="fs24 mgl-20 text-999" v-if="itemObj.shipping_type==0">送货上门</text>
 				</view>
-				<view class='find-order-detail-number fs30 pdl-30 bb-20 pdb-30' style='margin-top:30rpx;'>
+				<view class='find-order-detail-number fs30 pdl-30 pdb-30' style='margin-top:30rpx;'>
 					<view class='lh50'>
 						<text class="fs28">订单编号:</text>
 						<text class="fs24 text-999 mgl-20"> {{itemObj.order_sn}}</text>
@@ -131,9 +130,8 @@
 					<view class='lh50'>
 						<text class="fs28">下单时间:</text>
 						<text class="fs24 text-999 mgl-20">{{itemObj.created_at}}</text>
-						 
 					</view>
-					<view class='lh50' v-if='itemObj.admin'>下 单 人 : {{itemObj.admin.real_name}}</view>
+					<!-- <view class='lh50' v-if='itemObj.admin'>下 单 人 : {{itemObj.admin.real_name}}</view>
 					<view class='lh50' v-if='itemObj.findman_name'> {{nav==1?'找 料 员':'取 料 员'}} : {{itemObj.findman_name}} <text v-if='itemObj.findman_mobile'>/
 							{{itemObj.findman_mobile}}</text></view>
 					<view class='lh50' v-if='itemObj.distribution_name'>
@@ -144,7 +142,7 @@
 						{{itemObj.express_company}}</view>
 					<view class='lh50' v-if='itemObj.find_at'> 找到物料时间 : {{itemObj.find_at}}</view>
 					<view class='lh50' v-if='itemObj.confirm_shipping_at'> 确认送达时间 : {{itemObj.confirm_shipping_at}}</view>
-					<view class='lh50' v-if='itemObj.confirm_finish_at'> 客户确认收货时间 : {{itemObj.confirm_finish_at}}</view>
+					<view class='lh50' v-if='itemObj.confirm_finish_at'> 客户确认收货时间 : {{itemObj.confirm_finish_at}}</view> -->
 				</view>
 
 				<!-- <view class='find-order-detail-price fs30 pdl-30 border-bottom pd-30'>
@@ -152,9 +150,10 @@
 					<view v-if="userType==2"><text>包月:使用次数</text><text class='flr'>{{itemObj.find_fee}}次</text></view>
 				</view> -->
 <!-- itemObj.can_comment==1|| -->
-				<view class='find-order-detail-btn bt-1 cf' v-if="itemObj.can_confirm==1||itemObj.can_delete==1||itemObj.can_refuse==1">
+				<view class='find-order-detail-btn bt-1 cf'>
 					<button @click='delOrder(itemObj.id)' v-if='itemObj.can_delete==1'>删除</button>
-					<button @click='toReturn(itemObj.id)' v-if='itemObj.can_refuse==1'>退款</button>
+					<button @click='toComment(itemObj.id)' v-if='itemObj.can_comment==1'>评价</button>
+					<button @click='toReturn(itemObj.id)' v-if='itemObj.can_refuse==1'>申请退款</button>
 					<button @click='affirmOrder(itemObj.id)' v-if='itemObj.can_confirm==1' class='order-footer-btn-red'
 					 :data-index="index">确认收货</button>
 					<!-- <button :data-id='itemObj.findman_id' @click='goChat' v-if='itemObj.findman_id!=null && itemObj.can_comment!=1 && itemObj.can_delete!=1 &&itemObj.can_confirm!=1 && status!=2'
@@ -162,27 +161,93 @@
 						{{nav==1?'联系找料员':'联系取料员'}}</button>
 					<button :data-id='itemObj.distribution_id' @click='goChat' v-if='itemObj.distribution_id!=null && status==2' class='order-footer-btn-red order-chat'>
 						联系配送员</button> -->
-						
-						<view class="cancat flr" v-if='itemObj.findman_id!=null && itemObj.can_comment!=1 && itemObj.can_delete!=1 &&itemObj.can_confirm!=1 && status!=2'>
-							<image src="../../static/icon/concat.png"></image>
-							<text>{{nav==1?'联系找料员':'联系取料员'}}</text>
-							<view class="btn-1" @click="goChat"></view>
-							<view class="btn-2" @click="contact"></view>
+						<view v-if="itemObj.find_status !=''">
+							<button v-if="status!=3 && itemObj.find_status!=5 && itemObj.type==1 && itemObj.findman_id!=''"  @click="goChat(itemObj)">联系找料员</button>
+							<button v-if="itemObj.find_status!=5 && itemObj.type==2 && itemObj.findman_id!=''"  @click="goChat(itemObj)">联系找料员</button>
+							
 						</view>
-						<view class="cancat flr" v-if='itemObj.distribution_id!=null && status==2'>
-							<image src="../../static/icon/concat.png"></image>
-							<text>联系配送员</text>
-							<view class="btn-1" @click="goChat"></view>
-							<view class="btn-2" @click="contact"></view>
+						<view v-if="itemObj.distribution_status !=''">
+							<button v-if="itemObj.distribution_status>1 && itemObj.distribution_status!=5 && itemObj.type==1 && itemObj.distribution_id !=''"  @click="goChat(itemObj)">联系配送员</button>
+							<button v-if="itemObj.distribution_status>1 && itemObj.distribution_status!=5 && itemObj.type==2 && itemObj.distribution_id !=''"  @click="goChat(itemObj)">联系配送员</button>
 						</view>
+						<!-- <view class="cancat flr" v-if='itemObj.findman_id'>
+							<image src="../../static/icon/concat.png"></image>
+							<text>{{nav==1?'联系找料员':'联系取料员'} }</text>
+							<view class="btn-1" @click="goChat(itemObj)"></view>
+							<view class="btn-2" @click="contact"></view>
+						</view> -->
 				</view>
 			</view>
 			<!-- 取料 -->
 		</view>
 		
+		<view class="status-2" v-if="itemObj.find_status>=4">
+			<view class="li">
+				<text class="fs28">物料单价:</text> <text class="fs24 text-999 mgl-20">￥{{itemObj.result_price}}</text>
+			</view>
+			<view class="li">
+				<text class="fs28">物料数量:</text> <text class="fs24 text-999 mgl-20">{{itemObj.result_num}}</text>
+			</view>
+			<view class="li">
+				<text class="fs28">大货配送费:</text>  <text class="fs24 text-999 mgl-20">￥{{itemObj.result_extra_fee}} ({{itemObj.result_big_num}} * {{big_price}})</text>
+			</view>
+			<view class="img cf" v-if="itemObj.desc_img.length>0 && itemObj.desc_img">
+				<image class="fll" v-for="(item, index) in itemObj.desc_img" :key="index" :src="item" mode=""></image>
+			</view>
+		</view>
 		
-		<view style='height:120rpx;'></view>
+		
+		<view class='task-get cell-padding fs30 mgt-30 pay-type' v-if="itemObj.find_status==4">
+			<view class='title'>选择支付方式</view>
+			<view class='items'>
+				<view class='item cf' v-for="(item, index) in payTypeList" :key="index" @click='payTypeCheck' :data-index='index'>
+					<image class='fll' :src='item.icon'></image>
+					<text class='fll mgl-20 text' v-if="item.title=='微信支付'">{{item.title}} </text>
+					<text class='fll mgl-20 text' v-if="item.title=='余额'">{{item.title}} (￥{{balance}})</text>
+					<text class='fll mgl-20 text' v-if="item.title=='支付宝支付'">{{item.title}}</text>
+					<view class='flr check-btn'>
+						<text v-if='payTypeCheckIndex == index' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
+						<text v-if='payTypeCheckIndex != index' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
+					</view>
+				</view>
+			</view>
+		</view>
+	<view style='height:140upx;' v-if="itemObj.find_status==4"></view>
+	<view class='task-pay fs30 lh120' v-if="itemObj.find_status==4">
+		<view class='flr task-paybtn' style='margin-right:240upx;'>
+			应付款：
+			<text class='text-red'>￥{{total_amount}}</text>
+		</view>
+		<button class='task-pay-btn text-underline' :disabled='isDisabled' @click='doPay'>支付</button>
+	</view>
+	<view style='height:120rpx;'></view>
 
+
+<view v-if="isCommentModel" class="comment-model">
+			<view class="comment-model-bg"></view>
+			<view class="comment-content">
+				<view class="title">评价本次服务</view>
+				<view class='star-warp pdt-30 pdb-30'>
+					<view>
+						找料满意度：
+						<text @click='satisfact' v-for="(item, index) in starArr" :key="index" :data-idx='index' class="star iconfont icon-star"
+						 :class="starIndex_1 >= index ? 'text-yellow':''"></text>
+					</view>
+					<view>
+						配送及时性：
+						<text @click='timely' v-for="(item, index) in starArr" :key="index" :data-idx='index' class="star iconfont icon-star"
+						 :class="starIndex_2 >= index ? 'text-yellow':''"></text>
+					</view>
+				</view>
+
+				<input class='input bt-1 lh50 pdt-30' v-if='isStarShow' type='text' placeholder='请输入评语' @input='commentModelInput'></input>
+
+				<view class="btn flex">
+					<view class="cancel flex-1" @click="commentCancel">取消</view>
+					<view class="confirm flex-1" @click="commentConfirm">确定</view>
+				</view>
+			</view>
+		</view>
 
 	</view>
 </template>
@@ -193,16 +258,19 @@
 	export default {
 		data() {
 			return {
+				companyaddress:'',
 				id:'',          // 订单ID
 				commentId:'',   // 订单ID
 				itemObj:'',     // 订单详情数据
+
 				status: 1,
 				nav: 1,
+				isCommentModel: false, // 评价模态框 
 				orderNav: 1,
 				isDelModel: true, // 取消订单模态框
 				delMsg: '', // 取消订单原因数据
-				isCommentModel: true, // 评价模态框 
 				commentMsg: '', // 评价内容
+				isStarShow: false, // 初始化评价评语
 				starArr: [0, 1, 2, 3, 4], // 评价星星
 				starIndex_1: 4, // 星星评价选中
 				starIndex_2: 4, // 星星评价选中
@@ -213,6 +281,25 @@
 				isFocus: true, //聚焦  
 				Value: "", //输入的内容  
 				ispassword: true, //是否密文显示 true为密文， false为明文。
+				payTypeList: [
+					{
+						icon: '../../static/icon/icon-balance.png',
+						title: '余额'
+					},
+					{
+						icon: '../../static/icon/wx.png',
+						title: '微信支付'
+					},
+					{
+						icon: '../../static/icon/zfb.png',
+						title: '支付宝支付'
+					}
+				],
+				payTypeCheckIndex:0,
+				shipping_extra_price:0,  
+				big_price:0,  // 大货配送费
+				balance:'',
+				total_amount:0
 			};
 		},
 		onLoad(options) {
@@ -221,18 +308,106 @@
 			this.$data.id = options.id;
 			this.$data.status = options.status;
 			this.$data.nav = options.nav;
+			
+			
 		},
 		onShow() {
 			this.$data.orderNav = uni.getStorageSync('orderNav');
 		    this.getData();
 		    this.getCompanyaddress();
+				this.getTaskFee();
+				this.getUserAsset();
 		},
 		methods: {
-			// 取聊天室
-			goChat(){
-				uni.navigateTo({
-					url:'../../chat/chat'
+			
+			// 去评价
+			toComment(id) {
+				this.$data.commentMsg = ''; // 评价内容
+				this.$data.isCommentModel = true; // 评价模态框
+				this.$data.commentId = id; // 评价订单ID
+			},
+			// 获取评价内容
+			commentModelInput(e) {
+				this.$data.commentMsg = e.detail.value
+			},
+			// 取消评价模态框
+			commentCancel() {
+				this.$data.isCommentModel = false;
+			},
+			// 取消评价模态框并获取数据
+			commentConfirm(e) {
+				let data = {
+					id: this.$data.commentId,
+					star: this.$data.starIndex_1 + 1,
+					star_ship: this.$data.starIndex_2 + 1,
+					content: this.$data.commentMsg
+				}
+				api.toCommentOrder({
+					method: 'POST',
+					data
+				}).then((res) => {
+					if (res.code == 200 || res.code == 0) {
+						util.successTips('评价成功');
+						uni.navigateBack({
+							delta:1
+						})
+						// this.$data.orderList.forEach((v, i) => {
+						// 	if (v.id == this.$data.commentId) {
+						// 		this.$data.orderList.splice(i, 1);
+						// 	}
+						// })
+						// this.$data.isCommentModel = false;
+						// this.$data.isStarShow = false;
+						// this.$data.starIndex_1 = 4;
+						// this.$data.starIndex_2 = 4;
+						// this.$data.commentMsg = '';
+					} else {
+						util.errorTips(res.msg);
+					}
+				}).catch((res) => {
+					util.errorTips(res.msg || res.message);
 				})
+			
+			},
+			// 设置找料满意度
+			satisfact(e) {
+				this.$data.starIndex_1 = e.target.dataset.idx
+				this.$data.isStarShow = this.$data.starIndex_1 < 3 || this.$data.starIndex_2 < 3 ? true : false;
+			},
+			// 配送及时性
+			timely(e) {
+				this.$data.starIndex_2 = e.target.dataset.idx
+				this.$data.isStarShow = this.$data.starIndex_1 < 3 || this.$data.starIndex_2 < 3 ? true : false;
+			},
+			// 获取余额
+			getUserAsset(){
+				api.getUserAsset({}).then((res)=>{
+					if(res.code == 200 || res.code ==0){
+						this.$data.balance = res.data.balance;
+					}
+				})
+			},
+			// 获取任务单价
+			getTaskFee(){
+				api.getTaskFee({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.shipping_extra_price = res.data.shipping_extra_price;
+						this.$data.big_price = res.data.big_price;
+					}
+				})
+			},
+			
+			// 取聊天室
+			goChat(item){
+				if(item.type == 1){
+					uni.navigateTo({
+						url:'/pages/chat/chat?id=' + item.findman_id + '&fmUserName='+item.findman_name
+					})
+				}else{
+					uni.navigateTo({
+						url:'/pages/chat/chat?id=' + item.distribution_id + '&fmUserName='+item.distribution_name
+					})
+				}
 			},
 			//  联系我们电话
 			contact() {
@@ -256,16 +431,17 @@
 					}).then((res) => {
 					  if (res.code == 200 || res.code == 0) {
 						_this.$data.itemObj.can_confirm = 0;
-						uni.showToast({
-						  title: '收货成功！',
-						  icon: 'none',
-						  duration: 2000,
-						  success(){
-							uni.navigateBack({
-							  delta: 1
-							})
-						  }
-						})
+						util.successTips('收货成功');
+						// uni.showToast({
+						//   title: '收货成功！',
+						//   icon: 'none',
+						//   duration: 2000,
+						//   success(){
+						// 	uni.navigateBack({
+						// 	  delta: 1
+						// 	})
+						//   }
+						// })
 						
 					  } else {
 						  util.errorTips(res.msg)
@@ -350,6 +526,7 @@
 				api.getCompanyaddress({}).then((res) => {
 				  if (res.code == 200 || res.code == 0) {
 					this.$data.companyaddress = res.data;
+					
 				  }
 				})
 			  },
@@ -361,6 +538,7 @@
 						id: this.$data.id
 					  }
 					}).then((res) => {
+						
 					  if (res.code == 200 || res.code == 0) {
 						let itemObj = res.data;
 						if (itemObj.type == 1) {
@@ -375,7 +553,9 @@
 						  newFrontImg.push(itemObj.desc_img);
 						  itemObj.desc_img = newFrontImg;
 						}
-						this.$data.itemObj = itemObj;
+						
+						this.$data.itemObj      = itemObj;
+						this.$data.total_amount = parseFloat(itemObj.result_fee) + parseFloat(itemObj.result_extra_fee);
 					  }else{
 						util.errorTips(res.msg);
 					  }
@@ -384,11 +564,127 @@
 					})
 				  }
 				},
+				
+				// 优惠券选择
+				payTypeCheck(e) {
+					if(e.currentTarget.dataset.index == 2){
+						util.errorTips('小程序暂不支持支付宝支付');
+						return false;
+					}
+					this.$data.payTypeCheckIndex = e.currentTarget.dataset.index
+				},
+				// 支付
+				doPay() {
+					// 防止多次点击重复提交
+					this.$data.isDisabled = true;
+					let _this = this;
+					// 支付方式  0：鹿币  1：余额  2：微信 
+					if (this.$data.payTypeCheckIndex == 1) {
+						console.log("微信支付");
+						api.apiOrderPay({
+							method: 'POST',
+							data: {
+								'id':this.$data.id,
+								"type": "miniapp",
+								"open_id": uni.getStorageSync('open_id'),
+								'asset_type':"wx"
+							}
+						}).then((res) => {
+							util.errorTips(res);
+							if (res.code == 200 || res.code == 0) {
+								let data = res.data.data;
+								let pay = res.data.pay;
+								data.success = function(res) {
+									console.log('支付成功');
+									console.log(res);
+									uni.redirectTo({
+										url: '../taskPaySuccess/taskPaySuccess?pay_log=' + JSON.stringify(pay)
+									})
+								}
+								data.fail = function(res) {
+									_this.$data.isDisabled = false
+									util.errorTips(支付失败)
+								}
+								wx.requestPayment(data);
+				
+							} else {
+								util.errorTips('支付失败')
+								this.$data.isDisabled = false;
+							}
+						}).catch((e) => {
+							util.errorTips(e.msg)
+							this.$data.isDisabled = false;
+						})
+				
+					} else {
+						console.log("余额支付");
+						let _this = this;
+						uni.showModal({
+							title: '提示',
+							content: '确认支付吗?',
+							success: function(res) {
+								if (res.confirm) {
+									let data = {
+										'id':_this.$data.id,
+										"type": "miniapp",
+										"asset_type": "balance",
+										'open_id': uni.getStorageSync('open_id'),
+									}
+				
+									api.apiOrderPay({
+										method: 'POST',
+										data
+									}).then((res) => {
+										if (res.code == 200 || res.code == 0) {
+											let pay = JSON.stringify(res.data.pay);
+											uni.redirectTo({
+												url: '../taskPaySuccess/taskPaySuccess?pay_log=' + pay
+											})
+										} else {
+										
+											util.errorTips(res.msg);
+											_this.$data.isDisabled = false
+										}
+									}).catch((res) => {
+										util.errorTips(res.msg);
+										_this.$data.isDisabled = false
+									})
+								} else if (res.cancel) {
+									util.errorTips("你点击了取消")
+									_this.$data.isDisabled = false
+								}
+							}
+						})
+				
+					}
+				}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	.status-2{
+		padding: 30upx;
+		border-top: 1upx solid #f4f4f4; 
+		background: #fff;
+		.img{
+			display: inline-block;
+			margin: 20upx;
+			image{
+				width: 140upx;
+				height: 140upx;
+				display: inline-block;
+				margin-right: 20upx;
+			}
+		}
+		
+	}
+	.task-get{
+		background: #fff;
+		.item{
+			border-top: 1upx solid #f4f4f4; 
+		}
+	}
 	.cancat{
 		margin-right: 10upx;
 		margin-top: 10upx;
@@ -490,29 +786,29 @@
 .find-order-detail-btn{
   width: 750rpx;
   height: 120rpx;
-  position: fixed;
   bottom: 0;
   background-color: #fff;
   z-index: 999;
 }
 .find-order-detail-btn button {
  margin-right: 20upx;
- width: 180upx;
+ width: 210upx;
  float: right;
  line-height: 60upx;
  font-size: 30upx;
  height:60upx;
- color: #fff;
- background:#F29800;
+ color: #F29800;
+ // background:#F29800;
  border-radius:60upx;
+ border: 1upx solid #F29800;
  margin-top: 30upx
 }
 .task-find-method-img{
 }
 .task-find-method-img image{
-  width: 100rpx;
-  height: 100rpx;
-  margin-right: 50rpx;
+  width: 140rpx;
+  height: 140rpx;
+  margin-right: 30rpx;
   margin-top: 20rpx;
 }
 
@@ -659,4 +955,121 @@
   color: #999;
 }
 	
+	.pay-type .title {
+		padding: 20upx 10upx;
+	}
+	
+	.pay-type .items .item {
+		height: 60upx;
+		line-height: 60upx;
+		padding: 20upx 0;
+	}
+	
+	.pay-type .items .item .text {
+		width: 500upx;
+	}
+	
+	.pay-type .items .item image {
+		width: 60upx;
+		height: 60upx;
+	}
+	
+	.task-pay {
+		width: 750upx;
+		position: fixed;
+		bottom: 0;
+		z-index: 999;
+		overflow: hidden;
+		background-color: #f8f8f8;
+	}
+	
+	.task-pay view {
+		padding-left: 30upx;
+	}
+	
+	.task-pay-btn {
+		width: 200upx;
+		height: 100%;
+		line-height: 120upx;
+		display: inline-block;
+		background-color: #F29800;
+		text-align: center;
+		color: #fff;
+		position: absolute;
+		right: 0;
+		top: 0;
+		border-radius: 0;
+	}
+	
+	.comment-model {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 750upx;
+		height: 100%;
+		z-index: 999999999;
+	
+		.comment-model-bg {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 750upx;
+			height: 100%;
+			background: #000;
+			opacity: .8;
+		}
+	
+		.comment-content {
+			left: 55upx;
+			width: 630upx;
+			position: absolute;
+			top: 300upx;
+			background: #fff;
+			text-align: left;
+	
+			border-radius: 10upx;
+	
+			.title {
+				color: #333;
+				font-size: 40upx;
+				text-align: center;
+				padding: 30upx;
+			}
+	
+			.star-warp {
+				padding: 30upx 30upx 30upx 60upx;
+				font-size: 36upx;
+				color: #999;
+				margin: 10upx 0 20upx 0;
+	
+				view {
+					height: 60upx;
+					line-height: 60upx;
+				}
+			}
+	
+			.btn {
+				height: 100upx;
+				line-height: 100upx;
+				text-align: center;
+				border-top: 1upx solid #eee;
+				font-size: 40upx;
+				color: #333;
+	
+				.confirm {
+					border-left: 1upx solid #eee;
+					color: limegreen;
+				}
+			}
+	
+			.input {
+				margin: 0 55upx;
+				font-size: 40upx;
+				line-height: 80upx;
+				height: 80upx;
+				margin-bottom: 30upx;
+			}
+	
+		}
+	}
 </style>

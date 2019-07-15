@@ -7,13 +7,13 @@
 			<image class="setting" src="/static/center/setting.png" @click="goSetting()"></image>
 		</view>
 		<view class="wallet">
-			<view class="wallet-left">
+			<view class="wallet-left" @click="goRecordList">
 				<text class="wallet_up">佣金(元)</text>
-				<text class="wallet_down">{{virtual}}</text>
+				<text class="wallet_down">{{commission}}</text>
 			</view>
 			<view class="wallet-right">
-				<text class="wallet_up">配送(单)</text>
-				<text class="wallet_down">{{balance}}</text>
+				<text class="wallet_up">代采款(元)</text>
+				<text class="wallet_down">{{replace}}</text>
 			</view>
 			<view class="wallet-separator"></view>
 		</view>
@@ -28,6 +28,7 @@
 				</li>
 			</ul>
 		</view>
+		
 		<view class="horizon_list">
 			<view class="items">
 				<view class="item" v-for="(item, index) in contents" :key='index'>
@@ -83,7 +84,8 @@
 				balance: 0,
 				marketing: 0,
 				virtual: 0,
-
+				commission:0,
+				replace:0,
 			};
 		},
 		computed:{
@@ -113,8 +115,14 @@
 			
 		},
 		methods: {
+			// 取佣金页面
+			goRecordList(){
+				
+				uni.navigateTo({
+					url:'../index/common/recordList/recordList?type=commission'
+				})
+			},
 			// 获取用户信息
-			
 			getUserInfo(){
 				console.log("获取用户信息");
 				
@@ -129,11 +137,13 @@
 						this.$data.balance = res.data.balance;
 						this.$data.marketing = res.data.marketing;
 						this.$data.virtual = res.data.virtual;
+						this.$data.replace = res.data.replace;
+						this.$data.commission = res.data.commission;
 						// console.log(res.data);
 					}
 		
 				}).catch((res)=>{
-					debugger
+					
 				})
 			},
 			goSetting(){
@@ -166,7 +176,7 @@
 				uni.setStorageSync('method', nav);
 				uni.setStorageSync('status', index + 1);
 				uni.redirectTo({
-					url: '../index/index?from=2'
+					url: '../index/index?from=0'
 				});
 			},
 			// 跳转IM列表
@@ -328,6 +338,9 @@
 			margin-right: 38upx;
 			width: 48upx;
 			height: 48upx;
+			position: relative;
+			z-index: 99999;
+			top: -50upx;
 		}
 		.message {
 			float: right;
@@ -340,9 +353,10 @@
 		.name {
 			color: white;
 			font-size: 32upx;
-			position: absolute;
-			top: 100upx;
-			left: 180upx;
+			position: relative;
+			top: 90upx;
+			left: 40upx;
+			text-align: left;
 		}
 
 		.top-button {

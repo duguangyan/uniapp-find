@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class='wx_dialog_container'>
-			<view class='wx-mask'></view>
+			<view class='wx-mask' @click.stop="_cancelEvent"></view>
 			<view class='wx-dialog'>
 				<view class='wx-dialog-title'>{{ title }}</view>
 				<!-- <view class='wx-dialog-content'>{{ content }}</view> -->
@@ -46,111 +46,110 @@
 			}
 		},
 		methods:{
-			doLeft(){
+			_cancelEvent(){
 				//第一个参数名为调用的方法名，第二个参数为需要传递的参数
-				this.$emit('doLeft'); 
+				this.$emit('_cancelEvent'); 
 				//console.log("left");
 			},
-			doRight(){
-				this.$emit('doRight'); 
+			_confirmEvent(){
+				this.$emit('_confirmEvent'); 
 				//console.log("right");
-			},
-			hideBg(){
-				this.$emit('hideBg'); 
 			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-/* components/Dialog/dialog.wxss */
-.wx-mask{
-  position: fixed;
-    z-index: 1000;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-}
-.wx-dialog{
-    position: fixed;
-    z-index: 5000;
-    width: 80%;
-    max-width: 600rpx;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    background-color: #FFFFFF;
-    text-align: center;
-    border-radius: 3px;
-    overflow: hidden;
-}
-.wx-dialog-title{
-    font-size: 36rpx;
-    padding-top: 20rpx;
-}
-.wx-dialog-content{
-    padding: 30rpx 20rpx;
-    min-height: 40rpx;
-    font-size: 32rpx;
-    line-height: 1.3;
-    word-wrap: break-word;
-    word-break: break-all;
-    color: #999999;
-    /* height: 500rpx; */
-    overflow: scroll;
-}
-.wx-dialog-footer{
-    display: flex;
-    align-items: center;
-    position: relative;
-    line-height: 45px;
-    font-size: 17px;
-}
-.wx-dialog-footer::before{
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 1px;
-    border-top: 1px solid #D5D5D6;
-    color: #D5D5D6;
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -webkit-transform: scaleY(0.5);
-    transform: scaleY(0.5);
-}
-.wx-dialog-btn{
-    display: block;
-    -webkit-flex: 1;
-    flex: 1;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    position: relative;
-    background: #F29800;
-    
-}
-.wx-dialog-footer .wx-dialog-btn:nth-of-type(1){
-    color: #fff;
-}
-.wx-dialog-footer .wx-dialog-btn:nth-of-type(2){
-    color: #fff;
-    background-color: #F29800;
-}
-.wx-dialog-footer .wx-dialog-btn:nth-of-type(2):after{
-    content: " ";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 1px;
-    bottom: 0;
-    border-left: 1px solid #D5D5D6;
-    color: #D5D5D6;
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    -webkit-transform: scaleX(0.5);
-    transform: scaleX(0.5);
-}
+	.wx_dialog_container{
+		.wx-mask{
+		  position: fixed;
+		    z-index: 1000;
+		    top: 0;
+		    right: 0;
+		    left: 0;
+		    bottom: 0;
+		    background: rgba(0, 0, 0, 0.3);
+		}
+		.wx-dialog{
+		    position: fixed;
+		    z-index: 5000;
+		    width: 80%;
+		    max-width: 600upx;
+		    top: 50%;
+		    left: 50%;
+		    -webkit-transform: translate(-50%, -50%);
+		    transform: translate(-50%, -50%);
+		    background-color: #FFFFFF;
+		    text-align: center;
+		    border-radius: 3px;
+		    overflow: hidden;
+		}
+		.wx-dialog-title{
+		    font-size: 36upx;
+		    padding-top: 20upx;
+		}
+		.wx-dialog-content{
+		    padding: 30upx 20upx;
+		    min-height: 40upx;
+		    font-size: 32upx;
+		    line-height: 1.3;
+		    word-wrap: break-word;
+		    word-break: break-all;
+		    color: #999999;
+		    /* height: 500rpx; */
+		    overflow: scroll;
+		}
+		.wx-dialog-footer{
+		    display: flex;
+		    align-items: center;
+		    position: relative;
+		    line-height: 45upx;
+		    font-size: 17upx;
+		}
+		.wx-dialog-footer::before{
+		    content: '';
+		    position: absolute;
+		    left: 0;
+		    top: 0;
+		    right: 0;
+		    height: 1upx;
+		    border-top: 1upx solid #D5D5D6;
+		    color: #D5D5D6;
+		    -webkit-transform-origin: 0 0;
+		    transform-origin: 0 0;
+		    -webkit-transform: scaleY(0.5);
+		    transform: scaleY(0.5);
+		}
+		.wx-dialog-btn{
+		    display: block;
+		    -webkit-flex: 1;
+		    flex: 1;
+		    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		    position: relative;
+		    background: #F29800;
+		    
+		}
+		.wx-dialog-footer .wx-dialog-btn:nth-of-type(1){
+		    color: #fff;
+		}
+		.wx-dialog-footer .wx-dialog-btn:nth-of-type(2){
+		    color: #fff;
+		    background-color: #F29800;
+		}
+		.wx-dialog-footer .wx-dialog-btn:nth-of-type(2):after{
+		    content: " ";
+		    position: absolute;
+		    left: 0;
+		    top: 0;
+		    width: 1upx;
+		    bottom: 0;
+		    border-left: 1upx solid #D5D5D6;
+		    color: #D5D5D6;
+		    -webkit-transform-origin: 0 0;
+		    transform-origin: 0 0;
+		    -webkit-transform: scaleX(0.5);
+		    transform: scaleX(0.5);
+		}
+	}
+
 </style>

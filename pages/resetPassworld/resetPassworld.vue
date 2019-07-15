@@ -68,7 +68,8 @@
 				isPassworld: false,
 				isLogin:false,
 				isCodeActive: false,
-				codeText:"获取验证码"
+				codeText:"获取验证码",
+				code_id:''
 			};
 		},
 		components: {
@@ -142,18 +143,32 @@
 								duration: 2000
 							});
 							this.$data.codeText = "重新获取";
+							this.$data.code_id = res.data.id
 						}
 					})
 				}
 			},
 			doLogin(){
+				if(this.$data.phone == ""){
+					util.errorTips("请输入手机号码");
+					return false
+				}
+				if(this.$data.passworld == ""){
+					util.errorTips("请输入密码");
+					return false
+				}
+				if(this.$data.code == ""){
+					util.errorTips("请输入验证码");
+					return false
+				}
 				if(this.$data.isLogin){
 					api.updatePassword({
 						method:"POST",
 						data:{
 							mobile:this.$data.phone,
 							password:this.$data.passworld,
-							validateCode:this.$data.code
+							code:this.$data.code,
+							id:this.$data.code_id
 						}
 					}).then((res)=>{
 						if(res.code==0){

@@ -15,8 +15,9 @@
 						<view @click='getOrderData' :data-nav="2" class="relative" :class="nav == 2 ? 'selected' : ''">取料订单</view>
 					</view> -->
 					<scroll-view :scroll-x="true" class="status-section find-section">
-						<view v-for='(item, index) in navTexts' :key="index" @click='getOrderTypeData' :data-type="index"
-						 :class="status == index ? 'selected' : ''">{{item}}</view>
+						<view v-for='(item, index) in navTexts' :key="index" @click='getOrderTypeData' :data-type="index">
+						 <text  :class="status == index ? 'selected' : ''">{{item}}</text>
+						 </view>
 					</scroll-view>
 				</view>
 			</view>
@@ -43,9 +44,9 @@
 											<text class="flr text-yellow">{{item.status_label}}</text>
 										</view>
 									</view>
-									<view v-if="status == 1" class="new">
+									<!-- <view v-if="status == 1" class="new">
 										<image src="../../images/new-1.png"></image>
-									</view>
+									</view> -->
 								</view>
 								<view class="order-info fs30">
 									<view class="order-info-left">
@@ -59,11 +60,11 @@
 												<view class="ellipsis">
 													物料描述：<text class="fs24 text-666">{{item.desc}}</text>
 												</view>
+												<!-- <view class="ellipsis">
+													限时找料：<text class="fs24 text-666">{{item.limit_time_text}}</text>
+												</view> -->
 												<view class="ellipsis">
-													限时找料：<text class="fs24 text-666">三小时</text>
-												</view>
-												<view class="ellipsis">
-													比较优选：<text class="fs24 text-666">参考价格:￥200.00</text>
+													比较优选：<text class="fs24 text-666" v-if="item.reference_price">参考价格:￥{{item.reference_price}}</text>
 												</view>
 											</view>
 											<view class="item-right">
@@ -73,19 +74,19 @@
 													<text class="fs24 text-yellow" v-if="item.find_status == 3">寄送样品</text>
 												</view>
 												<view>
-													<text class="fs24 text-yellow">金额: ￥50.00</text>
+													<text class="fs24 text-yellow">金额: ￥{{item.fee}}</text>
 												</view>
 											</view>
-											<view class="order-info-right">
+											<!-- <view class="order-info-right">
 												<image v-if="item.is_prompt == 1" src="../../images/reminder.png"></image>
 												<image v-if="item.is_prompt != 1" :src="nav == 1 ? '../../images/find.png': '../../images/send.png'" />
-											</view>
+											</view> -->
 
 										</view>
 										<!--图片找料  -->
 										<view v-if="item.desc_img.length>0">
 											<view class="order-pics-list">
-												<image mode='scaleToFill' @click='preview' v-for="(img, idx) in item.desc_img" :key="idx" :src="img"
+												<image mode='scaleToFill' @click.stop='preview' v-for="(img, idx) in item.desc_img" :key="idx" :src="img"
 												 :data-idx="idx" :data-index="index"></image>
 											</view>
 										</view>
@@ -136,12 +137,16 @@
 								<view v-if="status == 1" class="flex find-status mgr-20" @click="receiptOrder(item.id)">
 									<view>确认接单</view>
 								</view>
-								<view class="cancat flr" v-if="status != 1">
+								<view v-if="item.user_id!=''" class="flex find-status mgr-20" @click="goChat(item)">
+									<view>联系客户</view>
+								</view>
+								
+								<!-- <view class="cancat flr" v-if="status != 1">
 									<image src="../../static/icon/concat.png"></image>
 									<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
 									<view class="btn-1" @click.stop="goChat"></view>
 									<view class="btn-2" @click.stop="contact"></view>
-								</view>
+								</view> -->
 								
 							</view>
 						</view>
@@ -150,6 +155,7 @@
 					<view v-if="isFullLoad" class="tc fs24 c999 bg-base lh60 b600 isFullLoad">
 						已经全部加载完毕
 					</view>
+					<view class="height200"></view>
 				</view>
 			</view>
 		</view>
@@ -271,7 +277,7 @@
 		onLoad(options) {
 			
 			uni.setNavigationBarTitle({
-				title: "找料订单"
+				title: "配送订单"
 			})
 		},
 		onShow() {
@@ -285,10 +291,21 @@
 		},
 		mounted(){
 			console.log('mounted')
+			// 获取分类数据
+			this.$data.status = wx.getStorageSync('status') || 0;
+			this.$data.orderList = [] 
 			
+			  // 获取数据
+			this.getMyOrders();
 		},
 		methods: {
-			
+			// 取聊天室
+			goChat(item){
+				
+				uni.navigateTo({
+					url:'/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户'
+				})
+			},
 			// 搜索
 			doSearch(){
 				
@@ -306,9 +323,9 @@
 				}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
 						this.$data.orderList = [];
+						this.$data.status = 0;
 						this.$data.orderList = this.$data.orderList.concat(res.data);
 					}
-					
 				})
 			},
 			
@@ -328,7 +345,11 @@
 								}
 							}).then((res)=>{
 								if(res.code == 200 || res.code == 0){
-									_this.$data.status = 2; // 状态2 已接单
+									//_this.$data.status = 2; // 状态2 已接单
+									_this.$data.orderList = [] ;
+									
+									  // 获取数据
+									_this.getMyOrders();
 									util.successTips("接单成功");
 								}
 							})
@@ -351,7 +372,7 @@
 						 status:s
 					 }
 				   }).then((res) => {
-					 if(res.data.length <=0) this.$data.isFullLoad = true;
+					 if(res.data.length <10) this.$data.isFullLoad = true;
 					 this.$data.orderList = this.$data.orderList.concat(res.data);
 				   })
 				
@@ -416,6 +437,13 @@
 </script>
 
 <style lang="scss" scoped>
+	page{
+		background: #f4f4f4;
+	}
+	.height200{
+		height: 200upx;
+		background: #f4f4f4;
+	}
 	.cancat{
 		margin-right: 10upx;
 		width: 360upx;
@@ -469,12 +497,13 @@
 		}
 	}
 	.find-order{
-		background: #eee;
+		background: #f4f4f4;
 		height: 100%;
 	}
 	.isFullLoad{
 		text-align: center;
 		line-height: 80upx;
+		background: #f4f4f4;
 	}
 .empty{
 	text-align: center;
@@ -533,13 +562,14 @@
     padding: 0 10upx;
 }
 
-.status-section view.selected, .select-order view.selected{
+.status-section view .selected, .select-order view .selected{
     color: #F29800;
     border-bottom: 4upx #F29800 solid;
+	padding-bottom: 16upx;
 }
 
 .item-container {
-    padding: 220upx 0 30upx;
+    padding: 200upx 0 30upx;
 	text-align: left;
 }
 
@@ -548,7 +578,7 @@
 .order-item {
     background: #fff;
 	border-top: 1upx solid #eee;
-	margin-bottom: 20upx;
+	border-bottom: 20upx solid #f4f4f4;
 }
 
 .order-status {

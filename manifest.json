@@ -2,8 +2,8 @@
     "name" : "一鹿找",
     "appid" : "__UNI__6F097C0",
     "description" : "皮箱行业一站式找料取送业务",
-    "versionName" : "2.0.5",
-    "versionCode" : 205,
+    "versionName" : "2.0.7",
+    "versionCode" : 207,
     "transformPx" : false,
     "app-plus" : {
         /* 5+App特有相关 */
@@ -71,15 +71,20 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "wx95dd0020bb2c868f",
+        "appid" : "wx6782ca80d76453e3",
         "setting" : {
-            "urlCheck" : true
+            "urlCheck" : false
         },
-        "permission" : {}
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "你的位置信息将用于小程序位置接口的效果展示"
+            }
+        }
     },
     "h5" : {
         "router" : {
             "mode" : "history"
-        }
+        },
+        "domain" : "protocol.du-u.top"
     }
 }

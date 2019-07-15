@@ -6,14 +6,14 @@
 			</view>
 		</view>
 		<view class="zfb">
-			<view class="t1">{{txts.z}}</view>
+			<view class="t1">{{navIndex == 0?txts.z:txts.g}}</view>
 			<view class="t2 cf">
-				<image class="fll" src="/static/icon/logo.png" mode=""></image>
+				<image class="fll" :src="userInfo.avatarUrl" mode=""></image>
 				<view class="v1 fll">
-					<view>张三</view>
-					<view>111@qq.com</view>
+					<view>{{userInfo.nickName}}</view>
+					<!-- <view>111@qq.com</view> -->
 				</view>
-				<view class="v2" @click="repAlipay">更换支付宝 <text class="arrow-right"></text></view>
+				<view class="v2" @click="bindWxInfo" v-if="!wxIsBind">点击绑定微信信息 <text class="arrow-right"></text></view>
 			</view>
 		</view>
 		<view class="get">
@@ -21,10 +21,10 @@
 		</view>
 		<view class="input">
 			<text class="t1">￥</text>
-			<input class="t2" type="number" :placeholder="'本次最多可转出'+moreMoney+'元'" v-model='money' />
+			<input class="t2" type="number" :placeholder="'本次最多可转出'+moreMoney+'元'" v-model='amount' />
 			<text class="t3" @click="getMoreMoney">全部</text>
 		</view>
-		<view class="type">
+		<!-- <view class="type">
 			{{txts.t}}
 		</view>
 		<view class="mess">
@@ -36,15 +36,15 @@
 			<view class="v2">
 				<text>{{txts.s}}</text>
 			</view>
-		</view>
+		</view> -->
 		
 		<uni-list>
-			<view class="uni-list">
+			<view class="uni-list bb-1">
 				<uni-list-item :title="txts.j" @click="goCashRecord"></uni-list-item>
 			</view>
 		</uni-list>
 		<view class="footer-btn">
-			<view class="btn" @tap="masks()">确认转出</view>
+			<view class="btn" @tap="masks()">申请</view>
 		</view>
 		
 		
@@ -56,7 +56,7 @@
 			<view :class="bott" class="masks">
 				<view style="padding: 0 3%;">
 				<view @tap="maskss()" style="float: left;font-size: 60upx;margin: -10upx 0 0 0;">×</view>
-				<view style="text-align: center;font-size:30upx;padding-top: 3%;">请输入支付密码</view>
+				<view style="text-align: center;font-size:30upx;padding-top: 3%;">请输入短信验证码</view>
 				</view>
 				<view style="display: flex;width: 80%;margin:5% auto;text-align: center;">
 					<view style="flex: 1;">
@@ -109,19 +109,36 @@
 			</view>
 		</view>
 		
+		
+		<view v-if="showCon" class="modal-mask">
+			<view class="modal-dialog">
+				<view class="modal-title">温馨提示</view>
+				<view class="modal-content">
+					允许获取用户微信信息
+				</view>
+				<view class="modal-footer">
+					<view class="btn-cancel" @click="changeModalCancel">取消</view>
+					<button open-type="getUserInfo" class="btn-confirm button-on-view" style="padding:0upx;" @click="changeModalCancel">确定</button>
+				</view>
+			</view>
+		</view>
+		
 	</view>
 </template>
 
 <script>
-	import uniListItem from '@/components/uni-list-item/uni-list-item.vue'
+	import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
+	import util from "../../../../utils/util.js";
+	import api from "../../../../utils/api.js";
 	export default {
 		components:{
 			uniListItem
 		},
 		data() {
 			return {
+				showCon:false,
 				mask:false,
-				array:[],
+				array:'',
 				bott:'',
 				txts:{
 					j:'提现记录',
@@ -129,73 +146,276 @@
 					t:'提现方式',
 					n:'普通转账',
 					s:'预计确认提现后，24小时内到账',
-					z:'绑定支付宝信息'
+					z:'绑定微信信息',
+					g:'绑定支付宝信息'
 				},
 				navs:['转出到微信','转出到支付宝'],
 				navIndex: 0,  
-				moreMoney:1000.00,       // 最多提取金额
-				money:'',          // 提取金额
+				moreMoney:5000,       // 最多提取金额
+				amount:'',          // 提取金额
 				isTransfer: true,  // 是否转账
+				infoRes:'',        // 微信授权信息
+				userInfo:'',       // 用户微信资料
+				encryptedData:'',
+				iv:'',
+				session_key:'',
+				open_id:'',
+				wxIsBind: false,
+				code_id:'',
+				code_msg:'',
+				now_amount:'',
+				pageIndex:0,
+				wxNickName:''
 			};
 		},
 		onLoad(options) {
-			
+			this.$data.now_amount = options.now_amount;
+			this.$data.pageIndex = options.pageIndex;
+			if(this.$data.pageIndex == 1){  // 佣金提现
+				uni.setNavigationBarTitle({
+					title: "佣金提现"
+				})
+			}else if(this.$data.pageIndex == 2){   // 代采提现
+				uni.setNavigationBarTitle({
+					title: "代采提现"
+				})
+			}
 		},
 		onShow() {
-			
+			this.apiMemberWxBind();
 		},
 		methods: {
+			
+			// 获取微信绑定信息
+			apiMemberWxBind(){
+				api.apiMemberWxBind({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.wxIsBind = true;
+						this.$data.userInfo = res.data;
+						this.$data.wxNickName = res.data.nickName
+					}else{
+						this.$data.wxIsBind = false;
+					}
+				}).catch((res)=>{
+					this.$data.wxIsBind = false;
+				})
+			},
+			// 关闭授权
+			changeModalCancel() {
+				this.$data.showCon = false;
+				let _this = this;
+				uni.login({
+				  provider: 'weixin',
+				  success: function (loginRes) {
+					console.log(loginRes.authResult);
+					// 获取用户信息
+					//发起网络请求
+					let data = {
+					  code: loginRes.code,
+					  from: 3
+					}
+					
+					uni.getUserInfo({
+					  provider: 'weixin',
+					  success: function (infoRes) {
+						_this.$data.infoRes = infoRes;
+						_this.$data.userInfo = infoRes.userInfo;
+						_this.$data.encryptedData = infoRes.encryptedData;
+						_this.$data.iv   = infoRes.iv;
+						api.getOpenId({
+						  data
+						}).then((res) => {
+						  if (res.code == 200 || res.code == 0) {
+							uni.setStorageSync('open_id', res.data.openid);
+							_this.$data.session_key = res.data.session_key;
+							_this.$data.open_id = res.data.openid;
+							_this.$data.wxIsBind = true;
+							
+							
+							if(!_this.$data.wxIsBind){
+								util.errorTips('请先绑定用户微信信息');
+								return false;
+							}
+							
+							if(_this.$data.encryptedData == "" || _this.$data.iv == "" || _this.$data.session_key == "" || _this.$data.open_id == ""){
+								_this.$data.showCon = true;
+								return false;
+							}
+							api.apiMemberWxBind({
+								method:'POST',
+								data:{
+									openid: _this.$data.open_id,
+									session_key: _this.$data.session_key,
+									iv: _this.$data.iv,
+									encryptedData: _this.$data.encryptedData,
+								}
+							}).then((res)=>{
+								if(res.code == 200 || res.code == 0){
+									util.successTips(res.msg);
+								}else{
+									util.errorTips(res.msg);
+								}
+							}).catch((res)=>{
+								util.errorTips(res.msg);
+							})
+							
+						  } else {
+							util.errorTips(res.msg)
+						  }
+						})
+						
+					  }
+					});
+				  }
+				});
+			},
 			password(num){
+				let _this = this;
 				if(this.$data.array.length < 6){
-					this.$data.array.push(num)
-					console.log(num)
+					this.$data.array= this.$data.array + num;
+					console.log(this.$data.array)
 				}
 				if(this.$data.array.length == 6){
 					console.log('跳转')
 					this.$data.mask = false
-					this.$data.array = []
+					
 					this.$data.bott = ''
+					
+					let data = {
+						"id": this.$data.code_id,
+						"code": this.$data.array,
+						"mobile": uni.getStorageSync('user_name'),
+						"type": "wx",
+						"amount": this.$data.amount,
+					}
+					
+					if(this.$data.navIndex == 1){
+						data.type = "ali"
+					}
+					if(this.$data.pageIndex == 1){
+						data.asset_type = 'commission';
+					}else if(this.$data.pageIndex == 2){
+						data.asset_type = 'replace';
+					}
+					api.apiAssetTake({
+						method:'POST',
+						data
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							_this.$data.array = ''
+							uni.navigateBack({
+								delta:1
+							})
+						}else{
+							_this.$data.array = '';
+							util.errorTips(res.msg);
+						}
+					}).catch((res)=>{
+						_this.$data.array = ''
+						util.errorTips(res.msg || res.message);
+					})	
 				}
 			},
 			reset(){
-				this.array = []
+				this.$data.array = []
 			},
 			backspace(){
-				this.array.pop()
+				let data = this.$data.array;
+				data = data.substr(0,data.length-1);
+				this.$data.array = data;
 			},
 			masks(){
-				let _this = this
-				this.mask = true
-				setTimeout( function(){
-					_this.bott = 'bot'
-				},50)
+				 let _this = this;
+				if(!this.$data.wxIsBind){
+					if(_this.$data.encryptedData == "" || _this.$data.iv == "" || _this.$data.session_key == "" || _this.$data.open_id == ""){
+						_this.$data.showCon = true;
+						util.errorTips('请绑定用户微信信息');
+						return false;
+					}
+				}
+				
+				if(_this.$data.amount == ""){
+					util.errorTips('请填写提现金额');
+					return false;
+				}
+				
+				
+				api.regSMS({
+					method:'POST',
+					data:{
+						mobile:uni.getStorageSync('user_name')
+					}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						_this.$data.code_id = res.data.id;
+						
+						_this.mask = true;
+						setTimeout( function(){
+							_this.bott = 'bot'
+						},50)
+						
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg);
+				})
+				
 			},
 			maskss(){
 				this.mask = false
 				this.bott = ''
-				this.array = []
+				this.array = [];
+				
 			},
 			goCashRecord(){
 				uni.navigateTo({
 					url:'../cashRecord/cashRecord'
 				})
 			},
-			repAlipay(){
-				uni.navigateTo({
-					url:'../bindAlipay/bindAlipay'
-				})
+			bindWxInfo(){
+				// uni.navigateTo({
+				// 	url:'../bindAlipay/bindAlipay'
+				// })
+				this.$data.showCon = true;
+				
 			},
 			getOutMoney(){
 				
 			},
 			getMoreMoney(){
-				this.$data.money = this.$data.moreMoney;
+				if(this.$data.now_amount >= 5000){
+					this.$data.amount = 5000;
+				}else{
+					this.$data.amount = this.$data.now_amount;
+				}
 			},
 			checkTransfer(){
 				this.$data.isTransfer = !this.$data.isTransfer;
 			},
-			checkNav(index) {
-				if(index == 1){
+			
+			// 获取支付宝绑定信息
+			memberAliBind(index){
+				api.memberAliBind({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.userInfo.nickName = res.data.real_name;
+						this.$data.navIndex = index;
+					}else{
+						uni.showModal({
+							title: '提示',
+							content: '绑定支付宝?',
+							confirmText:'立即绑定',
+							cancelColor:'#000000',
+							success: function (res) {
+								if (res.confirm) {
+									uni.navigateTo({
+										url:'../bindAlipay/bindAlipay'
+									})
+								} else if (res.cancel) {
+									console.log('用户点击取消');
+								}
+							}
+						});
+					}
+				}).catch((res)=>{
 					uni.showModal({
 						title: '提示',
 						content: '绑定支付宝?',
@@ -211,8 +431,14 @@
 							}
 						}
 					});
+				})
+			},
+			checkNav(index) {
+				if(index == 1){
+					this.memberAliBind(index);
 				}else{
 					this.$data.navIndex = index;
+					this.$data.userInfo.nickName = this.$data.wxNickName;
 				}
 				
 			}
@@ -375,6 +601,65 @@
 	}
 	.uni-list{
 		background: #fff;
-		border: #fff;
+		
+	}
+	
+	
+	.modal-mask {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		overflow: hidden;
+		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.modal-dialog {
+		width: 540upx;
+		overflow: hidden;
+		z-index: 9999;
+		background: #f9f9f9;
+		border-radius: 5upx;
+	}
+	
+	.modal-title {
+		padding-top: 30upx;
+		font-size: 32upx;
+		color: #030303;
+		text-align: center;
+	}
+	
+	.modal-content {
+		padding: 20upx 32upx;
+		font-size: 28upx;
+		text-align: center;
+	}
+	
+	.modal-footer {
+		display: flex;
+		flex-direction: row;
+		height: 86upx;
+		border-top: 1px solid #dedede;
+		font-size: 34upx;
+		line-height: 86upx;
+	}
+	
+	.btn-cancel {
+		width: 50%;
+		color: #abb4bd;
+		text-align: center;
+		border-right: 1px solid #dedede;
+	}
+	
+	.btn-confirm {
+		width: 50%;
+		color: #6fb64b;
+		text-align: center;
+		font-weight: 500;
 	}
 </style>

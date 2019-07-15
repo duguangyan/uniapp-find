@@ -40,13 +40,13 @@
 					</view>
 				</view>
 				
-				<view class="lh90 fs30 pdl-20 bb-1">
+				<!-- <view class="lh90 fs30 pdl-20 bb-1">
 					<view @click="checkLimit(index)">限时找料: 
 						 <text v-if="item.is_limit == 1" class="iconfont icon-dui fs40 text-yellow mgl-20 mgr-20"></text>
 						 <text v-if="item.is_limit == 0" class="iconfont icon-dui fs40 text-eb mgl-20 mgr-20"></text>
 						 <text>限时三小时</text>
 					</view>
-				</view>
+				</view> -->
 
 				<!-- <view class='material-number lh90 fs30 pdl-20 cf border-bottom'>
 					<text class="text-theme">*</text> <text>物料数量:</text>
@@ -86,11 +86,11 @@
 						<view @click='goConsigneeAddress(index)' v-if="item.address" class="flex-1 address-info fs24">
 							
 							<view class="person" style='word-break:break-all;'>
-								<text>收货人 {{item.address.mobile || ''}}</text>
+								<text>收货人 {{item.address.mobile || ''}}</text> <text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
 							</view>
 							<view style='word-break:break-all;'>
 								<text class='text-999'>{{item.address.stall ||''}}</text>
-								<text class='remark' v-if='item.address.remark'>{{item.address.remark ||''}}</text>
+								<!-- <text class='remark' v-if='item.address.remark'>{{item.address.remark ||''}}</text> -->
 							</view>
 							<view>
 								<view class="text-999">
@@ -146,7 +146,7 @@
 			</view>
 		</view>
 
-		<view class='index-popup notes-popup' v-if="isNotes">
+		<view class='index-popup notes-popup' v-if="isNotes && findNeedKnow!=''">
 			<view class='index-popup-bg' @click='hiddenNotes'></view>
 			<view class='index-popup-content notes-btn-content'>
 				<view class='index-popup-title'>小鹿取送须知 <text class='iconfont icon-del1' @click='hiddenNotes'></text></view>
@@ -224,6 +224,7 @@
 				}
 			}
 			if(options.taskEditItem){    // 编辑取送任务
+				this.$data.isNotes = false;
 				uni.setNavigationBarTitle({
 					title: "修改任务"
 				})
@@ -277,16 +278,19 @@
 			
 			// 获取分类数据
 			this.$eventHub.$on('classifyData', (data) => {
+				this.$data.isNotes = false;
 				this.$data.cid = data.cid;
 				this.$data.cname = data.cname;
 				this.$data.fetchs[data.index].cid = data.cid;
 				this.$data.fetchs[data.index].cname = data.cname;
+				this.$eventHub.$off('classifyData');
 			})
 			// 获取地址
 			this.$eventHub.$on('fetchPage', (data) => {
 				console.log('fetchPage:', data);
 				this.$data.fetchs[data.findIndex].address = data.address;
 				this.$data.address = data.address;
+				this.$eventHub.$off('fetchPage');
 			})
 			
 		},
@@ -342,7 +346,7 @@
 							},
 							fail: function (res) {
 								console.log(res.errMsg);
-								util.successTips('区域选择失败');
+								// util.successTips('区域选择失败');
 							}
 						});
 					}
@@ -564,6 +568,15 @@
 </script>
 
 <style lang="scss" scoped>
+	.remark {
+		border: 1rpx solid rgba(242,152,0,1);
+		color: rgba(242,152,0,1);
+		border-radius: 5rpx;
+		margin-right: 10rpx;
+		padding: 0 5rpx;
+		display: inline !important;
+		margin-left: 20upx;
+	}
 	.checkIsResNotes{
 		padding-left: 200upx;
 	}

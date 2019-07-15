@@ -1,92 +1,157 @@
 <template>
 	<view>
 		<view class='no-data' v-if="lists.length<=0">暂无数据</view>
+
 		<!-- 自定义单选/多选/全选实现删除功能 -->
 		<view class="chat-list">
 			<view class="items">
-				<view v-for="(item, index) in lists" :key="index" class="item" :data-name='item.nick_name || item.user_name'
-				 :data-photo='item.avatar_path' :data-id='item.to_user_id' @click='goChat'>
-					<view @touchstart="touchS" @touchmove="touchM" @touchend="touchE" :data-index="index" :style="item.txtStyle" class="inner txt cf">
+				<view v-for="(item, index) in lists" :key="index" class="item" :data-key='index' :data-name='item.nickName || item.userName'
+				 :data-photo='item.avatarPath' :data-id='item.toUserId' @tap='goChat'>
+				 <!-- @touchstart="touchS" @touchmove="touchM" @touchend="touchE" -->
+					<view  :data-index="index" :style="item.txtStyle"
+					 class="inner txt cf">
 						<view class='fll item-1'>
-							<image :src="item.avatar_path || avatar_path"></image>
-							<view v-if="item.userMessage.sms_status == 1" class='spot'></view>
+							<image :src="item.avatarPath || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'"></image>
+							<view v-if="item.unRead > 0" class='spot'></view>
 						</view>
 						<view class='fll item-2'>
-							<view class='nickName'>{{item.nick_name || item.user_name}}</view>
-							<view class='ellipsis'>{{item.userMessage.sms_type=="TEXT"?item.userMessage.content:'[图片]'}}</view>
+							<view class='nickName'>{{item.nickName || item.userName}}</view>
+							<view class='ellipsis'>{{item.userMessage.smsType=="TEXT"?item.userMessage.content:'[图片]'}}</view>
 						</view>
 						<view class='flr item-3'>
-							{{item.userMessage.date_time}}
-
+							{{item.userMessage.dateTime}}
+							<!-- {{dateUtil.dateFormat(item.update_time)}} -->
 						</view>
 					</view>
-					<view :data-index="index" @click="delItem" class="inner del">删除</view>
+					<view :data-index="index" @tap="delItem" class="inner del">删除</view>
 				</view>
 			</view>
 		</view>
 	</view>
 </template>
 
-
 <script>
-
-	import IMapi from "../../utils/IMapi.js";
-	import util from "../../utils/util.js";
 	export default {
 		data() {
 			return {
-				avatar_path: 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png',
 				delBtnWidth: 180,
+				list: [{
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018-09-22",
+						txtStyle: "",
+					},
+					{
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018",
+						txtStyle: "",
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018",
+						txtStyle: "",
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018"
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018"
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018"
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018"
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018"
+					}, {
+						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
+						title: "小鹿小鹿",
+						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
+						time: "2018"
+					},
+				],
 				lists: [],
 				startX: ""
-			};
+			}
 		},
+
 		onLoad(options) {
 			// 页面初始化 options为页面跳转所带来的参数
 			this.initEleWidth();
-			uni.setStorageSync('chatListIds', [])
+			uni.setStorageSync('chatListIds', []);
+			this.onSend()
+		},
+		mounted() {
+			
 		},
 		onShow() {
-			if (this.socket != '') {
-				uni.closeSocket();
-			}
-			let userId = uni.getStorageSync('userId');
-			console.log('userId:' + userId);
-			this.socket = uni.connectSocket({ //im.yidap.com webapi.yidapi.com.cn 
-				url: 'wss://im.yidap.com/notice/socket?userId=' + userId + '&openType=1'
-			});
-			let _this = this;
-			uni.onSocketClose((res) => {
-				console.log("onSocketClose:断开了");
-				this.onShow();
-			})
-			uni.onSocketOpen(function(res) {
-				console.log("连接上了");
-				console.log(res);
-				uni.onSocketMessage(function(res) {
-					let resLists = JSON.parse(res.data);
-					if (resLists.length > 0) {
-						_this.$data.lists = resLists
-					} else {
-						_this.onShow();
-
+			let that = this;
+			this.globalData.callback = function(res) {
+				console.log('lists页面收到数据啦')
+				let resLists = res;
+				if (resLists && resLists.length > 0) {
+					that.$data.lists = resLists;
+				} else {
+					if (resLists.fromUserId != 0) {
+						let res = that.$data.lists.findIndex((value, index) => {
+							return value.userInfoId = resLists.userInfoId
+						})
+						if (res != -1) {
+							that.$data.lists[res].userMessage = resLists
+							that.$data.lists[res].unRead++;
+							that.$data.lists = that.$data.lists
+						} else {
+							that.onSend()
+						}
 					}
-
-
-				})
-			})
+				}
+			}
 		},
 		methods: {
+			onSend: function() {
+				let userId = uni.getStorageSync('userId');
+				let message = {
+					fromUserId: userId,
+					toUserId: '',
+					content: 'page',
+					smsType: 'TEXT',
+					sysType: 1,
+					smsStatus: 10,
+					smsList: true,
+					currentPage: '',
+					pageSize: ''
+				}
+				this.sendSocketMessage(JSON.stringify(message))
+			},
+
 			touchS: function(e) {
-				if (e.touches.length == 1) this.$data.startX = e.touches[0].clientX;
+				if (e.touches.length == 1) {
+					this.$data.startX = e.touches[0].clientX
+				}
 			},
 			touchM: function(e) {
 				if (e.touches.length == 1) {
 					//手指移动时水平方向位置
 					var moveX = e.touches[0].clientX;
 					//手指起始点位置与移动期间的差值
-					var disX = this.data.startX - moveX;
-					var delBtnWidth = this.data.delBtnWidth;
+					var disX = this.$data.startX - moveX;
+					var delBtnWidth = this.$data.delBtnWidth;
 					var txtStyle = "";
 					if (disX == 0 || disX < 0) { //如果移动距离小于等于0，说明向右滑动，文本层位置不变
 						txtStyle = "left:0px";
@@ -100,10 +165,10 @@
 
 					//获取手指触摸的是哪一项
 					var index = e.currentTarget.dataset.index;
-					var lists = this.$data.lists;
-					lists[index].txtStyle = txtStyle;
+					var list = this.$data.list;
+					list[index].txtStyle = txtStyle;
 					//更新列表的状态
-					this.$data.lists = lists;
+					this.$data.list = list;
 				}
 			},
 			touchE: function(e) {
@@ -117,10 +182,10 @@
 					var txtStyle = disX > delBtnWidth / 2 ? "left:-" + delBtnWidth + "px" : "left:0px";
 					//获取手指触摸的是哪一项
 					var index = e.currentTarget.dataset.index;
-					var lists = this.$data.lists;
-					lists[index].txtStyle = txtStyle;
+					var list = this.$data.list;
+					list[index].txtStyle = txtStyle;
 					//更新列表的状态
-					this.$data.lists = lists;
+					this.$data.list = list;
 				}
 			},
 			//获取元素自适应后的实际宽度
@@ -137,17 +202,18 @@
 				}
 			},
 			initEleWidth: function() {
-				this.$data.delBtnWidth = this.getEleWidth(this.$data.delBtnWidth);
+				var delBtnWidth = this.getEleWidth(this.$data.delBtnWidth);
+				this.$data.delBtnWidth = delBtnWidth;
 			},
 			//点击删除按钮事件
 			delItem: function(e) {
 				//获取列表中要删除项的下标
 				var index = e.currentTarget.dataset.index;
-				var lists = this.$data.list;
+				var list = this.$data.list;
 				//移除列表中下标为index的项
-				lists.splice(index, 1);
+				list.splice(index, 1);
 				//更新列表的状态
-				this.$data.lists = lists;
+				this.$data.list = list;
 			},
 			getCacheMessage() {
 				IMapi.getCacheMessage({
@@ -156,9 +222,7 @@
 						sendUserId: 2
 					}
 				}).then((res) => {
-					this.setData({
-						list: res.data
-					})
+					this.$data.list =  res.data
 				})
 			},
 			goChat(e) {
@@ -166,7 +230,12 @@
 				let chatListIndex = e.currentTarget.dataset.index;
 				let fromUserPhoto = e.currentTarget.dataset.photo;
 				let userName = e.currentTarget.dataset.name;
-				let oldArr = wx.getStorageSync('chatListIds') || [];
+				let key = e.currentTarget.dataset.key;
+
+				this.$data.lists[key].unRead = 0;
+				this.$data.lists = this.$data.lists;
+				
+				let oldArr = uni.getStorageSync('chatListIds') || [];
 				if (oldArr.length > 0) {
 					oldArr.forEach((o, i) => {
 						if (o != toUserId) {
@@ -177,9 +246,10 @@
 					oldArr.push(toUserId);
 				}
 
-				wx.setStorageSync('chatListIds', oldArr);
-				wx.navigateTo({
-					url: '../chat1/chat?toUserId=' + toUserId + '&fmUserName=' + userName + '&fromUserPhoto=' + fromUserPhoto,
+				uni.setStorageSync('chatListIds', oldArr);
+				uni.navigateTo({
+					url: '/pages/chat/chat?toUserId=' + toUserId + '&fmUserName=' + userName + '&fromUserPhoto=' + fromUserPhoto +
+						'&index=' + key,
 				})
 			}
 		}
@@ -187,6 +257,7 @@
 </script>
 
 <style lang="scss" scoped>
+	/* pages/chatList/chatList.wxss */
 	.chat-list .items {
 		background: #fff;
 		border-top: 1rpx solid #eee;

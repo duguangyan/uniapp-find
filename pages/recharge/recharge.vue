@@ -6,7 +6,7 @@
 					<view>{{index==1?'充值金额':'购买数量'}}</view>
 				</view>
 				<view class='cf item-2'>
-					<text class='fll'>￥</text>
+					<text class='fll'></text>
 					<input class='fll' type='text' v-model='price' :placeholder="index==1?'请输入充值金额':'请输入购买数量'"></input>
 				</view>
 
@@ -26,15 +26,28 @@
 				</view>
 				<view class='item-3'>支付方式 </view>
 				<view class='item-4'>
-					<view class='cf'>
+					<view class='cf' @click="checkPayIndex(0)">
 						<view class='fll'>
 							<image class='wx' src='../../static/icon/wx.png'></image>
 						</view>
 						<view class='fll'>
 							微信支付
 						</view>
-						<view class='flr'>
-
+						<view class='flr' v-if="index == 2">
+						<text v-if='payIndex == 0' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
+						<text v-if='payIndex != 0' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
+						</view>
+					</view>
+					<view class='cf' v-if="index == 2" @click="checkPayIndex(1)">
+						<view class='fll'>
+							<image class='wx' src='../../static/icon/icon-balance.png'></image>
+						</view>
+						<view class='fll'>
+							鹿币支付
+						</view>
+						<view class='flr lb'>
+						<text v-if='payIndex == 1' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
+						<text v-if='payIndex != 1' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
 						</view>
 					</view>
 				</view>
@@ -82,7 +95,6 @@
 			<view class='pay' @click='doPay'>立即支付</view>
 			<view class='height40'></view>
 		</view>
-
 	</view>
 </template>
 
@@ -104,7 +116,8 @@
 						img: '',
 						name: '支付宝'
 					}
-				]
+				],
+				payIndex:0,
 			};
 		},
 		onLoad(options) {
@@ -116,6 +129,9 @@
 
 		},
 		methods: {
+			checkPayIndex(i){
+				this.$data.payIndex = i;
+			},
 			// 获取充值列表
 			getRechargeList() {
 				api.getRechargeList({}).then((res) => {
@@ -163,10 +179,12 @@
 					}).then((res) => {
 						console.log(res);
 						if (res.code == 200 || res.code == 0) {
-							let data = res.data;
+							let data = res.data.data;
+							let change_amount = res.data.pay.change_amount;
+							let time = res.data.pay.created_at;
 							data.success = function(res) {
 								uni.navigateTo({
-									url: '../rechargeSuccess/rechargeSuccess?value=' + value
+									url: '../rechargeSuccess/rechargeSuccess?value=' + change_amount +'&time='+ time
 								})
 							}
 							data.fail = function(res) {
@@ -180,27 +198,47 @@
 						util.errorTips(res.msg);
 					})
 				} else {
+					if(this.$data.payIndex == 1){
+						payInfo.pay_type = "balance";
+						payInfo.type = "balance";
+					}
+					
 					api.apiVirtual({
 						method: 'POST',
 						data: payInfo
 					}).then((res) => {
 						console.log(res);
 						if (res.code == 200 || res.code == 0) {
-							let data = res.data;
-							data.success = function(res) {
+							if(this.$data.payIndex == 1){  // 余额支付
+								let data = res.data.data;
+								let change_amount = res.data.pay.change_amount;
+								let time = res.data.pay.created_at;
 								uni.navigateTo({
-									url: '../rechargeSuccess/rechargeSuccess?value=' + value
+									url: '../rechargeSuccess/rechargeSuccess?value=' + change_amount +'&time='+ time
 								})
+							}else{
+								let data = res.data.data;
+								let change_amount = res.data.pay.change_amount;
+								data.success = function(res) {
+									
+									uni.navigateTo({
+										url: '../rechargeSuccess/rechargeSuccess?value=' + change_amount
+									})
+								}
+								data.fail = function(res) {
+									
+									util.errorTips('支付失败')
+								}
+								uni.requestPayment(data);
 							}
-							data.fail = function(res) {
-								util.errorTips('支付失败')
-							}
-							uni.requestPayment(data);
+							
 						}else{
+							
 							util.errorTips(res.msg);
 						}
 					}).catch((res)=>{
-						util.errorTips(res.msg);
+						
+						util.errorTips(res.msg || res.message);
 					})
 				}
 
@@ -210,6 +248,10 @@
 </script>
 
 <style lang="scss" scoped>
+	.lb{
+		position: relative;
+		left: 38upx;
+	}
 	.navActive {
 		color: #000;
 	}

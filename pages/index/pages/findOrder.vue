@@ -11,15 +11,15 @@
 				</view>
 				<view class="select-section">
 					<view class="flex select-order">
-						<view @click='getOrderData' :data-nav="1" class="relative" :class="nav == 1 ? 'selected' : ''">找料订单</view>
-						<view @click='getOrderData' :data-nav="2" class="relative" :class="nav == 2 ? 'selected' : ''">取料订单</view>
+						<view @click='getOrderData' :data-nav="1" class="relative" :class="nav == 1 ? 'selectedNav' : ''">找料订单</view>
+						<view @click='getOrderData' :data-nav="2" class="relative" :class="nav == 2 ? 'selectedNav' : ''">取送订单</view>
 					</view>
 					<scroll-view :scroll-x="true" class="status-section find-section">
-						<view v-if="nav==1" v-for='(item, index) in navTexts.find' :key="index" @click='getOrderTypeData' :data-type="index"
-						 :class="status == index ? 'selected' : ''">{{item}}</view>
-						<view v-if="nav==2" v-for='(item, index) in navTexts.fetch' :key="index" @click='getOrderTypeData' :data-type="index"
-						 :class="status == index ? 'selected' : ''">
-							{{item}}
+						<view v-if="nav==1" v-for='(item, index) in navTexts.find' :key="index" @click='getOrderTypeData' :data-type="index">
+							<text :class="navSecend == index ? 'selected' : ''">{{item}}</text>
+						 </view>
+						<view v-if="nav==2" v-for='(item, index) in navTexts.fetch' :key="index" @click='getOrderTypeData' :data-type="index">
+							<text :class="navSecend == index ? 'selected' : ''">{{item}}</text>
 						 </view>
 					</scroll-view>
 				</view>
@@ -47,9 +47,9 @@
 											<text class="flr text-yellow">{{item.status_label}}</text>
 										</view>
 									</view>
-									<view v-if="status == 1" class="new">
+									<!-- <view v-if="status == 1" class="new">
 										<image src="../../images/new-1.png"></image>
-									</view>
+									</view> -->
 								</view>
 								<view class="order-info fs30">
 									<view class="order-info-left">
@@ -63,11 +63,11 @@
 												<view class="ellipsis">
 													物料描述：<text class="fs24 text-666">{{item.desc}}</text>
 												</view>
+												<!-- <view class="ellipsis">
+													限时找料：<text class="fs24 text-666">{{item.limit_time_text}}</text>
+												</view> -->
 												<view class="ellipsis">
-													限时找料：<text class="fs24 text-666">三小时</text>
-												</view>
-												<view class="ellipsis">
-													比较优选：<text class="fs24 text-666">参考价格:￥200.00</text>
+													比较优选：<text class="fs24 text-666" v-if="item.reference_price">参考价格:￥{{item.reference_price}}</text>
 												</view>
 											</view>
 											<view class="item-right">
@@ -77,19 +77,19 @@
 													<text class="fs24 text-yellow" v-if="item.find_status == 3">寄送样品</text>
 												</view>
 												<view>
-													<text class="fs24 text-yellow">金额: ￥50.00</text>
+													<text class="fs24 text-yellow">金额: ￥{{item.fee}}</text>
 												</view>
 											</view>
-											<view class="order-info-right">
+											<!-- <view class="order-info-right">
 												<image v-if="item.is_prompt == 1" src="../../images/reminder.png"></image>
 												<image v-if="item.is_prompt != 1" :src="nav == 1 ? '../../images/find.png': '../../images/send.png'" />
-											</view>
+											</view> -->
 
 										</view>
 										<!--图片找料  -->
 										<view v-if="item.desc_img.length>0">
 											<view class="order-pics-list">
-												<image mode='scaleToFill' @click='preview' v-for="(img, idx) in item.desc_img" :key="idx" :src="img"
+												<image mode='scaleToFill' @click.stop='preview' v-for="(img, idx) in item.desc_img" :key="idx" :src="img"
 												 :data-idx="idx" :data-index="index"></image>
 											</view>
 										</view>
@@ -140,12 +140,16 @@
 								<view v-if="status == 1" class="flex find-status mgr-20" @click="receiptOrder(item.id)">
 									<view>确认接单</view>
 								</view>
-								<view class="cancat flr" v-if="status != 1">
+								
+								<view v-if="item.user_id!=''" class="flex find-status mgr-20" @click="goChat(item)">
+									<view>联系客户</view>
+								</view>
+								<!-- <view class="cancat flr" v-if="status != 1">
 									<image src="../../static/icon/concat.png"></image>
 									<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
 									<view class="btn-1" @click.stop="goChat"></view>
 									<view class="btn-2" @click.stop="contact"></view>
-								</view>
+								</view> -->
 								
 							</view>
 						</view>
@@ -154,6 +158,8 @@
 					<view v-if="isFullLoad" class="tc fs24 c999 bg-base lh60 b600 isFullLoad">
 						已经全部加载完毕
 					</view>
+					
+					<view class="height200"></view>
 				</view>
 			</view>
 		</view>
@@ -262,15 +268,17 @@
 				},
 			    page: 1,
 			    status: 1,
+				
 			    nav:1,
+				navSecend:0,
 			    multiIndex: [7, 0, 8],
 			    orderList:[],
 			    isFullLoad:false,
 			    address:'',
 			    name:'',
 				navTexts:{
-					find:['全部','待接单','待找料','待确认','待评价','已完成'],
-					fetch:['全部','待接单','待找料','待确认','待评价','已完成']
+					find:['全部','待接单','待找料','待确认','待评价','已完成','找不到料'],
+					fetch:['全部','待接单','待取料','待确认','待评价','已完成']
 				}
 			};
 		},
@@ -282,18 +290,35 @@
 			})
 		},
 		onShow() {
+			this.$data.nav = wx.getStorageSync('nav') || 1;
+			this.$data.status = wx.getStorageSync('status') || 0;
+			this.$data.navSecend = wx.getStorageSync('status') || 0;
 			
+			
+			this.$data.orderList = [] 
+			
+			  // 获取数据
+			this.getMyOrders();
 			
 		},
 		mounted(){
 			this.$data.nav = wx.getStorageSync('nav') || 1;
-			this.$data.status = wx.getStorageSync('status') || 1;
+			this.$data.status = wx.getStorageSync('status') || 0;
+			this.$data.navSecend = wx.getStorageSync('status') || 0;
+			
+			
 			this.$data.orderList = [] 
 			
 			  // 获取数据
 			this.getMyOrders();
 		},
 		methods: {
+			// 取聊天室
+			goChat(item){
+				uni.navigateTo({
+					url:'/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户'
+				})
+			},
 			// 确认接单
 			receiptOrder(id){
 				let _this = this;
@@ -310,37 +335,48 @@
 								}
 							}).then((res)=>{
 								if(res.code == 200 || res.code == 0){
-									_this.$data.status = 2; // 状态2 已接单
+									// _this.$data.status = 2; // 状态2 已接单
+									  // 获取数据
+									_this.$data.orderList = [];
+									_this.getMyOrders();
 									util.successTips("接单成功");
+								}else{
+									util.successTips(res.msg);
+									_this.getMyOrders();
 								}
+							}).catch((res)=>{
+								util.errorTips(res.msg || res.message);
+								_this.getMyOrders();
 							})
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
 					}
 				});
-				
 			},
 			// 获取数据
 			  getMyOrders(){
+				   let  status  = this.$data.status;
 				  if(this.$data.nav == 1){
+					 
 					   api.myOrderFindList({
 						 data: {
 							 page: this.$data.page,
-							 status: this.$data.status
+							 status
 						 }
 					  }).then((res) => {
-							 if(res.data.length <=0) this.$data.isFullLoad = true;
+							 if(res.data.length <10) this.$data.isFullLoad = true;
 							 this.$data.orderList = this.$data.orderList.concat(res.data);
 					  })
 				  }else if(this.$data.nav == 2){
+						
 					   api.myOrderFetchList({
 						 data: {
 							 page: this.$data.page,
-							 status: this.$data.status
+							 status
 						 }
 					  }).then((res) => {
-							 if(res.data.length <=0) this.$data.isFullLoad = true;
+							 if(res.data.length <10) this.$data.isFullLoad = true;
 							 this.$data.orderList = this.$data.orderList.concat(res.data);
 					  })
 				  }
@@ -353,18 +389,38 @@
 					uni.setStorageSync('status', 1);
 					this.$data.isFullLoad = false;
 					this.$data.page = 1;
-					this.$data.status = 1;
+					this.$data.status = 0;
+					this.$data.navSecend = 0;
+					
 					this.$data.orderList = [];
 					
 					this.getMyOrders()
 				},
 				// 获取下栏目数据
 				getOrderTypeData(e) {
-					this.$data.status = e.currentTarget.dataset.type;
+					this.$data.navSecend = e.currentTarget.dataset.type;
+					
+					if(this.$data.navSecend == 0){
+						this.$data.status = 0; 
+					}else if(this.$data.navSecend == 1){
+						this.$data.status = 1; 
+					}else if(this.$data.navSecend == 2){
+						this.$data.status = 2; 
+					}else if(this.$data.navSecend == 3){
+						this.$data.status = 4; 
+					}else if(this.$data.navSecend == 4){
+						this.$data.status = 5; 
+					}else if(this.$data.navSecend == 5){
+						this.$data.status = 6; 
+					}else if(this.$data.navSecend == 6){
+						this.$data.status = 3; 
+					}
 					uni.setStorageSync('status', this.$data.status);
 					this.$data.page = 1;
 					this.$data.isFullLoad = false;
 					this.$data.orderList = [];
+					
+					
 					this.getMyOrders()
 				},
 				
@@ -405,6 +461,16 @@
 </script>
 
 <style lang="scss" scoped>
+	.height200{
+		height: 200upx;
+		
+	}
+	.isFullLoad{
+		
+	}
+	.order-handle{
+		border-bottom: 1upx solid #f4f4f4;
+	}
 	.cancat{
 		margin-right: 10upx;
 		width: 360upx;
@@ -458,7 +524,7 @@
 		}
 	}
 	.find-order{
-		background: #eee;
+		background: #f4f4f4;
 		height: 100%;
 	}
 	.isFullLoad{
@@ -520,11 +586,18 @@
 
 .status-section.find-section view {
     padding: 0 10upx;
+	
 }
-
-.status-section view.selected, .select-order view.selected{
+.selectedNav{
+	color: #F29800;
+	border-bottom: 2upx #F29800 solid !important;
+	font-size: 30upx;
+}
+.status-section view .selected, .select-order view .selected{
     color: #F29800;
-    border-bottom: 4upx #F29800 solid;
+    border-bottom: 2upx #F29800 solid;
+	padding-bottom: 18upx;
+	font-size: 30upx;
 }
 
 .item-container {
@@ -536,8 +609,8 @@
 
 .order-item {
     background: #fff;
-	border-top: 1upx solid #eee;
-	margin-bottom: 20upx;
+	border-top: 1upx solid #f5f5f5;
+	border-bottom: 20upx solid #eee;
 }
 
 .order-status {

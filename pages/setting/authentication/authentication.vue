@@ -13,15 +13,17 @@
 					<view class="name fll">
 						{{item.name}}
 					</view>
-					<view class="value fll">
-						<input type="text" v-model="item.value" :placeholder="item.placeholder" @focus="onFocus(index)">
+					<view class="value fll cf">
+						<input type="text" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
+						<view v-if="(userType == 1 || userType == 2) && index == 2" class="VerificationCode flr" @click.stop="getVerificationCode">{{VerificationCodeText}}</view>
 					</view>
 				</view>
 			</view>
+			
 			<view>
-				<view class="image" v-for="(item,index) in ngImgTextArr" :key="index" @click="checkImg(index)" v-if="navIndex == 0 ? index < 2:index>=2">
-					<image :src="item.img"></image>
-					<view class="bgszie" v-if="bgImg[index] == '' ">+</view>
+				<view class="image" v-for="(item,index) in ngImgTextArr" :key="index" v-if="navIndex == 0 ? index < 2:index>=2">
+					<image :src="item.img" @click="checkImg(index)" ></image>
+					<view class="bgszie" v-if="bgImg[index] == '' " @click="checkImg(index)">+</view>
 					<view class="text">{{item.text}}</view>
 				</view>
 			</view>
@@ -61,6 +63,8 @@
 		data() {
 			return {
 				title: "用户认证",
+				VerificationCodeText:'获取验证码',
+				code_id:'',
 				userType:0,
 				userStatus:0,
 				status_label:'',
@@ -73,7 +77,8 @@
 				bgImg:["","",""],
 				arr:[
 					{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
-					{name:"联系电话:",value:"",placeholder:"请输入您的联系电话"},
+					{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
+					{name:"验证码:",value:"",placeholder:"请输入验证码"},
 					{name:"详细地址:",value:"",placeholder:"请选择地区"},
 					{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
 					{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
@@ -86,30 +91,68 @@
 			}
 		},
 		onLoad(options) {
-			
-			let userAuthentication = uni.getStorageSync('userAuthentication');
-			
-			this.$data.userStatus   = userAuthentication.status;
-			this.$data.status_label = userAuthentication.status_label;
-			this.$data.arr[0].value = userAuthentication.consignee;
-			this.$data.arr[1].value = userAuthentication.mobile;
-			this.$data.arr[2].value = userAuthentication.address;
-			this.$data.arr[3].value = '';
-			this.$data.arr[4].value = userAuthentication.id_card_no;
-			if(userAuthentication.type == 1){
-				this.$data.ngImgTextArr[0].img = userAuthentication.id_card_front;
-				this.$data.ngImgTextArr[1].img = userAuthentication.id_card_back;
-				this.$data.bgImg[0] = userAuthentication.id_card_front;
-				this.$data.bgImg[1] = userAuthentication.id_card_back;
+			this.$data.userType = uni.getStorageSync('userType');
+			if(this.$data.userType == 1 || this.$data.userType == 2){
+				this.$data.arr=[
+					{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
+					{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
+					{name:"验证码:",value:"",placeholder:"请输入验证码"},
+					{name:"详细地址:",value:"",placeholder:"请选择地区"},
+					{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
+					{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
+				]
 			}else{
-				this.$data.ngImgTextArr[3].img = userAuthentication.id_card_front;
-				this.$data.bgImg[3] = userAuthentication.id_card_front;
+				this.$data.arr=[
+					{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
+					{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
+					{name:"详细地址:",value:"",placeholder:"请选择地区"},
+					{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
+					{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
+				]
 			}
+			
+			api.auditApply({}).then((res)=>{
+				if(res.code == 200 || res.code == 0){
+					this.$data.userStatus      = res.data.status;
+					if(res.data.status>0){
+						this.$data.userAuthentication = res.data;
+						let userAuthentication = res.data;
+
+						this.$data.status_label = userAuthentication.status_label;
+						this.$data.arr[0].value = userAuthentication.consignee;
+						this.$data.arr[1].value = userAuthentication.mobile;
+						this.$data.arr[3].value = userAuthentication.address;
+						
+						if(this.$data.userType == 2 || this.$data.userType == 3){
+							this.$data.arr[4].value = '';
+							this.$data.arr[5].value = userAuthentication.id_card_no;
+						}else{
+							//this.$data.arr[4].value = '';
+							this.$data.arr[4].value = userAuthentication.id_card_no;
+						}
+						
+						
+						if(this.$data.userStatus != 0){
+							if(userAuthentication.type == 1){
+								this.$data.ngImgTextArr[0].img = userAuthentication.id_card_front;
+								this.$data.ngImgTextArr[1].img = userAuthentication.id_card_back;
+								this.$data.bgImg[0] = userAuthentication.id_card_front;
+								this.$data.bgImg[1] = userAuthentication.id_card_back;
+							}else{
+								this.$data.ngImgTextArr[3].img = userAuthentication.id_card_front;
+								this.$data.bgImg[3] = userAuthentication.id_card_front;
+							}
+						}
+					}
+				}	
+			})
+			
+			
 			
 			
 		},
 		onShow() {
-			this.$data.userType = uni.getStorageSync('userType');
+			
 			if(this.$data.userType == 0 || this.$data.userType == 3){
 				uni.setNavigationBarTitle({
 					title: "用户认证"
@@ -126,38 +169,100 @@
 			
 		},
 		methods:{
+			getVerificationCode(){
+				if(this.$data.arr[1].value == ""){
+					util.successTips('请填写手机号码');
+					return false;
+				}
+				api.regSMS({
+					method:'POST',
+					data:{
+						mobile:this.$data.arr[1].value
+					}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.code_id = res.data.id;
+						this.$data.VerificationCodeText = "重新发送";
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg || res.message);
+				})
+			},
 			changeModalCancel(){
 				this.$data.showCon = false;
 			},
 			onFocus(index){
 				console.log(index);
 				let _this = this;
-				if(index==2){
-					uni.chooseLocation({
-						success: function (res) {
-							console.log('位置名称：' + res.name);
-							console.log('详细地址：' + res.address);
-							console.log('纬度：' + res.latitude);
-							console.log('经度：' + res.longitude);
-							_this.$data.arr[2].value = res.address;
-							_this.$data.arr[3].value = res.name;
-							
-						},
-						fail(res) {
-							util.errorTips("获取地图定位失败：" + res.errMsg);
-							console.log(res);
-							//不允许打开定位
-							uni.getSetting({
-							  success: (res) => {
-								if (!res.authSetting['scope.userLocation']) {
-									//打开提示框，提示前往设置页面
-									_this.$data.showCon = true;
+				let userType = uni.getStorageSync('userType');
+				if(userType == 0 || userType == 3){
+					if(index==2){
+						uni.chooseLocation({
+							success: function (res) {
+								console.log('位置名称：' + res.name);
+								console.log('详细地址：' + res.address);
+								console.log('纬度：' + res.latitude);
+								console.log('经度：' + res.longitude);
+								if(_this.$data.userType == 0 || _this.$data.userType == 3){
+									_this.$data.arr[2].value = res.address;
+									_this.$data.arr[3].value = res.name;
+								}else{
+									_this.$data.arr[3].value = res.address;
+									_this.$data.arr[4].value = res.name;
 								}
-							  }
-							})
-						}
-					});
+								
+								
+							},
+							fail(res) {
+								util.errorTips("获取地图定位失败：" + res.errMsg);
+								console.log(res);
+								//不允许打开定位
+								uni.getSetting({
+								  success: (res) => {
+									if (!res.authSetting['scope.userLocation']) {
+										//打开提示框，提示前往设置页面
+										_this.$data.showCon = true;
+									}
+								  }
+								})
+							}
+						});
+					}
+				}else{
+					if(index==3){
+						uni.chooseLocation({
+							success: function (res) {
+								console.log('位置名称：' + res.name);
+								console.log('详细地址：' + res.address);
+								console.log('纬度：' + res.latitude);
+								console.log('经度：' + res.longitude);
+								if(_this.$data.userType == 0 || _this.$data.userType == 3){
+									_this.$data.arr[2].value = res.address;
+									_this.$data.arr[3].value = res.name;
+								}else{
+									_this.$data.arr[3].value = res.address;
+									_this.$data.arr[4].value = res.name;
+								}
+								
+								
+							},
+							fail(res) {
+								util.errorTips("获取地图定位失败：" + res.errMsg);
+								console.log(res);
+								//不允许打开定位
+								uni.getSetting({
+								  success: (res) => {
+									if (!res.authSetting['scope.userLocation']) {
+										//打开提示框，提示前往设置页面
+										_this.$data.showCon = true;
+									}
+								  }
+								})
+							}
+						});
+					}
 				}
+				
 			},
 			navCheck(index){
 				this.$data.navIndex = index;
@@ -235,12 +340,12 @@
 			},
 			save(){
 				let _this = this;
-				let province,city,county;
-				if(this.$data.arr[2].value != ""){
-					 province = this.$data.arr[2].value.split("省")[0] + "省";
-					 city     = this.$data.arr[2].value.split("省")[1].split("市")[0] + "市";
-					 county   = this.$data.arr[2].value.split("省")[1].split("市")[1].split("区")[0] + "区";
-				}
+				//let province,city,county;
+				// if(this.$data.arr[2].value != ""){
+				// 	 province = this.$data.arr[2].value.split("省")[0] + "省";
+				// 	 city     = this.$data.arr[2].value.split("省")[1].split("市")[0] + "市";
+				// 	 county   = this.$data.arr[2].value.split("省")[1].split("市")[1].split("区")[0] + "区";
+				// }
 				if(this.$data.navIndex == 0){
 					if(this.$data.bgImg[0]=="" || this.$data.bgImg[1]==""){
 						if(this.$data.bgImg[0]==""){
@@ -259,37 +364,127 @@
 						return false;
 					}
 				}
-				let data = {
-						from:1,
-						type:this.$data.navIndex + 1,
-						consignee:this.$data.arr[0].value,
-						mobile:this.$data.arr[1].value,
-						address:_this.$data.arr[2].value + _this.$data.arr[3].value,
-						id_card_no:this.$data.arr[4].value,
-						id_card_back:this.$data.bgImg[1],
-						id_card_front:this.$data.bgImg[0]
-					}
+				
+				if(this.$data.code_id == ""){
+					util.errorTips("请输入验证码");
+					return false;
+				}
+				let data ='';
+				if(this.$data.userType == 1 || this.$data.userType == 2 ){
+					data = {
+							from:1,
+							type:this.$data.navIndex + 1,
+							consignee:this.$data.arr[0].value,
+							mobile:this.$data.arr[1].value,
+							address:_this.$data.arr[3].value + _this.$data.arr[4].value,
+							id_card_no:this.$data.arr[5].value,
+							id_card_back:this.$data.bgImg[1],
+							id_card_front:this.$data.bgImg[0]
+						}
+				}else{
+					data = {
+							from:1,
+							type:this.$data.navIndex + 1,
+							consignee:this.$data.arr[0].value,
+							mobile:this.$data.arr[1].value,
+							address:_this.$data.arr[2].value + _this.$data.arr[3].value,
+							id_card_no:this.$data.arr[4].value,
+							id_card_back:this.$data.bgImg[1],
+							id_card_front:this.$data.bgImg[0]
+						}
+				}
+				
 				if(_this.$data.navIndex == 1){
 					data.id_card_front = this.$data.bgImg[2]
 				}
-				api.auditApply({
-					method:"POST",
-					data,
-				}).then((res)=>{
-					util.successTips("提交审核成功");
-					setTimeout(()=>{
-						uni.navigateBack({
-							delta:1
-						})
-					},1000)
+				if(this.$data.userType == 0 || this.$data.userType == 3){  // 用户认证
+					api.auditApply({
+						method:"POST",
+						data,
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							util.successTips("提交审核成功");
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+						}else{
+							util.errorTips(res.msg)
+						}
+						
+					}).catch((res)=>{
+						util.errorTips(res.msg || res.message)
+					})	
+				}else if(this.$data.userType == 1){   // 找料员认证
+					data.code =this.$data.arr[2].value,
+					data.id = this.$data.code_id,
+					data.type = 1;
+					api.staffAudit({
+						method:"POST",
+						data,
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							util.successTips("提交审核成功");
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+						}else{
+							util.successTips(res.msg);
+						}
+						
+						
+					}).catch((res)=>{
+						util.errorTips(res.msg || res.message)
+					})					
+				}else if(this.$data.userType == 2){   // 配送员认证
+					data.code=this.$data.arr[2].value,
+					data.id=this.$data.code_id,
+					data.type = 2;
+					api.staffAudit({
+						method:"POST",
+						data,
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							util.successTips("提交审核成功");
+							setTimeout(()=>{
+								uni.navigateBack({
+									delta:1
+								})
+							},1000)
+						}else{
+							util.errorTips(res.msg)
+						}
+						
+						
+					}).catch((res)=>{
+						util.errorTips(res.msg || res.message)
+					})	
 					
-				})
+				}
+				
 			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	.VerificationCode{
+		width: 160upx;
+		text-align: center;
+		border: 1upx solid #F29800;
+		color: #F29800;
+		position: absolute;
+		right: 10upx;
+		top: 10upx;
+		z-index: 9999;
+		height: 60upx;
+		line-height: 60upx;
+		color: #fff;
+		background: #F29800;
+	}
 	.info{
 		line-height: 100upx;
 		padding-left: 30upx;
@@ -305,7 +500,6 @@
 		height: 140upx;
 	}
 	.authentication{
-		height: 100%;
 		background: #fff;
 		margin-bottom: 240upx;
 		.btn-warp{
@@ -362,6 +556,7 @@
 				}
 				.value{
 					width: 490upx;
+					position: relative;
 					input{
 						height: 80upx;
 						line-height: 80upx;

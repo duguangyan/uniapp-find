@@ -19,13 +19,17 @@
 								<text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text>
 								<text class='flr text-yellow fs24'>金额:￥{{item.fee}}</text>
 							</view>
-							<view>
-								<text class="fs28">限时找料:</text> <text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':''}}</text>
-							</view>
-							<view>
+								<view>
 								<text class="fs28">比价优选:</text> <text class="fs24 text-999 mgl-20">参考价格￥{{item.reference_price}}</text>
 							</view>
-							<image class='task-find-img' src='../../static/icon/task_find.png'></image>
+							<view>
+								<!-- <text class="fs28">限时找料:</text> <text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':''}}</text> -->
+								<text class="fs28"></text> <text class="fs24 text-999">{{item.distance_text}}</text>
+								
+								<text class='flr text-yellow fs24'>超范围服务费:￥{{item.extra_fee}}</text>
+							</view>
+						
+							<!-- <image class='task-find-img' src='../../static/icon/task_find.png'></image> -->
 						</view>
 						<view class='task-find-method'>
 							<view class='task-find-method-img' v-if='item.find_type==1'>
@@ -40,7 +44,7 @@
 										<!-- <view class='remark' v-if="item.address && item.address.remark!=''">
 											{{item.address.remark||''}}
 										</view> -->
-										<text class="fs28">取样地址:</text>	<text class="fs24 text-999 mgl-20">{{item.address.city_str ||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
+										<text class="fs28">取样地址:</text>	<text class="fs24 text-999 mgl-20"> {{item.address.address||''}} {{item.address.room||''}}</text>
 									</view>
 									<!-- <view class='fs24' style='word-break:break-all;'>
 										{{item.address.consignee || ''}} / {{item.address.mobile || ''}}
@@ -53,16 +57,16 @@
 
 
 							<view class='task-find-method-getfind' v-if='item.find_type==3'>
-								<view>
+								<view class="mgl-20 fs32">
 									寄样地址：
 								</view>
 								<view>
 									<view class='fs24 pdr-20' style='word-break:break-all;'>
-										<text class='remark' v-if='item.address[0].tag'>{{companyaddress[0].tag||''}}</text>
-										{{companyaddress[0].address||''}}
+										<text class='remark'>{{companyaddress[0].tag}}</text>
+										{{companyaddress[0].address}}
 									</view>
 									<view class='fs24 pdr-20' style='word-break:break-all;'>
-										{{companyaddress[0].consignee||''}} / {{companyaddress[0].mobile||''}}
+										{{companyaddress[0].consignee}} / {{companyaddress[0].mobile}}
 									</view>
 									<view>...</view>
 								</view>
@@ -84,8 +88,8 @@
 					<view class='task-find-list fs30' v-for='(item ,index) in fetchs' :key='index'>
 						<view class='task-find-item'>
 							<view><text class="fs28">物料品类:</text> <text class="fs24 text-999 mgl-20">{{item.cname}}</text> <text class='flr text-yellow fs24'>金额:￥{{item.fee}}</text></view>
-							<view><text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text></view>
-							<image class='task-find-img' src='../../static/icon/task_get.png'></image>
+							<view><text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text>  <text class='flr text-yellow fs24'>超范围服务费:￥{{item.extra_fee}}</text></view>
+							<!-- <image class='task-find-img' src='../../static/icon/task_get.png'></image> -->
 						</view>
 						<view class='task-find-method'>
 							<view class='task-find-method-getfind fecth-address fs30'>
@@ -154,7 +158,7 @@
 						<image class='fll' :src='item.icon'></image>
 						<text class='fll mgl-20 text' v-if="item.title=='微信支付'">{{item.title}} </text>
 						<text class='fll mgl-20 text' v-if="item.title=='余额'">{{item.title}} (￥{{balance_amount || '0'}})</text>
-						<text class='fll mgl-20 text' v-if="item.title=='鹿币'">{{item.title}} (￥{{virtual_amount || '0'}})</text>
+						<text class='fll mgl-20 text' v-if="item.title=='鹿币'">{{item.title}} ({{virtual_amount || '0'}})</text>
 						<view class='flr check-btn'>
 							<text v-if='payTypeCheckIndex == index' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
 							<text v-if='payTypeCheckIndex != index' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
@@ -217,7 +221,12 @@
 				finds             : '', // 找料任务数据  
 				taskPayList       : '', //  任务数据
 				address           : '', // 默认地址
-				companyaddress    : '', // 公司地址
+				companyaddress    : [{
+					address:'',
+					tag:'',
+					consignee:'',
+					mobile:''
+				}], // 公司地址
 				balance_amount    : '', // 余额
 				virtual_amount    : '', // 鹿币
 				payTypeCheckIndex : 0,  // 默认微信支付
@@ -233,24 +242,16 @@
 				uni.setStorageSync('method', 1);
 			}
 			uni.setStorageSync('status', 0);
-			// 获取默认地址
-			this.getDefaultAddress();
-			// 获取公司地址
-			this.getCompanyaddress();
-
-		},
-		onShow() {
-
-			// 获取取送任务编辑信息
-			this.$eventHub.$on('taskPayPage', (data) => {
-				this.$data.address = data.address;
-			})
+			
+			
 			// 获取用户信息 余额
 			// this.getUserInfo();
 			// 获取余额
 			this.getUserAsset();
 			// 获取Storage找料取料数据
 			let taskPayList = uni.getStorageSync('taskPayList');
+			
+			
 			let finds    = taskPayList.finds;
 			let fetchs   = taskPayList.fetchs;
 			let task_ids = taskPayList.task_ids;
@@ -263,13 +264,28 @@
 			fetchs.forEach((v) => {
 				fetchsTotalPrice += parseFloat(v.fee);
 			})
-
+			
 			this.$data.taskPayList      = taskPayList;
 			this.$data.finds            = finds;
 			this.$data.fetchs           = fetchs;
 			this.$data.task_ids         = task_ids;
 			this.$data.findsTotalPrice  = findsTotalPrice;
 			this.$data.fetchsTotalPrice = fetchsTotalPrice;
+			
+			
+			// 获取默认地址
+			this.getDefaultAddress();
+			// 获取公司地址
+			this.getCompanyaddress();
+
+		},
+		onShow() {
+			this.$data.isDisabled = false;
+			// 获取取送任务编辑信息
+			this.$eventHub.$on('taskPayPage', (data) => {
+				this.$data.address = data.address;
+				this.getServicePrice();
+			})
 			
 		},
 		mounted() {
@@ -295,6 +311,57 @@
 				api.defaultAddress({}).then((res) => {
 					if (res.code == 200 || res.code == 0) {
 						this.$data.address = res.data;
+						_this.getServicePrice();
+					}
+				})
+			},
+			// 获取超范围服务费
+			getServicePrice(){
+				api.apiTaskPayment({
+					method:'POST',
+					data:{
+						task_id:this.$data.taskPayList.task_ids,
+						address_id:this.$data.address.id
+					}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						let finds = [];
+						let fetchs = [];
+						let taskPayList = this.$data.taskPayList;
+						res.data.forEach((o,i)=>{
+							if(o.type == 1){
+								taskPayList.finds.forEach((oo,ii)=>{
+									if(o.id == oo.id){
+										o.address = oo.address;
+										finds.push(o);
+									}
+								})
+								
+								
+							}else{
+								taskPayList.fetchs.forEach((oo,ii)=>{
+									if(o.id == oo.id){
+										o.address = oo.address;
+										fetchs.push(o)
+									}
+								})
+								
+							}
+						})
+						// 计算合计金额
+						let findsTotalPrice = 0;
+						let fetchsTotalPrice = 0;
+						finds.forEach((v) => {
+							findsTotalPrice += parseFloat(v.total_fee);
+						})
+						fetchs.forEach((v) => {
+							fetchsTotalPrice += parseFloat(v.total_fee);
+						})
+						
+						this.$data.finds            = finds;
+						this.$data.fetchs           = fetchs;
+						this.$data.findsTotalPrice  = findsTotalPrice;
+						this.$data.fetchsTotalPrice = fetchsTotalPrice;
 					}
 				})
 			},
@@ -624,7 +691,10 @@
 	.remark {
 		display: inline;
 		text-align: center;
-		padding: 0 0 0 10upx !important;
+		border: 1upx solid #F29800;
+		padding: 0 4upx;
+		color: #F29800;
+		margin-left: 20upx;
 	}
 
 	.task-warp {

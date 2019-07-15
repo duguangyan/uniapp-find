@@ -2,7 +2,7 @@
 	<view class="index">
 		<view class="center-top">
 			<!-- <view class="title">个人中心</view> -->
-			<image class="icon" :src="avatar_path"  mode="" @click="changeAvatarPath"></image>
+			<image class="icon" :src="avatar_path"  mode=""></image>
 			<view class="name">{{nickName}}</view>
 			<button class="top-button recharge" type="primary" plain="true" @click="goRecharge(1)">余额充值</button>
 			<button class="top-button buy" type="default" @click="goRecharge(2)">购买鹿币</button>
@@ -87,7 +87,7 @@
 					}
 				],
 				order_fetch: [{
-						img: "/static/center/find.png",
+						img: "/static/center/shouhuo.png",
 						text: "取料中",
 					},
 					{
@@ -349,46 +349,59 @@
 		.setting {
 			// background-color: pink;
 			float: right;
-			margin-top: 95upx;
+			margin-top: 32upx;
 			margin-right: 38upx;
 			width: 48upx;
 			height: 48upx;
+			position: relative;
+			z-index: 99999;
 		}
 		.message {
 			float: right;
-			margin-top: 92upx;
+			margin-top: 30upx;
 			margin-right: 40upx;
 			width: 56upx;
 			height: 56upx;
+			position: relative;
+			z-index: 99999;
 		}
 
 		.name {
 			color: white;
 			font-size: 32upx;
-			position: absolute;
+			position: relative;
 			top: 74upx;
-			left: 180upx;
+			left: 40upx;
+			width: 500upx;
+			text-align: left;
+			overflow: hidden;
+			text-overflow:ellipsis;
+			white-space: nowrap;
 		}
 
 		.top-button {
 			color: white;
 			border: 2upx solid white;
 			border-radius: 20upx;
-			position: absolute;
-			top: 140upx;
+			position: relative;
+			top: 110upx;
 			padding: 8upx 20upx;
 			height: 40upx;
 			font-size: 20upx;
 			line-height: 20upx;
+			width: 160upx;
+			left: -10upx;
+			display: inline-block;
 		}
 
 		.recharge {
-			left: 180upx;
+			// left: 180upx;
 		}
 
 		.buy {
 			background-color: transparent;
-			left: 340upx;
+			// left: 340upx;
+			margin-left: 20upx;
 		}
 	}
 
@@ -434,7 +447,7 @@
 
 		.wallet_down {
 			display: block;
-			color: #EF230C;
+			color: #F29800;
 			font-size: 48upx;
 			position: relative;
 			top: 44upx;

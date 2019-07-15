@@ -16,12 +16,15 @@
 				</view>
 				<scroll-view scroll-x="true" scroll-left="scrolLeft"  class='order-nav order-nav-1 order-child-nav fs30 lh90'>
 					<view class="order-nav-1-warp">
-						<text v-for="(item, index) in checkChildNavs" :key="index" @click='checkChildNav' :data-index='index' :class="orderChildNavNum==index?'nav-child-active':''">{{item}}</text>
+						<view v-for="(item, index) in checkChildNavs" :key="index" @click='checkChildNav' :data-index='index' :class="orderChildNavNum==index?'nav-child-active':''">
+						{{item}}
+						<text class="line"></text>
+						</view>
 					</view>
 					
 				</scroll-view>
 			</view>
-			<view class='no-order-data' v-if="orderList.length<=0">
+			<view class='no-order-data' v-if="hasData">
 				<image src='../../static/icon/no_order.png'></image>
 				<view class='text-666 text-center fs30 mgt-50'>你还没有相关订单</view>
 				<view class='do-order' @click='doOrder(1)'>添加找料订单</view>
@@ -45,9 +48,9 @@
 									<text class='flr fs24 text-yellow float'>金额:￥{{item.fee}}</text>
 								</view>
 								
-								<view>
-									<text class="fs28">限时找料:</text> <text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':''}}</text>
-								</view>
+								<!-- <view>
+									<text class="fs28">限时找料:</text> <text class="fs24 text-999 mgl-20">{{item.limit_time_text}}</text>
+								</view> -->
 								<view>
 									<text class="fs28">比价优选:</text> <text class="fs24 text-999 mgl-20">参考价￥{{item.reference_price}}</text>
 								</view>
@@ -118,20 +121,27 @@
 									</view>
 								</view>
 
-								<view class='order-footer-btn bt-2 cf' v-if='item.can_refuse==1||item.can_confirm==1||item.can_delete==1 ||item.can_comment==1'>
+								<view class='order-footer-btn bt-2 cf' v-if="item.can_refuse==1||item.can_confirm==1||item.can_delete==1 ||item.can_comment==1 || item.distribution_id!='' || item.findman_id!=''">
 
 
 									<button @click.stop='toReturn(item.id)' v-if='item.can_refuse==1'>申请退款</button>
 									<button @click.stop='affirmOrder(item.id,index)' v-if='item.can_confirm==1' class='order-footer-btn-red'>确认收货</button>
 									<button @click.stop='toComment(item.id)' v-if='item.can_comment==1'>评价</button>
 									<button @click.stop='toDel(item.id)' v-if='item.can_delete==1'>删除</button>
-
-									<view class="cancat flr" v-if="item.can_refuse != 1">
+									
+									<button @click.stop='goChat(item)' v-if="orderNavNum == 0 && orderChildNavNum>0 && orderChildNavNum!=3 && orderChildNavNum!=4 && item.findman_id!=''">联系找料员</button>
+									
+									<button @click.stop='goChat(item)' v-if="orderNavNum == 0 && orderChildNavNum==3 && item.distribution_id!=''">联系配送员</button>
+									
+									<button @click.stop='goChat(item)' v-if="orderNavNum == 1 && (orderChildNavNum ==1 || orderChildNavNum ==2) && item.findman_id!=''">联系找料员</button>
+									
+									<button @click.stop='goChat(item)' v-if="orderNavNum == 1 && orderChildNavNum>2 && orderChildNavNum!=4 && item.distribution_id!=''">联系配送员</button>
+									<!-- <view class="cancat flr" v-if="item.distribution_id">
 										<image src="../../static/icon/concat.png"></image>
 										<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
 										<view class="btn-1" @click.stop="goChat"></view>
 										<view class="btn-2" @click.stop="contact"></view>
-									</view>
+									</view> -->
 								</view>
 								
 							</view>
@@ -174,7 +184,6 @@
 					<view class="confirm flex-1" @click="commentConfirm">确定</view>
 				</view>
 			</view>
-
 		</view>
 
 
@@ -247,6 +256,7 @@
 				// 				Value: "", //输入的内容  
 				// 				ispassword: true, //是否密文显示 true为密文， false为明文。
 				// 		
+				hasData:false,
 				isSearch:false,  // 是否搜索刷新
 				noRequestData:false, 	
 				searchValue:'',    // 搜索关键字
@@ -281,6 +291,9 @@
 			this.getCompanyaddress();
 			// 从个人中心跳转过来对应数据
 			this.$data.orderNavNum = uni.getStorageSync('method') || 0;
+			
+			this.$data.checkChildNavs = this.$data.orderNavNum == 0 ?['全部', '待找料','待确认', '待收货', '待评价', '已完成','找不到物料','退款'] : ['全部', '待取料','待确认', '待收货', '待评价', '已完成','找不到物料','退款'];
+			
 			this.$data.orderChildNavNum = uni.getStorageSync('status') || 0;
 			
 			// 初始化获取找料列表
@@ -288,10 +301,17 @@
 		},
 		methods: {
 			// 取聊天室
-			goChat(){
-				uni.navigateTo({
-					url:'../../chat/chat'
-				})
+			goChat(item){
+				if(this.$data.orderNavNum == 0){
+					uni.navigateTo({
+						url:'/pages/chat/chat?id=' + item.findman_id + '&fmUserName='+item.findman_name
+					})
+				}else{
+					uni.navigateTo({
+						url:'/pages/chat/chat?id=' + item.distribution_id + '&fmUserName='+item.distribution_name
+					})
+				}
+				
 			},
 			//  联系我们电话
 			contact() {
@@ -365,6 +385,7 @@
 								console.log(res);
 								if (res.code == 200 || res.code == 0) {
 									_this.$data.orderList[index].can_confirm = 0;
+									
 									util.successTips('收货成功！');
 								} else {
 									util.errorTips(res.msg);
@@ -532,8 +553,7 @@
 				this.$data.page = 1;
 				this.getList(this.$data.orderNavNum + 1, i, this.$data.page);
 				uni.pageScrollTo({
-					scrollTop: 0,
-					duration: 300
+					scrollTop: 0
 				});
 			},
 			// 一级nav切换
@@ -541,10 +561,10 @@
 				this.$data.isSearch = false;
 				let i = e.currentTarget.dataset.index;
 				this.$data.orderNavNum = i;
-				
+
 				uni.setStorageSync('method',i);
 				uni.setStorageSync('status',0);
-				this.$data.checkChildNavs = i == 0 ?['全部', '待找料','待确认', '待收货', '待评价', '已完成','找不到物料','退款'] : ['全部', '待取送','待确认', '待收货', '待评价', '已完成','找不到物料','退款'];
+				this.$data.checkChildNavs = i == 0 ?['全部', '待找料','待确认', '待收货', '待评价', '已完成','找不到物料','退款'] : ['全部', '待取料','待确认', '待收货', '待评价', '已完成','找不到物料','退款'];
 				this.$data.orderList = [];
 				this.$data.page = 1;
 				this.$data.orderChildNavNum = 0;
@@ -565,6 +585,9 @@
 				}).then((res) => {
 					if (res.code == 200 || res.code == 0) {
 						this.$data.orderList = this.$data.orderList.concat(res.data);
+						
+						this.$data.hasData = this.$data.orderList.length<=0? true: false;
+						
 						for (let i = 0; i < this.$data.orderList.length; i++) {
 							// 1按图找,2按样找3按描述
 							if (this.$data.orderList[i].type == 1) {
@@ -761,8 +784,15 @@
 		.order-nav-1-warp{
 			width: 1200upx;
 			text-align: left;
-			text{
-				padding: 25upx 30upx;
+			font-size: 30upx;
+			height: 90upx;
+			line-height: 90upx;
+			view{
+				padding: 0upx 30upx;
+				font-size: 30upx;
+				display: inline-block;
+				position: relative;
+				
 			}
 		}
 		
@@ -807,19 +837,30 @@
 
 	.nav-child-active {
 		color: #F29800;
+		border-bottom: 1upx solid #F29800;
+		font-size: 30upx;
+		.line{
+			position: absolute;
+			width: 70%;
+			height: 2upx;
+			background: #F29800;
+			left: 15%;
+			bottom: 2rpx;
+		
+		}
 	}
 
-	.nav-child-active::after {
-		content: '';
-		display: block;
-		width: 100upx;
-		height: 4upx;
-		background-color: #F29800;
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		margin-left: -50upx;
-	}
+	// .nav-child-active::after {
+	// 	content: '';
+	// 	display: block;
+	// 	width: 100upx;
+	// 	height: 4upx;
+	// 	background-color: #F29800;
+	// 	position: absolute;
+	// 	bottom: 0;
+	// 	left: 50%;
+	// 	margin-left: -50upx;
+	// }
 
 	.order-header {
 		position: fixed;
@@ -974,7 +1015,7 @@
 
 	.order-footer-btn button {
 		margin-right: 20upx;
-		width: 180upx;
+		width: 210upx;
 		float: right;
 		line-height: 60upx;
 		font-size: 30upx;
@@ -1046,7 +1087,9 @@
 		left: 0;
 		z-index: 999999;
 	}
-
+	.task-find{
+		border-top: 20upx solid #f4f4f4; 
+	}
 	.index-popup-bg {
 		width: 100%;
 		height: 100%;

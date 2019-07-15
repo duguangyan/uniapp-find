@@ -22,14 +22,13 @@
 						<text class="triangle-down"></text>
 					</view>
 				</view>
-				<view class="th">
+				<!-- <view class="th">
 					<view class="mgl-20" @click="checkLimit(index)">限时找料: 
 						 <text v-if="item.is_limit == 1" class="iconfont icon-dui fs40 text-yellow mgl-20 mgr-20"></text>
 						 <text v-if="item.is_limit == 0" class="iconfont icon-dui fs40 text-eb mgl-20 mgr-20"></text>
 						 <text>限时三小时</text>
 					</view>
-				</view>
-				
+				</view> -->
 				<view class="th">
 					<view class="mgl-20 choosePrice">
 						<view>
@@ -40,7 +39,7 @@
 							</text>
 							
 							<text class="mgl-30 fs30 reference_price">参考价格: </text>
-							<input type="number" :disabled="!item.is_compare" v-model="item.reference_price" placeholder="请输入参考价格" />
+							<input class="flr mgr-20" type="text" @click="doCompare(item.is_compare)" :disabled="!item.is_compare" v-model="item.reference_price" placeholder="请输入参考价格" />
 						</view>
 					</view>
 				</view>
@@ -72,10 +71,10 @@
 							<text class='iconfont icon-jiantou address-icon'></text>
 							<view v-if="item.address != ''" @click='goConsigneeAddress(index)' class="flex-1 address-info address-q-i fs24">
 								<view>
-									<text> 收货人 {{item.address.mobile||''}}</text>
+									<text> 收货人 {{item.address.mobile||''}}</text> <text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
 								</view>
 								<view class="text-999">
-									<text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
+									
 									{{item.address.address||''}} {{item.address.name||''}} {{item.address.room ||''}}
 
 								</view>
@@ -117,6 +116,7 @@
 			</view>
 		</view>
 
+
 		<!--提交按钮  -->
 		<view class='add-find' @click='addFind' v-if="taskEditItem==''">
 			<image src='../../static/icon/add-find.png'></image>
@@ -131,8 +131,6 @@
 		</view>
 		<view style='height:50rpx;'></view>
 
-
-
 		<view class='index-popup' v-if="isPopup">
 			<view class='index-popup-bg' @click='goBack'></view>
 			<view class='index-popup-content'>
@@ -144,7 +142,7 @@
 			</view>
 		</view>
 
-		<view class='index-popup notes-popup' v-if="isNotes">
+		<view class='index-popup notes-popup' v-if="isNotes && findNeedKnow!=''">
 			<view class='index-popup-bg' @click='hiddenNotes'></view>
 			<view class='index-popup-content notes-btn-content'>
 				<view class='index-popup-title'>小鹿找料须知 <text class='iconfont icon-del1' @click='hiddenNotes'></text></view>
@@ -190,7 +188,7 @@
 				isResNotes: false,
 				isNotes: false, // 小鹿找料须知是否显示
 				findNeedKnow: '', // 小鹿找料须知富文本
-				navTexts: ['图片找料', '上门取样', '寄送样品'], // 找料类型 
+				navTexts: ['按图找料', '上门取样', '寄送样品'], // 找料类型 
 				companyaddress: '', // 公司地址
 				address: '', // 找料地址
 				finds: [{
@@ -206,14 +204,23 @@
 					is_limit:false,
 					reference_price:''
 				}],
-				taskEditItem:''
+				taskEditItem:'',
+				isTaskEditItem:false
 			};
 		},
 		components: {
 			upload
 		},
 		onLoad(optiosn) {
+			// 判断是否显示说明弹窗
+			if(this.$data.taskEditItem == ''){
+				if (uni.getStorageSync('isFindNotes') == '') {
+					this.$data.isNotes = true
+				}
+			}
+			
 			if(optiosn.taskEditItem){
+				this.$data.isNotes = false;
 				uni.setNavigationBarTitle({
 					title: "修改任务"
 				})
@@ -267,15 +274,10 @@
 			this.getNeedKnow();
 			// 获取默认区域数据第一个
 			this.initArea();
-			// 判断是否显示说明弹窗
-			if(this.$data.taskEditItem == ''){
-				if (uni.getStorageSync('isFindNotes') == '') {
-					this.$data.isNotes = true
-				}
-			}
 			
 			this.$eventHub.$on('classifyData', (data) => {
 				console.log('classifyData:', data)
+				this.$data.isNotes = false;
 				this.$data.cid = data.cid;
 				this.$data.cname = data.cname;
 				this.$data.finds[data.index].cid = data.cid;
@@ -286,16 +288,31 @@
 				console.log('findPage:', data);
 				this.$data.finds[data.findIndex].address = data.address;
 				this.$eventHub.$off('findPage');
+				
 			})
 		},
 		methods: {
+			doCompare(b){
+				if(!b){
+					util.errorTips('请先勾选比价优选按钮');
+				}
+			},
 			// 比价优选
 			checkCompare(index){
 				this.$data.finds[index].is_compare = this.$data.finds[index].is_compare == 0?1:0;
+				if(this.$data.finds[index].is_compare == 0){
+					this.$data.finds[index].reference_price = '';
+				}
 			},
 			// 限时找料
 			checkLimit(index){
 				this.$data.finds[index].is_limit = this.$data.finds[index].is_limit == 0?1:0;
+				if(this.$data.finds[index].is_limit != 0){
+					this.$data.finds[index].checkIndex = 0
+				}
+				
+				
+				
 			},
 			// 初始化服务区域
 			initArea(){
@@ -339,7 +356,7 @@
 							},
 							fail: function (res) {
 								console.log(res.errMsg);
-								util.successTips('区域选择失败');
+								// util.successTips('区域选择失败');
 							}
 						});
 					}
@@ -369,6 +386,20 @@
 						return false
 					}
 					
+					if(finds[i].is_compare == true){
+						if(finds[i].reference_price == ""){
+							util.errorTips('第' + (i + 1) + '个任务,请填写参考价格')
+							return false
+						}
+						
+						if(!util.isPriceNumber(finds[i].reference_price)){
+							util.errorTips('第' + (i + 1) + '个任务,请填写正确价格')
+							return false
+						}
+						
+						
+					}
+					
 					if (finds[i].checkIndex == 0) { // 按图找料
 						if (finds[i].files.length > 0) {
 							let isUploading = finds[i].files.every((ele, i) => {
@@ -394,10 +425,11 @@
 							util.errorTips('第' + (i + 1) + '个任务，请添加地址')
 							return false;
 						}
+						finds[i].desc_img = []; 
 						finds[i].address_id = finds[i].address.id;
 						
 					} else if (finds[i].checkIndex == 2) { // 寄送样品
-					
+						finds[i].desc_img = []; 
 					}
 					
 					finds[i].find_type = finds[i].checkIndex + 1;
@@ -535,6 +567,10 @@
 			},
 			// 切换找料方式
 			checkNav(checkIndex, index) {
+				if(this.$data.finds[index].is_limit == 1){
+					util.errorTips('不支持限时找料');
+					return false;
+				}
 				this.$data.checkIndex = checkIndex;
 				this.$data.finds[index].find_type = checkIndex + 1;
 				this.$data.finds[index].checkIndex = checkIndex;
@@ -563,7 +599,7 @@
 			},
 			// 显示照料须知
 			showNotes() {
-				this.$data.isNotes = false;
+				this.$data.isNotes = true;
 			},
 			// 选择物料类型
 			goClassify(index) {
@@ -624,12 +660,15 @@
 		input{
 			border: 1upx solid #eee;
 			display: inline-block;
-			width: 200upx;
-			position: relative;
+			width: 180upx;
+			// position: relative;
 			font-size: 24upx;
-			top: 20upx;
-			left: 20upx;
+			// top: 24upx;
+			height: 40upx;
+			line-height: 40upx;
+			// right: 20upx;
 			padding-left: 20upx;
+			margin-top: 20upx;
 		}
 	}
 	.cname{

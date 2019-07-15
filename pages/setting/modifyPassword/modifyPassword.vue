@@ -173,6 +173,8 @@
 			border-radius: 8upx;
 			background-color: white;
 			color: #DDDDDD;
+			height: 90upx;
+			line-height: 90upx;
 		}
 		.verifyActive{
 			background-color: #F08D05;

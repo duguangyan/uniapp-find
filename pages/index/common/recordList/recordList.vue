@@ -39,10 +39,21 @@
 				list:[],
 				footerText:'没有更多信息了',
 				page:1,
+				pageIndex : 1, // 1:佣金  2：代采
 			};
 		},
 		onLoad(options) {
-			
+			if(options.index == 1){
+				this.$data.pageIndex = 1;
+				uni.setNavigationBarTitle({
+					title: "佣金明细"
+				})
+			}else{
+				this.$data.pageIndex = 2;
+				uni.setNavigationBarTitle({
+					title: "代采明细"
+				})
+			}
 
 		},
 		onShow() {
@@ -51,7 +62,7 @@
 		methods: {
 			goCash(){
 				uni.navigateTo({
-					url:'../cash/cash'
+					url:'../cash/cash?now_amount='+this.$data.records.now_amount+'&pageIndex='+this.$data.pageIndex
 				})
 			},
 			getMore(){
@@ -62,23 +73,45 @@
 				
 			},
 			getRecords(){
-				api.staffCommissions({
-					data:{
-						page:this.$data.page
-					}
-				}).then((res)=>{
-					if(res.code == 200 || res.code == 0){
-						this.$data.records = res.data;
-						this.$data.now_amount = res.data.now_amount;
-						this.$data.total_amount = res.data.total_amount;
-						this.$data.list = this.$data.list.concat(res.data.list);
-						if(res.data.list.length<10){
-							this.$data.footerText = '没有更多信息了'
-						}else{
-							this.$data.footerText = '点击加载更多'
+				if(this.$data.pageIndex = 1){
+					api.staffReplace({
+						data:{
+							page:this.$data.page
 						}
-					}
-				})
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							this.$data.records = res.data;
+							this.$data.now_amount = res.data.now_amount;
+							this.$data.total_amount = res.data.total_amount;
+							this.$data.list = this.$data.list.concat(res.data.list);
+							if(res.data.list.length<10){
+								this.$data.footerText = '没有更多信息了'
+							}else{
+								this.$data.footerText = '点击加载更多'
+							}
+						}
+					})
+					
+				}else{
+					api.staffCommissions({
+						data:{
+							page:this.$data.page
+						}
+					}).then((res)=>{
+						if(res.code == 200 || res.code == 0){
+							this.$data.records = res.data;
+							this.$data.now_amount = res.data.now_amount;
+							this.$data.total_amount = res.data.total_amount;
+							this.$data.list = this.$data.list.concat(res.data.list);
+							if(res.data.list.length<10){
+								this.$data.footerText = '没有更多信息了'
+							}else{
+								this.$data.footerText = '点击加载更多'
+							}
+						}
+					})
+				}
+				
 			}
 
 		

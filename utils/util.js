@@ -282,7 +282,7 @@ function makeSign(url, Obj) {
 	if (url.indexOf('https://devv2.yidap.com') > -1) {
 		newUrl = url.split('https://devv2.yidap.com')[1];
 	} else {
-		newUrl = url.split('https://apiv2.yidap.com')[1];
+		newUrl = url.split('https://apibeta.yidap.com')[1];
 	}
     let newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian'
     newStr = newStr.replace('sign=&', '')
@@ -366,7 +366,33 @@ function verificationAmount(num){
     return false;
   }
 }
+
+function isPriceNumber(_keyword){
+        if(_keyword == "0" || _keyword == "0." || _keyword == "0.0" || _keyword == "0.00"){
+            _keyword = "0"; return true;
+        }else{
+            var index = _keyword.indexOf("0");
+            var length = _keyword.length;
+            if(index == 0 && length>1){/*0开头的数字串*/
+                var reg = /^[0]{1}[.]{1}[0-9]{1,2}$/;
+                if(!reg.test(_keyword)){
+                    return false;
+                }else{
+                    return true;
+                }
+            }else{/*非0开头的数字*/
+                var reg = /^[1-9]{1}[0-9]{0,10}[.]{0,1}[0-9]{0,2}$/;
+                if(!reg.test(_keyword)){
+                    return false;
+                }else{
+                    return true;
+                }
+            }            
+            return false;
+        }
+    }
 module.exports = {
+	isPriceNumber,
 	verificationAmount,
 	fmoney,
 	formatMoney,

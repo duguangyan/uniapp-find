@@ -53,18 +53,12 @@
 			// 获取物料类型数据
 			getCheckTypes() {
 
-				if (wx.getStorageSync('classifyList')) {
-					let classifyList = wx.getStorageSync('classifyList');
+				api.getCheckTypes({}).then((res) => {
+					let classifyList = res.data;
 					this.$data.classifyList = classifyList;
 					this.$data.classifyListChild = classifyList[0].children;
-				} else {
-					api.getCheckTypes({}).then((res) => {
-						let classifyList = res.data;
-						this.$data.classifyList = classifyList;
-						this.$data.classifyListChild = classifyList[0].children;
-						wx.setStorageSync('classifyList', classifyList);
-					})
-				}
+					wx.setStorageSync('classifyList', classifyList);
+				})
 
 			},
 			// 导航切换

@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="address">
 		<view class="text-center no-address fs30" v-if="isEmpty">
 			<view>
 				<text style="font-size: 220upx; color: #DFDFDF;" class="iconfont icon-genggaishouhuodizhi text-gray"></text>
@@ -8,7 +8,38 @@
 			<view class="text-999">您可以新增地址已方便收货</view>
 		</view>
 		<view class='consignee-address' v-if="!isEmpty">
-			<view class='btn-shadow address-right' v-if='hasAddressNum1>0'>
+			<view class="items">
+				<view class="item"  v-for='(item, index) in addressList' :key="index">
+					<view  @click='goBlack(item,index)'>
+						<view class="v1 cf fs28"><text>{{item.consignee}}</text> <text class="mgl-20">{{item.mobile}}</text> <text class="remark fs24 flr">{{item.remark || ''}}</text> <text class="flr fs24 stall">{{item.stall || ''}}  </text> </view>
+						<view class="v2 mgt-20 fs28 text-333">{{item.address == item.room? item.address: item.address + item.room}}</view>
+					</view>
+					
+					<view @click='goBlack(item,index)' class="v2 mgt-20 fs28 text-333 text-yellow">
+						{{item.distance_text}}
+					</view>
+					
+					<view class="v3 cf mgt-30">
+						<view class="fll" @click="setDefaultAddress(item,index)">
+							<text v-if='item.is_default == 1' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
+							<text v-if='item.is_default == 0' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
+							<text class="mgl-20 text-999" :class="item.is_default == 1?'text-yellow':''" >默认地址</text>
+						</view>
+						<view class="flr cf">
+							<view class="i1 fll text-999" @click="edit(item.id)">
+								<image src="/static/icon/edit.png" mode=""></image>
+								<text>编辑</text>
+							</view>
+							<view class="i2 fll text-999 mgl-20" @click='del(item.id,index)'>
+								<image src="/static/icon/add_del.png" mode=""></image>
+								<text>删除</text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<!-- <view class='btn-shadow address-right' v-if='hasAddressNum1>0'>
 				<view class='cf address-right-title'>
 					<text class='fll'>我的地址</text>
 					<text class='flr text-theme' @click='editShow' data-index='1'>{{editTitle1}}</text>
@@ -20,22 +51,17 @@
 							<image src='../../static/icon/address-del.png'></image>
 						</view>
 						<view class="fll address-list-content" :class="editTitle1=='完成'?'':'width100'" style='flex: 8' @click='goBlack(item,index)'>
-							<view style='margin-top:20upx;word-break:break-all;'>
-								<text class='remark' v-if='item.remark'>{{item.remark||''}}</text>
-								{{item.address||''}}
-								{{item.room==0||item.room==null||item.room==''||item.room==undefined ?'':item.room}}
-							</view>
+							
 							<view class='cf color-999'>
 								<view style='word-break:break-all;'>
-									{{item.consignee||''}} / {{item.mobile||''}}
-								</view>
-
-							</view>
-							<view class='cf color-999 border-bottom'>
-								<view style='word-break:break-all;'>
-									{{item.stall||''}}
+									<text class="fll">{{item.consignee||''}} / {{item.mobile||''}}</text> <text class="flr">{{item.stall||''}} <text class='remark' v-if='item.remark'>{{item.remark||''}}</text></text>
 								</view>
 							</view>
+							<view style='margin-top:20upx;word-break:break-all;'>
+								{{item.address}} {{item.room}}
+							</view>
+							
+							
 						</view>
 						<view class='address-edit fll text-theme' style='flex: 1' @click='edit(item.id,index)' v-if="editTitle1=='完成'">
 							<view>更改</view>
@@ -43,10 +69,10 @@
 					</view>
 
 				</view>
-			</view>
+			</view> -->
 
 
-			<view class='btn-shadow address-right' v-if='hasAddressNum2>0'>
+			<!-- <view class='btn-shadow address-right' v-if='hasAddressNum2>0'>
 				<view class='cf address-right-title'>
 					<text class='fll'>以下地址超出配送范围</text>
 					<text class='flr text-theme' @click='editShow(2)'>{{editTitle2}}</text>
@@ -78,12 +104,11 @@
 							<view>更改</view>
 						</view>
 					</view>
-
 				</view>
-			</view>
+			</view> -->
 
 		</view>
-
+		<view class="height100"></view>
 		<view @click="goNewAddress" class="bottom-fixed text-center text-white h100 lh100 fs32 bg-yellow">
 			+ 新建收货地址
 		</view>
@@ -121,6 +146,27 @@
 			this.getAddressListData();
 		},
 		methods: {
+			// 设置默认地址
+			setDefaultAddress(item,index){
+				this.$data.addressList.forEach((o,i)=>{
+					o.is_default = 0;
+				})
+				this.$data.addressList[index].is_default = 1;
+				api.defaultAddress({
+					method:'POST',
+					data:{
+						id:item.id
+					}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						util.successTips(res.msg);
+					}else{
+						util.successTips(res.msg);
+					}
+				}).catch((res)=>{
+					util.successTips(res.msg || res.message);
+				})
+			},
 			// 去新建页面
 			goNewAddress(){
 				uni.navigateTo({
@@ -242,11 +288,6 @@
 
 			// 点击选中地址返回
 			goBlack(item) {
-				if (item.area_id == 0) {
-					util.successTips('此地址不在服务范围');
-					return false
-				}
-				
 				
 				// 来自找料任务
 				if (this.$data.from == 'findPage') {
@@ -273,7 +314,51 @@
 </script>
 
 <style lang="scss" scoped>
-	
+	.address{
+		background: #f4f4f4;
+		height: 100%;
+	}
+	.consignee-address{
+		.items{
+			.item{
+				width:670upx;
+				border-bottom: 20upx solid #f4f4f4; 
+				background:rgba(255,255,255,1);
+				border-radius:8upx;
+				position: relative;
+				left: 20upx;
+				padding: 20upx;
+				.stall{
+					width: 240upx;
+					overflow: hidden;
+					text-overflow:ellipsis;
+					white-space: nowrap;
+				}
+				.remark{
+					display: inline-block;
+					border: 1upx solid #F29800;
+					margin-left: 20upx;
+					color: #F29800;
+					padding: 0 4upx;
+				}
+				.v3{
+					.i1,.i2{
+						image{
+							width: 40upx;
+							height: 40upx;
+						}
+						text{
+							position: relative;
+							top: -10upx;
+						}
+					}
+				}
+			}
+		}
+	}
+	.height100{
+		height: 100upx;
+	}
 	.bottom-fixed{
 		position:fixed;
 		left:0;

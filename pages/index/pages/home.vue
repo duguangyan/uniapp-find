@@ -5,15 +5,16 @@
 				<view class="page-section swiper">
 					<view class="page-section-spacing">
 						<swiper class="swiper" :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
-							<swiper-item v-for="(item,index) in bannerImgs" :key="index">
+							<swiper-item v-for="(item,index) in banner" :key="index" @click="goNextPage(item.url)">
 								<view class="swiper-item">
-									<image :src="item"></image>
+									<image :src="item.image"></image>
 								</view>
 							</swiper-item>
 						</swiper>
 					</view>
 				</view>
 			</view>
+			
 			<view class="nav">
 				<view class='text-1'>小鹿家人</view>
 				<view class='text-2'>注册小鹿家人，增添更大收益</view>
@@ -73,6 +74,7 @@
 					'https://static.yidap.com/miniapp/o2o_find/index/index_banner_3.png',
 					'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png'
 				],
+				banner:[],
 				title: "小鹿快找",
 				isArrow: false,
 				navArr: [{
@@ -96,6 +98,7 @@
 				serviceData: "", // 服务人数 次数
 				nodes: "", //公告
 				isNodes: false, // 是否显示公告
+				
 			}
 		},
 		components: {
@@ -104,6 +107,9 @@
 		},
 		onLoad() {
 
+		},
+		onShow() {
+			
 		},
 		mounted() {
 			// 设置服务人数
@@ -114,6 +120,12 @@
 			//this.mynotice();
 		},
 		methods: {
+			// 去促销页面
+			goNextPage(url){
+				uni.navigateTo({
+					url:'/pages' + url
+				})
+			},
 			// 联系客服
 			doContact() {
 				uni.makePhoneCall({
@@ -136,6 +148,7 @@
 			getServiceData() {
 				api.serviceNum({}).then(res => {
 					this.$data.serviceData = res.data;
+					this.$data.banner      = res.data.banner;
 				});
 			},
 			// 获取公告
@@ -235,7 +248,7 @@
 		}
 
 		.index-content-warp {
-			width: 710upx;
+			
 			height: 490upx;
 			border-radius: 20upx;
 			margin: 20upx;
@@ -243,7 +256,7 @@
 
 			.title {
 				image {
-					width: 710upx;
+					width: 100%;
 					height: 80upx;
 					margin: 50upx 0;
 				}
@@ -379,6 +392,7 @@
 		text-align: center;
 		font-size: 26rpx;
 		position: relative;
+		top:-30upx;
 	}
 
 	.index .service .left {

@@ -12,6 +12,9 @@
 		</view>
 		<view v-if="isCheck" class='register' @click='register'>{{isFamily?'立即推广':'一键注册'}}</view>
 		<view v-if="!isCheck" class='register eb' @click='register'>{{isFamily?'立即推广':'一键注册'}}</view>
+		<view class="height100">
+			
+		</view>
 	</view>
 </template>
 
@@ -91,6 +94,9 @@
 </script>
 
 <style lang="scss" scoped>
+	.height100{
+		height: 100upx;
+	}
 	.rich-text {
 		padding: 20rpx 40rpx;
 		font-size: 28upx;

@@ -199,11 +199,18 @@
 				this.$data.isExamine = true;
 				this.$data.status_label = res.data.status_label;
 				this.$data.remark = res.data.remark;
-				uni.navigateBack({
-					delta:1
+				// uni.navigateBack({
+				// 	delta:1
+				// })
+				uni.navigateTo({
+					url:'../index/index'
 				})
-      }
-    })
+      }else{
+				util.errorTips(res.msg);
+			}
+    }).catch((res)=>{
+			util.errorTips(res.msg || res.message);
+		})
     
 
   },

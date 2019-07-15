@@ -1,9 +1,12 @@
- const apiUrl = 'https://devv2.yidap.com'; // 测试
+  const apiUrl = 'https://apibeta.yidap.com'; // 体验
+ // const apiUrl = 'https://devv2.yidap.com'; // 测试
  //const apiUrl = 'https://apiv2.yidap.com';     // 正式
- const versionNumber = 'v3.0.4'; //版本号
+ const versionNumber = 'v4.0.2'; //版本号
 
  if (apiUrl == 'https://apiv2.yidap.com') {
  	uni.setStorageSync('v', versionNumber + ' 正式');
+ }else if(apiUrl == 'https://apibeta.yidap.com'){
+	 uni.setStorageSync('v', versionNumber + ' 体验');
  } else {
  	uni.setStorageSync('v', versionNumber + ' 测试');
  }
@@ -60,6 +63,7 @@
 			title:'加载中...',
 			icon:'loading'
 		})
+		
  		uni.request({
  			url: apiUrl,
  			method: params.method || 'GET',
@@ -76,23 +80,48 @@
  					resolve(res);
  				} else {
  					if (401 === res.code) {
-						showModel = uni.showModal({
-							title: '您尚未登录',
-							content: '是否前往登录页面',
-							confirmText: '前往',
-							success: (res) => {
-								if (res.confirm) {
-									uni.navigateTo({
-										url: '../login/login',
-									})
-									showModel = '';
-									return false;
-								} else if (res.cancel) {
-									util.errorTips('您点击了取消');
-									showModel = '';
-								}
+						let userType = uni.getStorageSync('userType');
+						if(userType == 1 || userType == 2){
+							
+							if(apiUrl != 'https://apiv2.yidap.com/api/member/audit' && apiUrl != 'https://devv2.yidap.com/api/member/audit'){
+								showModel = uni.showModal({
+									title: '提示',
+									content: '请认证身份',
+									confirmText: '前往',
+									success: (res) => {
+										if (res.confirm) {
+											uni.navigateTo({
+												url: '/pages/setting/authentication/authentication',
+											})
+											showModel = '';
+											return false;
+										} else if (res.cancel) {
+											util.errorTips('您点击了取消');
+											showModel = '';
+										}
+									}
+								})
 							}
-						})
+						}else{
+							showModel = uni.showModal({
+								title: '您尚未登录',
+								content: '是否前往登录页面',
+								confirmText: '前往',
+								success: (res) => {
+									if (res.confirm) {
+										uni.navigateTo({
+											url: '../login/login',
+										})
+										showModel = '';
+										return false;
+									} else if (res.cancel) {
+										util.errorTips('您点击了取消');
+										showModel = '';
+									}
+								}
+							})
+						}
+						
  					}
  					if (201 === res.code || -1 == res.code || 1 == res.code) {
  						uni.showToast({
@@ -160,6 +189,12 @@
  const memberExit = (params) => {
  	return myRequest(params, `${apiUrl}/api/member/exist`)
  }
+
+// 登录（验证码方式）
+const loginByValidateCode = (params) => {
+  return myRequest(params, `${apiUrl}/api/sms/login`)
+}
+
 
  // 用户注册短信发送
  const regSMS = (params) => {
@@ -273,6 +308,10 @@
  	return myRequest(params, `${apiUrl}/api/order/repay`, id)
  }
 
+// 获取验证码
+const generateCode = (params) => {
+  return myRequest(params, `${apiUrl}/api/sms/send`)
+}
 
  // 订单微信支付
  const wxPayByOrder = (params) => {
@@ -440,6 +479,7 @@
 
  // get是否设置支付密码 put保存支付密码 post验证支付密码 
  const doPayPassWord = (params) => myRequest(params, `${apiUrl}/api/member/paypwd`);
+ 
  // 忘记支付密码
  const resetpaypwd = (params) => myRequest(params, `${apiUrl}/api/member/resetpaypwd`);
 
@@ -550,6 +590,11 @@ const returnData = (url)=>{
 const auditApply = (params) => {
 	return myRequest(params, `${apiUrl}/api/member/audit`)
 }	
+// 找料员认证
+const staffAudit = (params) => {
+	return myRequest(params, `${apiUrl}/api/staff/audit`)
+}	
+
 
 // 找料订单列表
 const myOrderFindList = (params) => myRequest(params, `${apiUrl}/api/staff/find`);
@@ -579,6 +624,9 @@ const commissionRecord = (params) => myRequest(params, `${apiUrl}/find/api/commi
 // 快送佣金明细
 const staffCommissions = (params) => myRequest(params, `${apiUrl}/api/staff/commissions`);
 
+// 快找 代采款明细
+const staffReplace = (params) => myRequest(params, `${apiUrl}/api/staff/replace`);
+
 // 找料接单
 const staffFindGet = (params) => myRequest(params, `${apiUrl}/api/staff/find/get`);
 
@@ -603,9 +651,45 @@ const staffShipConfirm = (params) => myRequest(params, `${apiUrl}/api/staff/ship
 // 确认送达 物流
 const staffShipExpress = (params) => myRequest(params, `${apiUrl}/api/staff/ship/express`);
 
+// 订单代采物料确认支付
+const apiOrderPay = (params) => myRequest(params, `${apiUrl}/api/order/pay`);
+
+// 提现申请
+const apiAssetTake = (params) => myRequest(params, `${apiUrl}/api/asset/take`);
+
+// 获取微信绑定信息
+const apiMemberWxBind = (params) => myRequest(params, `${apiUrl}/api/member/wx/bind`);
+
+// 获取微信绑定信息
+const apiTaskPayment = (params) => myRequest(params, `${apiUrl}/api/task/payment`);
+
+// 修改密码
+const updatePassword = (params) => {
+  return myRequest(params, `${apiUrl}/api/member/reset`)
+}
+
+// 绑定支付宝
+const memberAliBind = (params) => {
+  return myRequest(params, `${apiUrl}/api/member/ali/bind`)
+}
+
+// 小鹿家人
+const inviteCodeRecommend = (params) => myRequest(params, `${apiUrl}/api/member/invite_code/recommend`);
+
 
 
  module.exports = {
+	inviteCodeRecommend,
+	memberAliBind,
+	staffReplace,
+	updatePassword,
+	staffAudit,
+	apiTaskPayment,
+	loginByValidateCode,
+	generateCode,
+	apiMemberWxBind,
+	apiAssetTake,
+	apiOrderPay,
 	staffShipExpress,
 	staffShipConfirm,
 	staffShipGet, 

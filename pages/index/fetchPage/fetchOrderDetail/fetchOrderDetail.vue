@@ -15,10 +15,10 @@
 					<view class="c999">物料描述：</view>
 					<view class="flex-1 text-666 fs24">{{detailData.desc}}</view>
 				</view>
-				<view class="flex">
+				<!-- <view class="flex">
 					<view class="c999">限时找料：</view>
 					<view class="flex-1 text-666 fs24" v-if="detailData.is_limit == 1">三小时</view>
-				</view>
+				</view> -->
 				<view class="flex">
 					<view class="c999">比较优选：</view>
 					<view class="flex-1 text-666 fs24">参考价格 ￥ {{detailData.reference_price}}</view>
@@ -82,7 +82,7 @@
 				<view class="desc cf">
 					<view class="t1 fll"><text class="text-red">*</text> <text>描述:</text> </view>
 					<view class="t2 fll">
-						<textarea v-model="detailData.desc" :disabled="disabled"  placeholder="(注:请详细描述物料的名称、用途、材质、交货时间)" />
+						<textarea v-if="!isLogistics && !formShow" v-model="detailData.result_desc" :disabled="disabled"  placeholder="(注:请详细描述物料的名称、用途、材质、交货时间)" />
 					</view>
 				</view>
 				<view class="upload">
@@ -95,7 +95,7 @@
 				</view>
 				<view class="supplier cf">
 					<view class="fll t1 fs28">
-						<text class="text-red">*</text><text>供应商:</text>
+						<text class="text-red">*</text><text>配送员:</text>
 					</view>
 					<view class="t2 fll">
 						<view>{{detailData.distribution_name}}</view>
@@ -135,9 +135,44 @@
 				</view>
 				<view class="cost">
 					<text class="t1 fs28">合计费用:</text>
-					<text class="t2 mgl-20 text-red">￥ {{detailData.fee}}</text>
+					<text class="t2 mgl-20 text-red">￥ {{totalFee}}</text>
 				</view>
 			</view>
+			
+			<view class="status-2" v-if="detailData.distribution_status>=4">
+				<view class="li">
+					<text class="fs28">物料单价:</text> <text class="fs24 text-999 mgl-20">￥{{detailData.result_price}}</text>
+				</view>
+				<view class="li">
+					<text class="fs28">物料数量:</text> <text class="fs24 text-999 mgl-20">{{detailData.result_num}}</text>
+				</view>
+				<view class="li">
+					<text class="fs28">大货配送费:</text>  <text class="fs24 text-999 mgl-20">￥{{detailData.result_extra_fee}} ({{detailData.result_big_num}} * {{big_price}})</text>
+				</view>
+				<view class="img cf" v-if="detailData.desc_img.length>0 && detailData.desc_img">
+					<image class="fll" v-for="(item, index) in detailData.desc_img" :key="index" :src="item" mode=""></image>
+				</view>
+			</view>
+			
+			<view class="evaluate pd-30 bt-1" v-if="detailData.distribution_status == 6">
+				<view class="v1">
+					<text class="fs28">找料服务:</text>
+					<text class="mgl-20">
+						<text v-for="i in detailData.find_star" :key="i" class="star iconfont icon-star text-yellow"></text>
+					</text>
+				</view>
+				<view class="v1">
+					<text class="fs28">配送服务:</text>
+					<text class="mgl-20">
+						<text v-for="i in detailData.dist_star" :key="i" class="star iconfont icon-star text-yellow"></text>
+					</text>
+				</view>
+				<view class="v1">
+					<text class="fs28">服务反馈:</text>
+					<text class="fs24 text-999 mgl-20">{{detailData.comment}}</text>
+				</view>
+			</view>
+			
 			
 			<view class="flex-end order-handle cf">
 				<!--找料中  -->
@@ -147,19 +182,22 @@
 				<view v-if="detailData.distribution_status == 3" class="flex find-status flr">
 					<view :data-type='2' :data-id="detailData.id" @click='showForm'>{{detailData.type==1?'找':'取'}}不到物料</view>
 				</view> -->
-				<view v-if="detailData.distribution_status == 3" class="find-status flr" @click="serviceOrder(detailData.id)">
-					确认送达
-				</view>
 				<view v-if="detailData.distribution_status == 2" class="find-status flr" @click="receiptOrder(detailData.id)">
 					确认接单
 				</view>
+				<view v-if="detailData.distribution_status == 3" class="find-status flr" @click="serviceOrder(detailData.id)">
+					确认送达
+				</view>
+				<view v-if="detailData.user_id != ''" class="find-status flr" @click="goChat(detailData)">
+					联系客户
+				</view>
 				
-				<view class="cancat flr" v-if="detailData.distribution_status == 3">
+				<!-- <view class="cancat flr" v-if="detailData.distribution_status == 3">
 					<image src="/static/icon/concat.png"></image>
 					<text>联系客户</text>
 					<view class="btn-1" @click="goChat"></view>
 					<view class="btn-2" @click="contact"></view>
-				</view>
+				</view> -->
 			</view>
 
 			<!-- <button :data-id='detailData.user_id' @click='goChat' class='order-footer-btn-red order-chat'>
@@ -189,18 +227,18 @@
 		
 		
 		<view class="logistics-wap" v-if="isLogistics">
-			<view class="bg" @click.stop='close'></view>
+			<view class="bg" @click.stop='hideLogistics'></view>
 			<view class="content">
 				<view class="v1">
 					<text>物流公司:</text>  <input type="text" v-model="express_name" placeholder="请输入物流公司名称">
 				</view>
 				<view class="v2">
-					<text>联系电话:</text>  <input type="text" v-model="express_phone" placeholder="请输入物流公司电话">
+					<text>联系电话:</text>  <input type="number" v-model="express_phone" placeholder="请输入物流公司电话">
 				</view>
 				<view class="v3" @click="logisticsSubmit">
-					<text>物流单号:</text>  <input type="text" v-model="express_sn" placeholder="请输入物流单号">
+					<text>物流单号:</text>  <input type="number" v-model="express_sn" placeholder="请输入物流单号">
 				</view>
-				<view class="btn">提交</view>
+				<view class="btn" @click.stop="logisticsSubmit">提交</view>
 				<view class="closeBtn" @click.stop="hideLogistics">
 					<image src="/static/icon/closed_btn.png" mode=""></image>
 				</view>
@@ -247,18 +285,27 @@
 				
 				express_name :'',
 				express_phone:'',
-				express_sn   :''
+				express_sn   :'',
+				totalFee:''
 			};
 		},
 		onLoad(options) {
 			this.$data.id = options.id;
-			this.getOrderDetail(options.id);
+			
 			this.getTaskFee();
 		},
 		onShow() {
 
 		},
 		methods: {
+			
+			// 取聊天室
+			goChat(item){
+				uni.navigateTo({
+					url:'/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户'
+				})
+			},
+			
 			logisticsSubmit(){
 				if(this.$data.express_name == ""){
 					util.errorTips('请填写物流公司');
@@ -272,19 +319,28 @@
 					util.errorTips('请填写物流单号');
 					return false;
 				}
-				api.staffShipConfirm({
+				api.staffShipExpress({
 					method:'POST',
 					data:{
-						id,
+						id:this.$data.id,
 						express_name:this.$data.express_name,
 						express_phone:this.$data.express_phone,
-						express_sn:this.$data.express_sn
+						express_sn:this.$data.express_sn,
+						express_img:this.$data.detailData.result_img[0]
 					}
 				}).then((res)=>{
 					if(res.code == 0 || res.code == 200){
 						this.$data.isLogistics = false;
 						this.$data.detailData.distribution_status = 4;
+						this.$data.detailData.status_label = '确认送达';
+						uni.navigateBack({
+							delta:1
+						})
+					}else{
+						util.errorTips(res.msg);
 					}
+				}).catch((res)=>{
+					util.errorTips(res.msg || res.meessage);
 				})
 			},
 			hideLogistics(){
@@ -299,19 +355,23 @@
 					success: function (res) {
 						if (res.confirm) {
 							console.log('用户点击确定');
-							if(_this.$data.detailData.shipping_type == 3){ // 物流
-								api.staffShipExpress({
+							if(_this.$data.detailData.shipping_type != 2 ){ // 送货上门
+								api.staffShipConfirm({
 									method:'POST',
 									data:{
 										id
 									}
 								}).then((res)=>{
 									if(res.code == 0 || res.code == 200){
-										
+										_this.$data.detailData.distribution_status = 4;
+										_this.$data.detailData.status_label = '确认送达';
+										uni.navigateTo({
+											url:'../../pages/index'
+										})
 									}
 								})
-							}else{  // 送货上门
-								this.$data.isLogistics = true;
+							}else{  // 物流
+								_this.$data.isLogistics = true;
 							}
 						} else if (res.cancel) {
 							console.log('用户点击取消');
@@ -339,7 +399,14 @@
 									_this.$data.status = 2; // 状态2 已接单
 									util.successTips("接单成功");
 									_this.detailData.distribution_status = 3;
+									uni.navigateBack({
+										delta:1
+									})
+								}else{
+									util.errorTips(res.msg);
 								}
+							}).catch((res)=>{
+								util.errorTips(res.msg);
 							})
 						} else if (res.cancel) {
 							console.log('用户点击取消');
@@ -367,8 +434,8 @@
 				}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
 						this.$data.formShow = false;
-						uni.navigateBack({
-							delta:1
+						uni.navigateTo({
+							url:'../../pages/index'
 						})
 					}
 				})
@@ -474,7 +541,8 @@
 				api.getTaskFee({}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
 						this.$data.big_price = res.data.big_price;
-						this.sum();
+						this.getOrderDetail(this.$data.id);
+						
 					}
 				})
 			},
@@ -486,10 +554,10 @@
 					data:{id}
 				}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
-						this.$data.detailData = res.data;
-						if(res.data.distribution_status == 3){
-							this.$data
-						}
+						this.$data.detailData = res.data;	
+						this.$data.totalFee = parseInt(res.data.result_num) * parseFloat(res.data.result_price)  + parseInt(res.data.result_big_num) * parseFloat(this.$data.big_price);
+
+						this.sum();
 					}
 				})
 			},
@@ -507,6 +575,22 @@
 </script>
 
 <style lang="scss" scoped>
+	.status-2{
+		padding: 30upx;
+		border-top: 1upx solid #f4f4f4; 
+		background: #fff;
+		.img{
+			display: inline-block;
+			margin: 20upx;
+			image{
+				width: 140upx;
+				height: 140upx;
+				display: inline-block;
+				margin-right: 20upx;
+			}
+		}
+		
+	}
 	.logistics-wap{
 		position: fixed;
 		left: 0;
@@ -562,10 +646,12 @@
 					margin-left: 30upx;
 					position: relative;
 					top: 20upx;
-					width: 260upx;
+					width: 250upx;
 					background: #f4f4f4;
 					color: #333;
-					border-radius: 10upx; 
+					border-radius: 10upx;
+					position: relative;
+					top: -4upx;
 				}
 				
 			}
@@ -671,7 +757,7 @@
 			margin-bottom: 30upx;
 			.t1{
 				width: 140upx;
-				letter-spacing:18upx;
+				letter-spacing:12upx;
 				font-size: 28upx;
 			}
 			.t2{
@@ -766,7 +852,7 @@
 	}
 	.find-order-detail{
 		height: 100%;
-		background: #eee;
+		background: #f4f4f4;
 	}
 	.image{
 		width: 750upx;

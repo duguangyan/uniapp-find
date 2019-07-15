@@ -4,27 +4,30 @@
 			<view class="item" v-for="(item, index) in list" :key="index">
 				
 				<view>
-					<text>{{txts.t1}}</text><text class="mgl-20 text-666">{{item.t}}</text>
+					<text>提现时间：</text><text class="mgl-20 text-666">{{item.created_at}}</text>
 				</view>
 				<view>
-					<text>{{txts.t2}}</text><text class="mgl-20  text-666">{{item.y}}</text>
+					<text>提现方式：</text><text class="mgl-20  text-666">{{item.type_label}}</text>
 				</view>
 				<view>
-					<text>{{txts.t3}}</text><text class="mgl-20  text-666">￥{{item.m}}</text>
+					<text>提现金额</text><text class="mgl-20  text-666">￥{{item.type_label}}</text>
 				</view>
 				
 				<view class="text-yellow">提现中</view>
 			</view>
 		</view>
 		
-		<view class="footer-text">{{footerText}}</view>
+		<view class="footer-text" @click="uploadMore">{{footerText}}</view>
 	</view>
 </template>
 
 <script>
+	import api from '../../../../utils/api.js';
+	import util from '../../../../utils/util.js';
 	export default {
 		data() {
 			return {
+				page:1,
 				footerText:'没有更多信息了',
 				txts:{
 					t1:'提现时间:',
@@ -32,16 +35,7 @@
 					t3:'提现金额:'
 				},
 				list:[
-					{
-						t : '2018-12-12 12:12:12',
-						y : '微信',
-						m : '40.00'
-					},
-					{
-						t : '2018-12-12 12:12:12',
-						y : '微信',
-						m : '40.00'
-					}
+					
 				]
 			};
 		},
@@ -49,11 +43,31 @@
 			
 		},
 		onShow() {
-			
+			this.apiAssetTake();
 		},
 		methods: {
-			name() {
-				
+			uploadMore(){
+				if(this.$data.footerText == '点击加载更多'){
+					this.$data.page++;
+					this.apiAssetTake();
+				}
+			},
+			apiAssetTake() {
+				api.apiAssetTake({
+					data:{
+						"page":this.$data.page,
+						"asset_type": "commission"
+					}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.list = this.$data.list.concat(res.data);
+						if(res.data.length<10){
+							this.$data.footerText = '没有更多信息了'
+						}else{
+							this.$data.footerText = '点击加载更多'
+						}
+					}
+				})
 			}
 		},
 	}

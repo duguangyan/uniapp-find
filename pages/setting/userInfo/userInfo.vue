@@ -53,7 +53,7 @@
 			},
 			modifyNickname(){
 				uni.navigateTo({
-					url:"../modifyNickname/modifyNickname"
+					url:"../modifyNickname/modifyNickname?nickName=" + this.$store.state.nickName
 				})
 			},
 			checkImg(){

@@ -191,6 +191,38 @@
 				"navigationBarTitleText" : "提现记录"
 			}
         }
+        ,{
+            "path" : "pages/activity/spike/spike",
+            "style" : {
+				"navigationBarTitleText" : "秒杀"
+			}
+        }
+        ,{
+            "path" : "pages/activity/rush/rush",
+            "style" : {
+				"navigationBarTitleText" : "抢购"
+			}
+        }
+        ,{
+            "path" : "pages/activity/promo/promo",
+            "style" : {
+				"navigationBarTitleText" : "促销"
+			}
+        }
+        ,{
+            "path" : "pages/activity/spell/spell",
+            "style" : {
+				"navigationBarTitleText" : "拼单"
+			}
+        }
+        ,{
+            "path" : "pages/rechargeSuccess/rechargeSuccess",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/protocol/protocol",
+            "style" : {}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {
