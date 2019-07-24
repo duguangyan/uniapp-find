@@ -263,6 +263,30 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
@@ -329,7 +353,13 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ 
     this.getUserAsset();
   },
   methods: {
-
+    previewImage: function previewImage(e) {
+      var current = e.target.dataset.src;
+      uni.previewImage({
+        current: current, // 当前显示图片的http链接
+        urls: this.$data.itemObj.desc_img || this.$data.itemObj.desc_img // 需要预览的图片http链接列表
+      });
+    },
     // 去评价
     toComment: function toComment(id) {
       this.$data.commentMsg = ''; // 评价内容
@@ -411,19 +441,34 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ 
     goChat: function goChat(item) {
       if (item.type == 1) {
         uni.navigateTo({
-          url: '/pages/chat/chat?id=' + item.findman_id + '&fmUserName=' + item.findman_name });
+          url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.findman_id + '&name=' + item.findman_name });
 
       } else {
         uni.navigateTo({
-          url: '/pages/chat/chat?id=' + item.distribution_id + '&fmUserName=' + item.distribution_name });
+          url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.distribution_id + '&name=' + item.distribution_name });
 
       }
     },
     //  联系我们电话
-    contact: function contact() {
-      wx.makePhoneCall({
-        phoneNumber: '400-8088-156' });
+    contact: function contact(item) {
+      var data = {
+        id: item.id,
+        type: item.type };
 
+      _api.default.apiPhoneUser({
+        method: 'POST',
+        data: data }).
+      then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          uni.makePhoneCall({
+            phoneNumber: res.data });
+
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg);
+      });
     },
     // 确认收货
     affirmOrder: function affirmOrder(id) {
@@ -783,27 +828,42 @@ var render = function() {
                 _vm._l(_vm.companyaddress, function(item, index) {
                   return _c(
                     "view",
-                    { key: index, staticClass: "bb1 mg10 con" },
+                    {
+                      key: index,
+                      staticClass:
+                        "bb1 mg10 con find-order-detail-address bb1 fs30 pdl-30"
+                    },
                     [
-                      _c("view", [
-                        item.tag
-                          ? _c("text", { staticClass: "remark" }, [
-                              _vm._v(_vm._s(item.tag || ""))
-                            ])
-                          : _vm._e(),
-                        _c("text", [_vm._v(_vm._s(item.address))])
-                      ]),
-                      _c("view", { staticClass: "text-999" }, [
-                        _c("view", [
+                      _c(
+                        "view",
+                        {
+                          staticClass: "lh50 fs28",
+                          staticStyle: { "word-break": "break-all" }
+                        },
+                        [
                           _vm._v(
-                            _vm._s(item.consignee || "") +
-                              " / " +
+                            _vm._s(item.consignee) +
+                              "  " +
                               _vm._s(item.mobile || "")
-                          )
-                        ])
-                      ]),
-                      _c("view", { staticClass: "text-999" }, [
-                        _vm._v(_vm._s(item.desc))
+                          ),
+                          _c("text", { staticClass: "mgl-20" }, [
+                            _vm._v(_vm._s(item.stall))
+                          ]),
+                          item.tag
+                            ? _c("text", { staticClass: "remark mgl-20" }, [
+                                _vm._v(_vm._s(item.tag || ""))
+                              ])
+                            : _vm._e()
+                        ]
+                      ),
+                      _c("view", { staticClass: "lh50 fs24 text-999" }, [
+                        _vm._v(
+                          _vm._s(item.address || "") +
+                            " " +
+                            _vm._s(item.name || "") +
+                            " " +
+                            _vm._s(item.room || "")
+                        )
                       ])
                     ]
                   )
@@ -839,11 +899,15 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "收货人  " +
+                            _vm._s(_vm.itemObj.get_address.consignee) +
+                              "  " +
                               _vm._s(_vm.itemObj.get_address.mobile || "")
                           ),
+                          _c("text", { staticClass: "mgl-20" }, [
+                            _vm._v(_vm._s(_vm.itemObj.get_address.stall))
+                          ]),
                           _vm.itemObj.get_address.remark
-                            ? _c("text", { staticClass: "remark" }, [
+                            ? _c("text", { staticClass: "remark mgl-20" }, [
                                 _vm._v(
                                   _vm._s(_vm.itemObj.get_address.remark || "")
                                 )
@@ -872,7 +936,9 @@ var render = function() {
                             staticStyle: { "word-break": "break-all" }
                           },
                           [
-                            _vm._v("收货人" + _vm._s(item.mobile || "")),
+                            _vm._v(
+                              _vm._s(item.consignee) + _vm._s(item.mobile || "")
+                            ),
                             item.tag
                               ? _c("text", { staticClass: "remark" }, [
                                   _vm._v(_vm._s(item.tag || ""))
@@ -908,11 +974,15 @@ var render = function() {
                   },
                   [
                     _vm._v(
-                      "收货人 " +
+                      _vm._s(_vm.itemObj.shipping_address.consignee) +
+                        " " +
                         _vm._s(_vm.itemObj.shipping_address.mobile || "")
                     ),
+                    _c("text", { staticClass: "mgl-20" }, [
+                      _vm._v(_vm._s(_vm.itemObj.shipping_address.stall))
+                    ]),
                     _vm.itemObj.shipping_address.remark
-                      ? _c("text", { staticClass: "remark" }, [
+                      ? _c("text", { staticClass: "remark mgl-20" }, [
                           _vm._v(
                             _vm._s(_vm.itemObj.shipping_address.remark || "")
                           )
@@ -1032,88 +1102,50 @@ var render = function() {
                   [_vm._v("确认收货")]
                 )
               : _vm._e(),
-            _vm.itemObj.find_status != ""
-              ? _c(
-                  "view",
-                  [
-                    _vm.status != 3 &&
-                    _vm.itemObj.find_status != 5 &&
-                    _vm.itemObj.type == 1 &&
-                    _vm.itemObj.findman_id != ""
-                      ? _c(
-                          "button",
-                          {
-                            attrs: { eventid: "bcb9d712-5" },
-                            on: {
-                              click: function($event) {
-                                _vm.goChat(_vm.itemObj)
-                              }
-                            }
-                          },
-                          [_vm._v("联系找料员")]
+            _vm.itemObj.findman_id != "" || _vm.itemObj.distribution_id != ""
+              ? _c("view", { staticClass: "cancat flr" }, [
+                  _c("image", {
+                    attrs: { src: "../../static/icon/concat.png" }
+                  }),
+                  _c(
+                    "text",
+                    {
+                      attrs: { eventid: "bcb9d712-5" },
+                      on: {
+                        click: function($event) {
+                          _vm.goChat(_vm.itemObj)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        _vm._s(
+                          _vm.itemObj.distribution_id != ""
+                            ? "联系配送员"
+                            : "联系找料员"
                         )
-                      : _vm._e(),
-                    _vm.itemObj.find_status != 5 &&
-                    _vm.itemObj.type == 2 &&
-                    _vm.itemObj.findman_id != ""
-                      ? _c(
-                          "button",
-                          {
-                            attrs: { eventid: "bcb9d712-6" },
-                            on: {
-                              click: function($event) {
-                                _vm.goChat(_vm.itemObj)
-                              }
-                            }
-                          },
-                          [_vm._v("联系找料员")]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
-              : _vm._e(),
-            _vm.itemObj.distribution_status != ""
-              ? _c(
-                  "view",
-                  [
-                    _vm.itemObj.distribution_status > 1 &&
-                    _vm.itemObj.distribution_status != 5 &&
-                    _vm.itemObj.type == 1 &&
-                    _vm.itemObj.distribution_id != ""
-                      ? _c(
-                          "button",
-                          {
-                            attrs: { eventid: "bcb9d712-7" },
-                            on: {
-                              click: function($event) {
-                                _vm.goChat(_vm.itemObj)
-                              }
-                            }
-                          },
-                          [_vm._v("联系配送员")]
-                        )
-                      : _vm._e(),
-                    _vm.itemObj.distribution_status > 1 &&
-                    _vm.itemObj.distribution_status != 5 &&
-                    _vm.itemObj.type == 2 &&
-                    _vm.itemObj.distribution_id != ""
-                      ? _c(
-                          "button",
-                          {
-                            attrs: { eventid: "bcb9d712-8" },
-                            on: {
-                              click: function($event) {
-                                _vm.goChat(_vm.itemObj)
-                              }
-                            }
-                          },
-                          [_vm._v("联系配送员")]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
+                      )
+                    ]
+                  ),
+                  _c("view", {
+                    staticClass: "btn-1",
+                    attrs: { eventid: "bcb9d712-6" },
+                    on: {
+                      click: function($event) {
+                        _vm.goChat(_vm.itemObj)
+                      }
+                    }
+                  }),
+                  _c("view", {
+                    staticClass: "btn-2",
+                    attrs: { eventid: "bcb9d712-7" },
+                    on: {
+                      click: function($event) {
+                        _vm.contact(_vm.itemObj)
+                      }
+                    }
+                  })
+                ])
               : _vm._e()
           ],
           1
@@ -1122,6 +1154,12 @@ var render = function() {
     ]),
     _vm.itemObj.find_status >= 4
       ? _c("view", { staticClass: "status-2" }, [
+          _c("view", { staticClass: "li" }, [
+            _c("text", { staticClass: "fs28" }, [_vm._v("物料描述:")]),
+            _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
+              _vm._v(_vm._s(_vm.itemObj.result_desc))
+            ])
+          ]),
           _c("view", { staticClass: "li" }, [
             _c("text", { staticClass: "fs28" }, [_vm._v("物料单价:")]),
             _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
@@ -1148,11 +1186,11 @@ var render = function() {
               )
             ])
           ]),
-          _vm.itemObj.desc_img.length > 0 && _vm.itemObj.desc_img
+          _vm.itemObj.result_img.length > 0 && _vm.itemObj.result_img
             ? _c(
                 "view",
                 { staticClass: "img cf" },
-                _vm._l(_vm.itemObj.desc_img, function(item, index) {
+                _vm._l(_vm.itemObj.result_img, function(item, index) {
                   return _c("image", {
                     key: index,
                     staticClass: "fll",
@@ -1180,7 +1218,7 @@ var render = function() {
                     staticClass: "item cf",
                     attrs: {
                       "data-index": index,
-                      eventid: "bcb9d712-9-" + index
+                      eventid: "bcb9d712-8-" + index
                     },
                     on: { click: _vm.payTypeCheck }
                   },
@@ -1255,7 +1293,7 @@ var render = function() {
               "button",
               {
                 staticClass: "task-pay-btn text-underline",
-                attrs: { disabled: _vm.isDisabled, eventid: "bcb9d712-10" },
+                attrs: { disabled: _vm.isDisabled, eventid: "bcb9d712-9" },
                 on: { click: _vm.doPay }
               },
               [_vm._v("支付")]
@@ -1282,7 +1320,7 @@ var render = function() {
                       class: _vm.starIndex_1 >= index ? "text-yellow" : "",
                       attrs: {
                         "data-idx": index,
-                        eventid: "bcb9d712-11-" + index
+                        eventid: "bcb9d712-10-" + index
                       },
                       on: { click: _vm.satisfact }
                     })
@@ -1301,7 +1339,7 @@ var render = function() {
                       class: _vm.starIndex_2 >= index ? "text-yellow" : "",
                       attrs: {
                         "data-idx": index,
-                        eventid: "bcb9d712-12-" + index
+                        eventid: "bcb9d712-11-" + index
                       },
                       on: { click: _vm.timely }
                     })
@@ -1316,7 +1354,7 @@ var render = function() {
                   attrs: {
                     type: "text",
                     placeholder: "请输入评语",
-                    eventid: "bcb9d712-13"
+                    eventid: "bcb9d712-12"
                   },
                   on: { input: _vm.commentModelInput }
                 })
@@ -1326,7 +1364,7 @@ var render = function() {
                 "view",
                 {
                   staticClass: "cancel flex-1",
-                  attrs: { eventid: "bcb9d712-14" },
+                  attrs: { eventid: "bcb9d712-13" },
                   on: { click: _vm.commentCancel }
                 },
                 [_vm._v("取消")]
@@ -1335,7 +1373,7 @@ var render = function() {
                 "view",
                 {
                   staticClass: "confirm flex-1",
-                  attrs: { eventid: "bcb9d712-15" },
+                  attrs: { eventid: "bcb9d712-14" },
                   on: { click: _vm.commentConfirm }
                 },
                 [_vm._v("确定")]

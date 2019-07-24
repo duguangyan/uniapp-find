@@ -24,11 +24,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.item-2.data-v-618e4b16 {
+.item-2.data-v-0ff4cd10 {
   width: 320rpx !important;
   position: relative;
 }
-.item-2-btn.data-v-618e4b16 {
+.item-2-btn.data-v-0ff4cd10 {
   width: 180rpx;
   height: 88rpx;
   line-height: 88rpx;
@@ -37,14 +37,14 @@
   color: #fff;
   position: absolute;
   right: 0;
-  top: 30rpx;
+  top: 0rpx;
   border-radius: 0rpx 10rpx 10rpx 0rpx;
 }
-.alipay.data-v-618e4b16 {
+.alipay.data-v-0ff4cd10 {
   height: 100%;
   background: #f4f4f4;
 }
-.alipay .btn.data-v-618e4b16 {
+.alipay .btn.data-v-0ff4cd10 {
     width: 630rpx;
     height: 88rpx;
     line-height: 88rpx;
@@ -54,22 +54,22 @@
     text-align: center;
     margin: 0 auto;
     border-radius: 10rpx;
-    margin-top: 740rpx;
+    margin-top: 140rpx;
 }
-.alipay .items.data-v-618e4b16 {
+.alipay .items.data-v-0ff4cd10 {
     padding: 50rpx 30rpx;
     background: #fff;
 }
-.alipay .items .item.data-v-618e4b16 {
+.alipay .items .item.data-v-0ff4cd10 {
       margin-bottom: 30rpx;
       position: relative;
       font-size: 30rpx;
 }
-.alipay .items .item text.data-v-618e4b16 {
+.alipay .items .item text.data-v-0ff4cd10 {
         display: inline-block;
         width: 160rpx;
 }
-.alipay .items .item input.data-v-618e4b16 {
+.alipay .items .item input.data-v-0ff4cd10 {
         display: inline-block;
         width: 480rpx;
         height: 88rpx;
@@ -79,7 +79,7 @@
         color: #333;
         padding-left: 20rpx;
         position: relative;
-        top: 30rpx;
+        top: 0rpx;
         border-radius: 10rpx;
 }
 

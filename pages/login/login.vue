@@ -91,9 +91,6 @@
 			}
 		},
 		onLoad(options) {
-
-			
-
 			if (options.from) {
 				this.$data.from = options.from;
 			}
@@ -102,19 +99,54 @@
 			this.$data.userType = uni.getStorageSync('userType');
 		},
 		methods: {
+			
+			getOpenId(){
+				uni.login({
+					success: function (res) {
+					  console.log(res);
+					  if (res.code) {
+						let data = {
+						  code: res.code,
+						  from: 3
+						}
+						api.getOpenId({
+						  data
+						}).then((res) => {
+						  if (res.code == 200 || res.code == 0) {
+							uni.setStorageSync('open_id', res.data.openid)
+						  } else {
+							util.errorTips(res.msg)
+						  }
+						}).catch((res) => {
+						 // util.errorTips(res.msg)
+						})
+					  }
+					}
+				 });
+			},
 			showNotes(){
 				uni.navigateTo({
 					url:'../protocol/protocol'
 				})
 			},
 			goBtn(index) {
+				
 				if (index == 1) { // 找料员
-					uni.reLaunch({
-						url: '../index/index?menuFrom=1&authentication=1'
+					//uni.removeStorageSync('isExamine1');
+					// uni.reLaunch({
+					// 	url: '../index/index?menuFrom=1&authentication=1'
+					
+					uni.navigateTo({
+						url:'../setting/authentication/authentication'
 					})
+					// })
 				} else if (index == 2) { // 配送员
-					uni.reLaunch({
-						url: '../index/index?menuFrom=2&authentication=1'
+					// uni.removeStorageSync('isExamine2');
+					// uni.reLaunch({
+					// 	url: '../index/index?menuFrom=2&authentication=1'
+					// })
+					uni.navigateTo({
+						url:'../setting/authentication/authentication'
 					})
 				}
 			},
@@ -202,7 +234,15 @@
 				}
 			},
 			doLogin() {
-
+				let userType     = uni.getStorageSync('userType');
+				let access_token = uni.getStorageSync('access_token');
+				let token        = uni.getStorageSync('token');
+				let v        = uni.getStorageSync('v');
+				uni.clearStorageSync();
+				uni.setStorageSync('userType',    userType);
+				uni.setStorageSync('access_token',access_token);
+				uni.setStorageSync('token',       token);
+				uni.setStorageSync('v',       v);
 				console.log(uni.getStorageSync("page") == "order");
 				if (this.$data.isLogin) {
 					if (this.$store.state.fromRest == 0) {
@@ -216,9 +256,10 @@
 							}
 						}).then((res) => {
 							if (res.code == 0 || res.code == 200) {
+								this.getOpenId();
 								console.log("login:" + res);
 								let resData = res;
-								uni.removeStorageSync('invite_code');
+								if(uni.getStorageSync('invite_code'))uni.removeStorageSync('invite_code');
 								uni.setStorageSync("token", resData.data.token);
 								uni.setStorageSync("userId", resData.data.id);
 
@@ -228,7 +269,7 @@
 								uni.setStorageSync("nick_name", resData.data.nick_name);
 								this.$store.commit('updateNickName', resData.data.nick_name);
 								this.$store.commit('updateAvatarPath', resData.data.avatar_path);
-								api.getUserInfo().then((res) => {
+								api.getUserInfo({}).then((res) => {
 									resData.data.name = name
 								})
 								uni.setStorageSync('userInfo', resData.data);
@@ -258,13 +299,15 @@
 							data: {
 								mobile: this.$data.phone,
 								password: this.$data.passworld,
-								invite_code: uni.getStorageSync('invite_code')
+								invite_code: uni.getStorageSync('invite_code') || ''
 							}
 						}).then((res) => {
 							if (res.code == 0 || res.code == 200) {
-
+								this.getOpenId();
+								console.log("login:" + res.toString());
 								let resData = res;
-								uni.removeStorageSync('invite_code');
+								if(uni.getStorageSync('invite_code'))uni.removeStorageSync('invite_code');
+								
 
 								uni.setStorageSync("token", resData.data.token);
 								uni.setStorageSync("userId", resData.data.id);
@@ -292,11 +335,12 @@
 								uni.reLaunch({
 									url: '../index/index?menuFrom=' + this.$data.from
 								})
+								
 							} else {
 								util.errorTips(res.msg);
 							}
 						}).catch((res) => {
-							util.errorTips(res.msg);
+							util.errorTips(res.msg|| res.message);
 						})
 					}
 

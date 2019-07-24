@@ -88,7 +88,9 @@
 					<view class='task-find-list fs30' v-for='(item ,index) in fetchs' :key='index'>
 						<view class='task-find-item'>
 							<view><text class="fs28">物料品类:</text> <text class="fs24 text-999 mgl-20">{{item.cname}}</text> <text class='flr text-yellow fs24'>金额:￥{{item.fee}}</text></view>
-							<view><text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text>  <text class='flr text-yellow fs24'>超范围服务费:￥{{item.extra_fee}}</text></view>
+							<view><text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">{{item.desc}}</text>  </view>
+							<view><text class="fs28"><text class="fs24 text-999">{{item.distance_text}}</text></text> <text class='flr text-yellow fs24'>超范围服务费:￥{{item.extra_fee}}</text></view>
+							 
 							<!-- <image class='task-find-img' src='../../static/icon/task_get.png'></image> -->
 						</view>
 						<view class='task-find-method'>
@@ -129,7 +131,7 @@
 								
 							</view> -->
 							
-							<text>收货人</text>  {{address.mobile || ''}} <text class='remark' v-if="address.remark!=''">{{address.remark||''}}</text>
+							<text>{{address.consignee}} </text>  {{address.mobile || ''}} <text class="mgl-20">{{address.stall}}</text> <text class='remark' v-if="address.remark!=''">{{address.remark||''}}</text>
 						</view>
 						<view class="fs24 text-999">{{address.city_str ||''}} {{address.address||''}} {{address.room||''}}</view>
 						<!-- <view class='fs24' style='word-break:break-all;'>
@@ -670,7 +672,7 @@
 
 	.address {
 		position: relative;
-		padding-right: 150upx;
+		padding-right: 100upx;
 		padding-bottom: 30upx;
 		
 		.address-info{

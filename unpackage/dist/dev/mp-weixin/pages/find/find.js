@@ -215,7 +215,8 @@ var _upload = _interopRequireDefault(__webpack_require__(/*! ../../components/up
         reference_price: '' }],
 
       taskEditItem: '',
-      isTaskEditItem: false };
+      isTaskEditItem: false,
+      isClock: true };
 
   },
   components: {
@@ -277,13 +278,13 @@ var _upload = _interopRequireDefault(__webpack_require__(/*! ../../components/up
     this.getCompanyaddress();
     // 获取默认地址
     this.getSelectedAddress();
+    // 获取默认区域数据第一个
+    this.initArea();
+    // 获取说明内容
+    this.getNeedKnow();
 
   },
   onShow: function onShow() {var _this2 = this;
-    // 获取说明内容
-    this.getNeedKnow();
-    // 获取默认区域数据第一个
-    this.initArea();
 
     this.$eventHub.$on('classifyData', function (data) {
       console.log('classifyData:', data);
@@ -348,7 +349,13 @@ var _upload = _interopRequireDefault(__webpack_require__(/*! ../../components/up
     },
     // 选择服务区域
     goAreaText: function goAreaText(index) {
+      if (!this.$data.isClock) {
+        return false;
+      } else {
+        this.$data.isClock = false;
+      }
       var _this = this;
+
       _api.default.findArea({}).then(function (res) {
         if (res.code == 200 || res.code == 0) {
           var arr = res.data;
@@ -356,20 +363,29 @@ var _upload = _interopRequireDefault(__webpack_require__(/*! ../../components/up
           arr.forEach(function (o, i) {
             newArr.push(o.name);
           });
+
           uni.showActionSheet({
             itemList: newArr,
             success: function success(res) {
+              _this.$data.isClock = true;
               console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
               _this.$data.finds[index].area_id = arr[res.tapIndex].id;
               _this.$data.finds[index].areaText = arr[res.tapIndex].name;
               _util.default.successTips('区域选择成功');
+              _this.$data.isClock = true;
             },
             fail: function fail(res) {
               console.log(res.errMsg);
               // util.successTips('区域选择失败');
+              _this.$data.isClock = true;
             } });
 
+        } else {
+          _this.$data.isClock = true;
         }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg || res.message);
+        _this.$data.isClock = true;
       });
     },
 
@@ -816,7 +832,7 @@ var render = function() {
                   ],
                   staticClass: "flr mgr-20",
                   attrs: {
-                    type: "text",
+                    type: "digit",
                     disabled: !item.is_compare,
                     placeholder: "请输入参考价格",
                     eventid: "2ccc1657-5-" + index
@@ -918,7 +934,8 @@ var render = function() {
                               _c("view", [
                                 _c("text", [
                                   _vm._v(
-                                    "收货人 " +
+                                    _vm._s(item.address.consignee) +
+                                      " " +
                                       _vm._s(item.address.mobile || "")
                                   )
                                 ]),

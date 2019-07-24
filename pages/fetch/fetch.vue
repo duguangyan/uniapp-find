@@ -86,7 +86,7 @@
 						<view @click='goConsigneeAddress(index)' v-if="item.address" class="flex-1 address-info fs24">
 							
 							<view class="person" style='word-break:break-all;'>
-								<text>收货人 {{item.address.mobile || ''}}</text> <text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
+								<text>{{item.address.consignee}}  {{item.address.mobile || ''}}</text> <text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
 							</view>
 							<view style='word-break:break-all;'>
 								<text class='text-999'>{{item.address.stall ||''}}</text>

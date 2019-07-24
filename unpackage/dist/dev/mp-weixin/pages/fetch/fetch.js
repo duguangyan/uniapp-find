@@ -767,7 +767,9 @@ var render = function() {
                             [
                               _c("text", [
                                 _vm._v(
-                                  "收货人 " + _vm._s(item.address.mobile || "")
+                                  _vm._s(item.address.consignee) +
+                                    "  " +
+                                    _vm._s(item.address.mobile || "")
                                 )
                               ]),
                               item.address && item.address.remark != ""

@@ -258,15 +258,22 @@
 
 
 
+
+
+
+
+
+
+
+
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
 var _upload = _interopRequireDefault(__webpack_require__(/*! ../../../../components/upload.vue */ "E:\\uniapp\\find.yidapi.com.cn\\components\\upload.vue"));
 var _uniNumberBox = _interopRequireDefault(__webpack_require__(/*! @/components/uni-number-box/uni-number-box.vue */ "E:\\uniapp\\find.yidapi.com.cn\\components\\uni-number-box\\uni-number-box.vue"));
-var _xflSelect = _interopRequireDefault(__webpack_require__(/*! @/components/xfl-select/xfl-select.vue */ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue"));
 var _dialog = _interopRequireDefault(__webpack_require__(/*! @/components/dialog.vue */ "E:\\uniapp\\find.yidapi.com.cn\\components\\dialog.vue"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
   components: {
-    upload: _upload.default, uniNumberBox: _uniNumberBox.default, xflSelect: _xflSelect.default, dialog: _dialog.default },
+    upload: _upload.default, uniNumberBox: _uniNumberBox.default, dialog: _dialog.default },
 
   data: function data() {
     return {
@@ -308,11 +315,32 @@ var _dialog = _interopRequireDefault(__webpack_require__(/*! @/components/dialog
 
   },
   methods: {
+    // 联系客户
+    contact: function contact(item) {
+      var data = {
+        id: item.id,
+        type: 2 };
+
+      _api.default.apiPhoneStaff({
+        method: 'POST',
+        data: data }).
+      then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          uni.makePhoneCall({
+            phoneNumber: res.data });
+
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg);
+      });
+    },
 
     // 取聊天室
     goChat: function goChat(item) {
       uni.navigateTo({
-        url: '/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户' });
+        url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.user_id + '&name=客户' });
 
     },
 
@@ -629,9 +657,11 @@ var render = function() {
           ])
         ]),
         _c("view", { staticClass: "flex" }, [
-          _c("view", { staticClass: "c999" }, [_vm._v("比较优选：")]),
+          _c("view", { staticClass: "c999" }, [_vm._v("比价优选：")]),
           _c("view", { staticClass: "flex-1 text-666 fs24" }, [
-            _vm._v("参考价格 ￥ " + _vm._s(_vm.detailData.reference_price))
+            _vm._v(
+              "参考价格 ￥ " + _vm._s(_vm.detailData.reference_price || "0.00")
+            )
           ])
         ]),
         _c("view", [
@@ -667,10 +697,16 @@ var render = function() {
             _c("view", { staticClass: "t1 fs28" }, [_vm._v("取料地址")]),
             _c("view", { staticClass: "t2 fs24" }, [
               _c("text", [
-                _vm._v("收货人 " + _vm._s(_vm.detailData.get_address.mobile))
+                _vm._v(
+                  _vm._s(_vm.detailData.get_address.consignee) +
+                    " " +
+                    _vm._s(_vm.detailData.get_address.mobile)
+                )
               ]),
               _vm.detailData.get_address.stall
-                ? _c("text", [_vm._v(_vm._s(_vm.detailData.get_address.stall))])
+                ? _c("text", { staticClass: "mgl-20" }, [
+                    _vm._v(_vm._s(_vm.detailData.get_address.stall))
+                  ])
                 : _vm._e()
             ]),
             _c("view", { staticClass: "t3 fs24 text-999" }, [
@@ -684,11 +720,13 @@ var render = function() {
             _c("view", { staticClass: "t2 fs24" }, [
               _c("text", [
                 _vm._v(
-                  "收货人 " + _vm._s(_vm.detailData.shipping_address.mobile)
+                  _vm._s(_vm.detailData.shipping_address.consignee) +
+                    " " +
+                    _vm._s(_vm.detailData.shipping_address.mobile)
                 )
               ]),
               _vm.detailData.shipping_address.stall
-                ? _c("text", [
+                ? _c("text", { staticClass: "mgl-20" }, [
                     _vm._v(_vm._s(_vm.detailData.shipping_address.stall))
                   ])
                 : _vm._e()
@@ -700,9 +738,21 @@ var render = function() {
         : _vm._e(),
       _c("view", { staticClass: "pdl-30 bt-1 lh100" }, [
         _c("text", { staticClass: "fs28" }, [_vm._v("配送方式:")]),
-        _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
-          _vm._v(_vm._s(_vm.detailData.find_type_label))
-        ])
+        _vm.detailData.shipping_type == 0
+          ? _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
+              _vm._v("小鹿")
+            ])
+          : _vm._e(),
+        _vm.detailData.shipping_type == 1
+          ? _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
+              _vm._v("超出5公里，10公里内")
+            ])
+          : _vm._e(),
+        _vm.detailData.shipping_type == 0
+          ? _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
+              _vm._v("物流到付")
+            ])
+          : _vm._e()
       ]),
       _c("view", { staticClass: "pdl-30 bt-1 top20 order_sn" }, [
         _c("view", [
@@ -807,6 +857,12 @@ var render = function() {
       _vm.detailData.distribution_status >= 4
         ? _c("view", { staticClass: "status-2" }, [
             _c("view", { staticClass: "li" }, [
+              _c("text", { staticClass: "fs28" }, [_vm._v("物料描述:")]),
+              _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
+                _vm._v("￥" + _vm._s(_vm.detailData.result_desc))
+              ])
+            ]),
+            _c("view", { staticClass: "li" }, [
               _c("text", { staticClass: "fs28" }, [_vm._v("物料单价:")]),
               _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
                 _vm._v("￥" + _vm._s(_vm.detailData.result_price))
@@ -832,11 +888,11 @@ var render = function() {
                 )
               ])
             ]),
-            _vm.detailData.desc_img.length > 0 && _vm.detailData.desc_img
+            _vm.detailData.result_img.length > 0 && _vm.detailData.result_img
               ? _c(
                   "view",
                   { staticClass: "img cf" },
-                  _vm._l(_vm.detailData.desc_img, function(item, index) {
+                  _vm._l(_vm.detailData.result_img, function(item, index) {
                     return _c("image", {
                       key: index,
                       staticClass: "fll",
@@ -884,12 +940,36 @@ var render = function() {
           ])
         : _vm._e(),
       _c("view", { staticClass: "flex-end order-handle cf" }, [
+        _vm.detailData.user_id != ""
+          ? _c("view", { staticClass: "cancat flr" }, [
+              _c("image", { attrs: { src: "/static/icon/concat.png" } }),
+              _c("text", [_vm._v("联系客户")]),
+              _c("view", {
+                staticClass: "btn-1",
+                attrs: { eventid: "766bc8f4-2" },
+                on: {
+                  click: function($event) {
+                    _vm.goChat(_vm.detailData)
+                  }
+                }
+              }),
+              _c("view", {
+                staticClass: "btn-2",
+                attrs: { eventid: "766bc8f4-3" },
+                on: {
+                  click: function($event) {
+                    _vm.contact(_vm.detailData)
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
         _vm.detailData.distribution_status == 2
           ? _c(
               "view",
               {
                 staticClass: "find-status flr",
-                attrs: { eventid: "766bc8f4-2" },
+                attrs: { eventid: "766bc8f4-4" },
                 on: {
                   click: function($event) {
                     _vm.receiptOrder(_vm.detailData.id)
@@ -904,7 +984,7 @@ var render = function() {
               "view",
               {
                 staticClass: "find-status flr",
-                attrs: { eventid: "766bc8f4-3" },
+                attrs: { eventid: "766bc8f4-5" },
                 on: {
                   click: function($event) {
                     _vm.serviceOrder(_vm.detailData.id)
@@ -912,21 +992,6 @@ var render = function() {
                 }
               },
               [_vm._v("确认送达")]
-            )
-          : _vm._e(),
-        _vm.detailData.user_id != ""
-          ? _c(
-              "view",
-              {
-                staticClass: "find-status flr",
-                attrs: { eventid: "766bc8f4-4" },
-                on: {
-                  click: function($event) {
-                    _vm.goChat(_vm.detailData)
-                  }
-                }
-              },
-              [_vm._v("联系客户")]
             )
           : _vm._e()
       ])
@@ -936,7 +1001,7 @@ var render = function() {
           _c("view", { staticClass: "form-box-2" }, [
             _c("text", {
               staticClass: "iconfont icon-guanbi close",
-              attrs: { eventid: "766bc8f4-5" },
+              attrs: { eventid: "766bc8f4-6" },
               on: {
                 click: function($event) {
                   $event.stopPropagation()
@@ -961,7 +1026,7 @@ var render = function() {
                     _vm.detailData.type == 1
                       ? "请填写找不到物料的原因"
                       : "请填写取不到物料的原因",
-                  eventid: "766bc8f4-6"
+                  eventid: "766bc8f4-7"
                 },
                 domProps: { value: _vm.remark },
                 on: {
@@ -978,7 +1043,7 @@ var render = function() {
                   "view",
                   {
                     staticClass: "flex-1 fs28",
-                    attrs: { eventid: "766bc8f4-7" },
+                    attrs: { eventid: "766bc8f4-8" },
                     on: {
                       click: function($event) {
                         $event.stopPropagation()
@@ -992,7 +1057,7 @@ var render = function() {
                   "view",
                   {
                     staticClass: "flex-1 fs28 sub",
-                    attrs: { eventid: "766bc8f4-8" },
+                    attrs: { eventid: "766bc8f4-9" },
                     on: {
                       click: function($event) {
                         $event.stopPropagation()
@@ -1011,7 +1076,7 @@ var render = function() {
       ? _c("view", { staticClass: "logistics-wap" }, [
           _c("view", {
             staticClass: "bg",
-            attrs: { eventid: "766bc8f4-9" },
+            attrs: { eventid: "766bc8f4-10" },
             on: {
               click: function($event) {
                 $event.stopPropagation()
@@ -1034,7 +1099,7 @@ var render = function() {
                 attrs: {
                   type: "text",
                   placeholder: "请输入物流公司名称",
-                  eventid: "766bc8f4-10"
+                  eventid: "766bc8f4-11"
                 },
                 domProps: { value: _vm.express_name },
                 on: {
@@ -1061,7 +1126,7 @@ var render = function() {
                 attrs: {
                   type: "number",
                   placeholder: "请输入物流公司电话",
-                  eventid: "766bc8f4-11"
+                  eventid: "766bc8f4-12"
                 },
                 domProps: { value: _vm.express_phone },
                 on: {
@@ -1078,7 +1143,7 @@ var render = function() {
               "view",
               {
                 staticClass: "v3",
-                attrs: { eventid: "766bc8f4-13" },
+                attrs: { eventid: "766bc8f4-14" },
                 on: { click: _vm.logisticsSubmit }
               },
               [
@@ -1095,7 +1160,7 @@ var render = function() {
                   attrs: {
                     type: "number",
                     placeholder: "请输入物流单号",
-                    eventid: "766bc8f4-12"
+                    eventid: "766bc8f4-13"
                   },
                   domProps: { value: _vm.express_sn },
                   on: {
@@ -1113,7 +1178,7 @@ var render = function() {
               "view",
               {
                 staticClass: "btn",
-                attrs: { eventid: "766bc8f4-14" },
+                attrs: { eventid: "766bc8f4-15" },
                 on: {
                   click: function($event) {
                     $event.stopPropagation()
@@ -1127,7 +1192,7 @@ var render = function() {
               "view",
               {
                 staticClass: "closeBtn",
-                attrs: { eventid: "766bc8f4-15" },
+                attrs: { eventid: "766bc8f4-16" },
                 on: {
                   click: function($event) {
                     $event.stopPropagation()

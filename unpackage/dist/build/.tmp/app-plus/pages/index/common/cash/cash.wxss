@@ -579,7 +579,36 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.password.data-v-967c47ec {
+.bankCard.data-v-a5542bae {
+  border-bottom: 20rpx solid #f4f4f4;
+  background: #fff;
+}
+.bankCard .item-1.data-v-a5542bae {
+    height: 100rpx;
+    line-height: 100rpx;
+    font-size: 30rpx;
+}
+.bankCard .item-2.data-v-a5542bae {
+    padding: 40rpx 0;
+    position: relative;
+    width: 560rpx;
+}
+.bankCard .item-2 .ar.data-v-a5542bae {
+      position: absolute;
+      right: -140rpx;
+      top: 66rpx;
+      z-index: 99;
+}
+.bankCard .item-2 .ar .arrow-right.data-v-a5542bae {
+        border-right: 1rpx solid #F29800;
+        border-bottom: 1rpx solid #F29800;
+        font-size: 24rpx;
+        width: 14rpx;
+        height: 14rpx;
+        position: relative;
+        top: -2rpx;
+}
+.password.data-v-a5542bae {
   width: 25%;
   -webkit-box-flex: 1;
   -webkit-flex-grow: 1;
@@ -589,11 +618,11 @@
   font-size: 40rpx;
   border-bottom: 1px solid #eee;
 }
-.password.data-v-967c47ec:hover {
+.password.data-v-a5542bae:hover {
   background: #eee;
 }
 /* 密码框 */
-.masks.data-v-967c47ec {
+.masks.data-v-a5542bae {
   bottom: -50%;
   position: fixed;
   background: #fff;
@@ -602,22 +631,22 @@
   -o-transition: .5s;
   transition: .5s;
 }
-.bot.data-v-967c47ec {
+.bot.data-v-a5542bae {
   bottom: 0;
 }
-.cash.data-v-967c47ec {
+.cash.data-v-a5542bae {
   height: 100%;
   background: #f4f4f4;
 }
-.cash .zfb.data-v-967c47ec {
+.cash .zfb.data-v-a5542bae {
     background: #fff;
     margin-top: 20rpx;
 }
-.cash .zfb .t2.data-v-967c47ec {
+.cash .zfb .t2.data-v-a5542bae {
       height: 164rpx;
       position: relative;
 }
-.cash .zfb .t2 image.data-v-967c47ec {
+.cash .zfb .t2 image.data-v-a5542bae {
         width: 100rpx;
         height: 100rpx;
         border-radius: 50%;
@@ -625,38 +654,38 @@
         position: relative;
         top: 30rpx;
 }
-.cash .zfb .t2 .v1.data-v-967c47ec {
+.cash .zfb .t2 .v1.data-v-a5542bae {
         position: relative;
         top: 50rpx;
         font-size: 30rpx;
         line-height: 40rpx;
 }
-.cash .zfb .t2 .v2.data-v-967c47ec {
+.cash .zfb .t2 .v2.data-v-a5542bae {
         position: absolute;
         right: 50rpx;
         top: 50rpx;
         color: #F29800;
 }
-.cash .zfb .t2 .v2 .arrow-right.data-v-967c47ec {
+.cash .zfb .t2 .v2 .arrow-right.data-v-a5542bae {
           display: inline-block;
           width: 16rpx;
           height: 16rpx;
           border-right: 1px solid #F29800;
           border-bottom: 1px solid #F29800;
 }
-.cash .zfb .t1.data-v-967c47ec {
+.cash .zfb .t1.data-v-a5542bae {
       height: 100rpx;
       line-height: 100rpx;
       padding-left: 30rpx;
       border-bottom: 1rpx solid #f4f4f4;
 }
-.cash .footer-btn.data-v-967c47ec {
+.cash .footer-btn.data-v-a5542bae {
     background: #f4f4f4;
     padding-top: 60rpx;
     height: 100rpx;
     position: relative;
 }
-.cash .footer-btn .btn.data-v-967c47ec {
+.cash .footer-btn .btn.data-v-a5542bae {
       width: 630rpx;
       height: 88rpx;
       line-height: 88rpx;
@@ -669,7 +698,7 @@
       bottom: 30rpx;
       left: 60rpx;
 }
-.cash .mess.data-v-967c47ec {
+.cash .mess.data-v-a5542bae {
     height: 148rpx;
     background: #fff;
     padding: 10rpx 0;
@@ -677,19 +706,19 @@
     border-bottom: 1rpx solid #f4f4f4;
     margin-bottom: 20rpx;
 }
-.cash .mess .v1.data-v-967c47ec {
+.cash .mess .v1.data-v-a5542bae {
       height: 60rpx;
       line-height: 60rpx;
       font-size: 28rpx;
 }
-.cash .mess .v2.data-v-967c47ec {
+.cash .mess .v2.data-v-a5542bae {
       height: 60rpx;
       line-height: 60rpx;
       padding-left: 80rpx;
       color: #666;
       font-size: 28rpx;
 }
-.cash .type.data-v-967c47ec {
+.cash .type.data-v-a5542bae {
     height: 100rpx;
     line-height: 100rpx;
     padding-left: 30rpx;
@@ -697,21 +726,21 @@
     margin-top: 20rpx;
     background: #fff;
 }
-.cash .input.data-v-967c47ec {
+.cash .input.data-v-a5542bae {
     height: 196rpx;
     line-height: 196rpx;
     background: #fff;
 }
-.cash .input .t1.data-v-967c47ec {
+.cash .input .t1.data-v-a5542bae {
       font-size: 80rpx;
 }
-.cash .input .t2.data-v-967c47ec {
+.cash .input .t2.data-v-a5542bae {
       display: inline-block;
       width: 450rpx;
       margin-left: 20rpx;
       font-size: 32rpx;
 }
-.cash .input .t3.data-v-967c47ec {
+.cash .input .t3.data-v-a5542bae {
       color: #F29800;
       font-size: 32rpx;
       position: relative;
@@ -721,7 +750,7 @@
       width: 100rpx;
       padding: 0 30rpx;
 }
-.cash .get.data-v-967c47ec {
+.cash .get.data-v-a5542bae {
     font-size: 30rpx;
     height: 100rpx;
     line-height: 100rpx;
@@ -730,21 +759,21 @@
     padding-left: 30rpx;
     border-bottom: 1rpx solid #f4f4f4;
 }
-.cash .flex.data-v-967c47ec {
+.cash .flex.data-v-a5542bae {
     height: 100rpx;
     line-height: 100rpx;
     background: #fff;
     text-align: center;
     font-size: 32rpx;
 }
-.cash .flex .active.data-v-967c47ec {
+.cash .flex .active.data-v-a5542bae {
       border-bottom: 4rpx solid #F29800;
       padding-bottom: 30rpx;
 }
-.uni-list.data-v-967c47ec {
+.uni-list.data-v-a5542bae {
   background: #fff;
 }
-.modal-mask.data-v-967c47ec {
+.modal-mask.data-v-a5542bae {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -766,25 +795,25 @@
       -ms-flex-pack: center;
           justify-content: center;
 }
-.modal-dialog.data-v-967c47ec {
+.modal-dialog.data-v-a5542bae {
   width: 540rpx;
   overflow: hidden;
   z-index: 9999;
   background: #f9f9f9;
   border-radius: 5rpx;
 }
-.modal-title.data-v-967c47ec {
+.modal-title.data-v-a5542bae {
   padding-top: 30rpx;
   font-size: 32rpx;
   color: #030303;
   text-align: center;
 }
-.modal-content.data-v-967c47ec {
+.modal-content.data-v-a5542bae {
   padding: 20rpx 32rpx;
   font-size: 28rpx;
   text-align: center;
 }
-.modal-footer.data-v-967c47ec {
+.modal-footer.data-v-a5542bae {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -799,13 +828,13 @@
   font-size: 34rpx;
   line-height: 86rpx;
 }
-.btn-cancel.data-v-967c47ec {
+.btn-cancel.data-v-a5542bae {
   width: 50%;
   color: #abb4bd;
   text-align: center;
   border-right: 1px solid #dedede;
 }
-.btn-confirm.data-v-967c47ec {
+.btn-confirm.data-v-a5542bae {
   width: 50%;
   color: #6fb64b;
   text-align: center;

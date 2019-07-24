@@ -87,13 +87,13 @@ var _default = {
   onShow: function onShow() {
     var _this = this;
     this.$data.userType = uni.getStorageSync('userType');
-    if (this.$data.userType == 0 || this.$data.userType == 3) {
-      this.$data.authent = '用户认证';
-    } else if (this.$data.userType == 1) {
-      this.$data.authent = '认证找料员';
-    } else if (this.$data.userType == 2) {
-      this.$data.authent = '认证配送员';
-    }
+    // if (this.$data.userType == 0 || this.$data.userType == 3) {
+    // 	this.$data.authent = '用户认证';
+    // } else if (this.$data.userType == 1) {
+    // 	this.$data.authent = '认证找料员';
+    // } else if (this.$data.userType == 2) {
+    // 	this.$data.authent = '认证配送员';
+    // }
     uni.getStorageInfo({
       success: function success(res) {
         // console.log(res.keys);
@@ -163,6 +163,19 @@ var _default = {
     },
     // 清除缓存
     clearSync: function clearSync() {
+      var _this = this;
+      uni.showModal({
+        title: '提示',
+        content: '确认清除缓存吗？',
+        confirmText: '确认',
+        success: function success(res) {
+          if (res.confirm) {
+            _this.$data.currentSize = '0 kb';
+          } else if (res.cancel) {
+            _util.default.errorTips('您点击了取消');
+          }
+        } });
+
 
     },
     // 去认证中心
@@ -352,24 +365,26 @@ var render = function() {
               1
             )
           : _vm._e(),
-        _c(
-          "view",
-          {
-            staticClass: "bb20",
-            attrs: { eventid: "98d704ce-3" },
-            on: { click: _vm.goAuthentication }
-          },
-          [
-            _c("list-item", {
-              attrs: {
-                title: _vm.authent,
-                id: "item_mid_bottom",
-                mpcomid: "98d704ce-4"
-              }
-            })
-          ],
-          1
-        ),
+        _vm.userType == 0 || _vm.userType == 3
+          ? _c(
+              "view",
+              {
+                staticClass: "bb20",
+                attrs: { eventid: "98d704ce-3" },
+                on: { click: _vm.goAuthentication }
+              },
+              [
+                _c("list-item", {
+                  attrs: {
+                    title: _vm.authent,
+                    id: "item_mid_bottom",
+                    mpcomid: "98d704ce-4"
+                  }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
         _c("list-item", {
           attrs: {
             title: "版本号",

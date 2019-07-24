@@ -14,7 +14,7 @@
 				<view class='order-nav fs30 lh90 border-bottom'>
 					<text v-for="(item, index) in checkNavs" :key="index" @click='checkNav' :data-index='index' :class="orderNavNum==index?'nav-active':'order-text'">{{item}}</text>
 				</view>
-				<scroll-view scroll-x="true" scroll-left="scrolLeft"  class='order-nav order-nav-1 order-child-nav fs30 lh90'>
+				<scroll-view scroll-x="true" :scroll-left="scrolLeft"  class='order-nav order-nav-1 order-child-nav fs30 lh90'>
 					<view class="order-nav-1-warp">
 						<view v-for="(item, index) in checkChildNavs" :key="index" @click='checkChildNav' :data-index='index' :class="orderChildNavNum==index?'nav-child-active':''">
 						{{item}}
@@ -66,7 +66,9 @@
 										<view class='fs28'>{{orderNavNum==2?'取料地址':'取样地址'}}: </view>
 
 										<view>
-											<text class="fs24">收货人 {{item.get_address.mobile||''}}</text> <text v-if="item.get_address.remark" class="remark">{{item.get_address.remark}}</text>
+											<text class="fs24">{{item.get_address.consignee}} {{item.get_address.mobile||''}}</text>
+											 <text class="mgl-20">{{item.get_address.stall || ''}}</text>
+											 <text v-if="item.get_address.remark" class="remark mgl-20">{{item.get_address.remark || ''}}</text>
 										</view>
 										<view>
 											<text class="fs24 text-999">{{item.get_address.address||''}} {{item.get_address.room||''}}</text>
@@ -82,18 +84,26 @@
 
 									<view v-if="(item.find_type==3 ||item.find_type==2 || item.find_type==1 || item.find_type==0) && orderChildNavNum >1">
 										<view class='fs30'>送料地址: </view>
-										<view style='display:inline-block'>
-											<view class='remark' v-if="item.shipping_address.remark!=''&&item.shipping_address.remark!=null">
-												{{item.shipping_address.remark||''}}
-											</view>
+										<!-- <view style='display:inline-block'>
 											{{item.shipping_address.address||''}} {{item.shipping_address.room||''}}
+											<text class="mgl-20 remark">{{item.shipping_address.remark}}</text>
 										</view>
 										<view style='word-break:break-all;'>
 											{{item.shipping_address.consignee||''}} / {{item.shipping_address.mobile||''}}
 										</view>
 										<view class='text-999' style='word-break:break-all;'>
 											{{item.shipping_address.stall||''}}
+										</view> -->
+										
+										<view>
+											<text class="fs24">{{item.shipping_address.consignee}} {{item.shipping_address.mobile||''}}</text>
+											 <text class="mgl-20">{{item.shipping_address.stall}}</text>
+											 <text v-if="item.shipping_address.remark" class="remark mgl-20">{{item.shipping_address.remark}}</text>
 										</view>
+										<view>
+											<text class="fs24 text-999">{{item.shipping_address.address||''}} {{item.shipping_address.room||''}}</text>
+										</view>
+										
 									</view>
 
 
@@ -129,19 +139,24 @@
 									<button @click.stop='toComment(item.id)' v-if='item.can_comment==1'>评价</button>
 									<button @click.stop='toDel(item.id)' v-if='item.can_delete==1'>删除</button>
 									
-									<button @click.stop='goChat(item)' v-if="orderNavNum == 0 && orderChildNavNum>0 && orderChildNavNum!=3 && orderChildNavNum!=4 && item.findman_id!=''">联系找料员</button>
 									
-									<button @click.stop='goChat(item)' v-if="orderNavNum == 0 && orderChildNavNum==3 && item.distribution_id!=''">联系配送员</button>
-									
-									<button @click.stop='goChat(item)' v-if="orderNavNum == 1 && (orderChildNavNum ==1 || orderChildNavNum ==2) && item.findman_id!=''">联系找料员</button>
-									
-									<button @click.stop='goChat(item)' v-if="orderNavNum == 1 && orderChildNavNum>2 && orderChildNavNum!=4 && item.distribution_id!=''">联系配送员</button>
-									<!-- <view class="cancat flr" v-if="item.distribution_id">
+									<view class="cancat flr" v-if="item.findman_id!='' || item.distribution_id!=''">
 										<image src="../../static/icon/concat.png"></image>
-										<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
-										<view class="btn-1" @click.stop="goChat"></view>
-										<view class="btn-2" @click.stop="contact"></view>
-									</view> -->
+										<!-- <text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text> -->
+										
+							<!-- 			<text @click.stop='goChat(item)' v-if="orderNavNum == 0 && orderChildNavNum>=0 && orderChildNavNum!=3 && orderChildNavNum!=4 && item.findman_id!=''">联系找料员</text>
+										
+										<text @click.stop='goChat(item)' v-if="orderNavNum == 0 && orderChildNavNum==3 && item.distribution_id!=''">联系配送员</text>
+										
+										<text @click.stop='goChat(item)' v-if="orderNavNum == 1 && (orderChildNavNum ==1 || orderChildNavNum ==2 ) && item.findman_id!=''">联系找料员</text>
+										
+										<text @click.stop='goChat(item)' v-if="orderNavNum == 1 && orderChildNavNum>2 && orderChildNavNum!=4 && item.distribution_id!=''">联系配送员</text>
+										 -->
+										
+										<text @click.stop='goChat(item)'>{{item.distribution_id!=''?'联系配送员':'联系找料员'}}</text>
+										<view class="btn-1" @click.stop="goChat(item)"></view>
+										<view class="btn-2" @click.stop="contact(item)"></view>
+									</view>
 								</view>
 								
 							</view>
@@ -276,7 +291,7 @@
 				shopLoading: true, // 载入动画
 				orderList: [], // 页面数据
 				page: 1, // 第几页
-				scrolLeft:0,  //滚动位置
+				scrolLeft:1,  //滚动位置
 			};
 		},
 		onLoad(options) {
@@ -304,27 +319,41 @@
 			goChat(item){
 				if(this.$data.orderNavNum == 0){
 					uni.navigateTo({
-						url:'/pages/chat/chat?id=' + item.findman_id + '&fmUserName='+item.findman_name
+						url:'/pages/chat/chat?fromUserId='+uni.getStorageSync('userInfo').id+'&toUserId=' + item.findman_id + '&name='+item.findman_name
 					})
 				}else{
 					uni.navigateTo({
-						url:'/pages/chat/chat?id=' + item.distribution_id + '&fmUserName='+item.distribution_name
+						url:'/pages/chat/chat?fromUserId='+uni.getStorageSync('userInfo').id+'&toUserId=' + item.distribution_id + '&name='+item.distribution_name
 					})
 				}
 				
 			},
 			//  联系我们电话
-			contact() {
-				wx.makePhoneCall({
-					phoneNumber: '400-8088-156'
+			contact(item) {
+				
+				let data={
+					id:item.id,
+					type:item.type
+				}
+				api.apiPhoneUser({
+					method:'POST',
+					data
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						uni.makePhoneCall({
+							phoneNumber: res.data
+						})
+					}else{
+						util.errorTips(res.msg);
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg)
 				})
+				
 			},
 			// 搜索
 			doSearch(){
-				this.$data.isSearch = true;
-				this.$data.orderChildNavNum = 0;
-				console.log(this.$data.searchValue);
-				this.$data.scrolLeft = 0;
+				
 				if(this.$data.searchValue == ''){
 					util.errorTips('搜索关键字不能为空');
 					return false;
@@ -338,24 +367,40 @@
 					}
 				}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
-						this.$data.orderList = [];
-						this.$data.orderList = this.$data.orderList.concat(res.data);
-						for (let i = 0; i < this.$data.orderList.length; i++) {
-							// 1按图找,2按样找3按描述
-							if (this.$data.orderList[i].type == 1) {
-								this.$data.orderList[i].type_name = '按图找料';
-							} else if (this.$data.orderList[i].type == 2) {
-								this.$data.orderList[i].type_name = '按样找料';
-							} else if (this.data.orderList[i].type == 3) {
-								this.$data.orderList[i].type_name = '按描述找料';
+						if(res.data.length>0){
+							this.$data.isSearch = true;
+							this.$data.orderChildNavNum = 0;
+							console.log(this.$data.searchValue);
+							this.$data.scrolLeft = 0;
+						
+							this.$data.orderList = [];
+							this.$data.orderList = this.$data.orderList.concat(res.data);
+							if(this.$data.orderList.length > 0){
+								this.$data.hasData = false;
+							}else{
+								this.$data.hasData = true;
 							}
+							for (let i = 0; i < this.$data.orderList.length; i++) {
+								// 1按图找,2按样找3按描述
+								if (this.$data.orderList[i].type == 1) {
+									this.$data.orderList[i].type_name = '按图找料';
+								} else if (this.$data.orderList[i].type == 2) {
+									this.$data.orderList[i].type_name = '按样找料';
+								} else if (this.data.orderList[i].type == 3) {
+									this.$data.orderList[i].type_name = '按描述找料';
+								}
+							}
+							// 判断是否加载更多
+							this.$data.shopLoading = res.data.length < 10 ? false : true;
+							this.$data.noRequestData = res.data.length < 10 ? false : true;
+						}else{
+							util.errorTips('暂无相关数据')
 						}
-						// 判断是否加载更多
-						this.$data.shopLoading = res.data.length < 10 ? false : true;
-						this.$data.noRequestData = res.data.length < 10? false:true;
+					}else{
+						util.errorTips(res.msg)
 					}
 					
-				})
+				}).catch((e)=>{util.errorTips(e.msg || e.message)})
 			},
 			// 去找料详情
 			goOrderDetail(e) {
@@ -551,7 +596,7 @@
 				uni.setStorageSync('status',i);
 				this.$data.orderList = [];
 				this.$data.page = 1;
-				this.getList(this.$data.orderNavNum + 1, i, this.$data.page);
+				this.getList(parseInt(this.$data.orderNavNum) + 1, i, this.$data.page);
 				uni.pageScrollTo({
 					scrollTop: 0
 				});
@@ -559,7 +604,7 @@
 			// 一级nav切换
 			checkNav(e) {
 				this.$data.isSearch = false;
-				let i = e.currentTarget.dataset.index;
+				let i = parseInt(e.currentTarget.dataset.index);
 				this.$data.orderNavNum = i;
 
 				uni.setStorageSync('method',i);
@@ -604,6 +649,8 @@
 					}
 					wx.hideLoading();
 				}).catch((res) => {
+					
+					util.errorTips(res.msg || res.message);
 					wx.hideLoading();
 				})
 			},
@@ -620,9 +667,9 @@
 		 * 页面上拉触底事件的处理函数
 		 */
 		onReachBottom: function() {
-			if(!this.$data.noRequestData){
-				return false;
-			}
+			// if(!this.$data.noRequestData){
+			// 	return false;
+			// }
 			
 			if(this.$data.isSearch){
 				this.$data.page++;
@@ -837,7 +884,7 @@
 
 	.nav-child-active {
 		color: #F29800;
-		border-bottom: 1upx solid #F29800;
+		// border-bottom: 1upx solid #F29800;
 		font-size: 30upx;
 		.line{
 			position: absolute;
@@ -904,13 +951,18 @@
 			}
 		}
 	}
-
 	.order-content {
 		margin-top: 280upx;
-		
 		position: relative;
 		border-top: 1upx solid #f4f4f4;
 	}
+	/* #ifdef H5*/  
+	.order-content {
+		margin-top: 200upx;
+	}
+	/* #endif */  
+
+	
 
 	.task-find-title {
 		line-height: 100upx;
@@ -1000,15 +1052,14 @@
 	}
 
 	.remark {
-		height: 30upx;
-		line-height: 10upx;
-		display: inline-block;
-		padding-left: 10upx;
-		padding-right: 0upx !important;
+		padding: 0 10upx;
+		border: 1upx solid #F29800;
+		color: #F29800;
+		border-radius: 4upx;
 	}
 
 	.order-footer-btn {
-
+		height: 60upx;
 		text-align: right;
 		padding-top: 25upx;
 	}
@@ -1243,5 +1294,8 @@
 	.chat_list image {
 		width: 140upx;
 		height: 140upx;
+	}
+	.order{
+		background: #fff;
 	}
 </style>

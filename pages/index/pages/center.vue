@@ -48,6 +48,9 @@
 				<text class="subTitle">注册小鹿家人，增添更大收益</text>
 				<image class="arrow" src="/static/center/arrow.png"></image>
 			</view>
+			
+			
+			
 			<ul>
 				<li v-for="(item, index) in contents" :key='index' @click="goNextPage(index)">
 					<text class="title" v-if="index != 1">{{item.title}}</text>
@@ -58,7 +61,7 @@
 			</ul>
 		</view>
 		
-		<text class="copyright"> Copyright @2019  众皮联 版权所有 版本 {{v}}</text>
+		<view class="copyright"> Copyright @2019  众皮联 版权所有 版本 {{v}}</view>
 	</view>
 </template>
 
@@ -114,7 +117,13 @@
 					},
 					{
 						title: "积分商城",
-					}
+					},
+					// {
+					// 	title: "我是找料员",
+					// },
+					// {
+					// 	title: "我是配送员",
+					// }
 				],
 				avatar_path: "/static/footer_icon/2.1.png",
 				balance: 0,
@@ -146,6 +155,12 @@
 			}
 		},
 		methods: {
+			// 切换账户
+			goPage(index){
+				uni.reLaunch({
+					url: '../index/index?menuFrom=' + index
+				})
+			},
 			// 获取用户信息
 			getUserInfo(){
 				api.getUserInfo({
@@ -183,6 +198,14 @@
 					// 去 web-view 积分商城
 					uni.navigateTo({
 					  url: "../integralmall/integralmall"
+					})
+				}else if(index == 4){
+					uni.navigateTo({
+						url: '../start/start?menuFrom=' + 1
+					})
+				}else if(index == 5){
+					uni.navigateTo({
+						url: '../start/start?menuFrom=' + 2
 					})
 				}
 				
@@ -295,7 +318,6 @@
 								url: '../family/family',
 							})
 						}
-			
 					}
 				})
 			
@@ -486,7 +508,7 @@
 		}
 
 		ul {
-			background-color: blue;
+			// background-color: blue;
 			display: flex;
 			display: -webkit-flex;
 			/* Safari */
@@ -535,7 +557,7 @@
 	.horizon_list {
 		position: relative;
 		background-color: #F6F6F6;
-		height: 580upx;
+		height: 448upx;
 
 		.family {
 			display: flex;
@@ -549,14 +571,15 @@
 			flex-direction: column;
 			margin-top: 20upx;
 			padding-left: 0upx;
-			height: 448upx;
+			height:448upx;
+			border-bottom: 1upx solid #eee;
 		}
 
 		li {
 			position: relative;
 			background-color: white;
 			height: 112upx;
-			flex: 1;
+
 			border-top: 1upx solid #eee;
 
 		}
@@ -589,7 +612,7 @@
 
 	.copyright {
 		position: relative;
-		top: 40upx;
+		margin-top: 200upx;
 		color: #999999;
 		font-size: 24upx;
 		text-align: center;

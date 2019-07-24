@@ -24,11 +24,11 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.family-center.data-v-31152595 {
+.family-center.data-v-f787fcc8 {
   background: #fff;
   padding-top: 20rpx;
 }
-.family-center .top.data-v-31152595 {
+.family-center .top.data-v-f787fcc8 {
   width: 710rpx;
   height: 360rpx;
   background: -webkit-gradient(linear, left top, right top, from(#f29800), to(#ff6600));
@@ -37,20 +37,20 @@
   border-radius: 8rpx;
   margin: 0 20rpx 20rpx 20rpx;
 }
-.family-center .top .head image.data-v-31152595 {
+.family-center .top .head image.data-v-f787fcc8 {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
   margin: 40rpx;
 }
-.family-center .top .head .txt-1.data-v-31152595 {
+.family-center .top .head .txt-1.data-v-f787fcc8 {
   font-size: 32rpx;
   color: white;
   line-height: 44rpx;
   position: relative;
   top: -80rpx;
 }
-.family-center .top .head .txt-2.data-v-31152595 {
+.family-center .top .head .txt-2.data-v-f787fcc8 {
   font-size: 24rpx;
   color: white;
   line-height: 34rpx;
@@ -59,41 +59,41 @@
   top: 80rpx;
   right: 30rpx;
 }
-.family-center .top .data.data-v-31152595 {
+.family-center .top .data.data-v-f787fcc8 {
   text-align: center;
 }
-.family-center .top .data .t-1.data-v-31152595 {
+.family-center .top .data .t-1.data-v-f787fcc8 {
   color: #fff;
   font-size: 24rpx;
 }
-.family-center .top .data .t-2.data-v-31152595 {
+.family-center .top .data .t-2.data-v-f787fcc8 {
   color: #fff;
   font-size: 40rpx;
   margin-top: 20rpx;
 }
-.family-center .profit.data-v-31152595 {
+.family-center .profit.data-v-f787fcc8 {
   text-align: center;
   height: 194rpx;
   border-top: 20rpx solid #eee;
 }
-.family-center .profit .t.data-v-31152595 {
+.family-center .profit .t.data-v-f787fcc8 {
   font-size: 24rpx;
   margin-top: 30rpx;
 }
-.family-center .profit .m.data-v-31152595 {
+.family-center .profit .m.data-v-f787fcc8 {
   font-size: 38rpx;
   color: #F29800;
   margin-top: 20rpx;
 }
-.family-center .profit-btn.data-v-31152595 {
+.family-center .profit-btn.data-v-f787fcc8 {
   height: 138rpx;
   border-top: 1rpx solid #eee;
 }
-.family-center .profit-btn view.data-v-31152595 {
+.family-center .profit-btn view.data-v-f787fcc8 {
   width: 186rpx;
   height: 60rpx;
   line-height: 60rpx;
-  background: #999;
+  background: #F29800;
   border-radius: 30rpx;
   font-size: 38rpx;
   color: #fff;
@@ -101,10 +101,10 @@
   margin: 0 auto;
   margin-top: 36rpx;
 }
-.navigator-arrow.data-v-31152595 {
+.navigator-arrow.data-v-f787fcc8 {
   padding-right: 60rpx;
 }
-.navigator-arrow.data-v-31152595:after {
+.navigator-arrow.data-v-f787fcc8:after {
   content: " ";
   display: inline-block;
   height: 13rpx;
@@ -120,14 +120,14 @@
   margin-top: -6rpx;
   right: 28rpx;
 }
-.item.data-v-31152595 {
+.item.data-v-f787fcc8 {
   position: relative;
   border-top: 20rpx solid #eee;
 }
-button.data-v-31152595::after {
+button.data-v-f787fcc8::after {
   border-radius: 0;
 }
-button.data-v-31152595 {
+button.data-v-f787fcc8 {
   border-radius: 0;
 }
 

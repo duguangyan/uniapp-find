@@ -40,9 +40,19 @@
 			</ul>
 		</view>
 		<view class="horizon_list">
+			
+			
+			<view class="family" @click="goIn">
+				<text class="title">小鹿家人</text>
+				<text class="subTitle">注册小鹿家人，增添更大收益</text>
+				<image class="arrow" src="/static/center/arrow.png"></image>
+			</view>
+			
+			
 			<view class="items">
-				<view class="item" v-for="(item, index) in contents" :key='index'>
-					<button class="navigator-text fs30 pdl-30" style="background-color:#fff;border:none;height:115rpx;line-height:115rpx;text-align:left;"
+				<view class="item" v-for="(item, index) in contents"  v-if='index != 1' :key='index' @click="goPage(index)">
+					<text class="title" v-if="index != 0">{{item.title}}</text>
+					<button v-if="index == 0" class="navigator-text fs30 pdl-30" style="background-color:#fff;border:none;height:115rpx;line-height:115rpx;text-align:left;"
 					 open-type="contact">客服</button>
 					<image class="arrow" src="/static/center/arrow.png"></image>
 				</view>
@@ -101,12 +111,12 @@
 					{
 						title: "在线客服",
 					},
-					// {
-					// 	title: "我的礼券",
-					// },
-					// {
-					// 	title: "积分商城",
-					// }
+					{
+						title: "我要找料",
+					},
+					{
+						title: "切换配送员",
+					}
 				],
 				balance: 0, // 余额
 				replace:0,  // 代采款
@@ -143,6 +153,45 @@
 			
 		},
 		methods: {
+			goPage(index){
+				if(index == 0){
+					
+				}else if(index == 1){
+					uni.navigateTo({
+						url: '../start/start?menuFrom=' + 0
+					})
+				}else if(index == 2){
+					uni.navigateTo({
+						url: '../start/start?menuFrom=' + 2
+					})
+				}else if(index == 4){
+					
+				}else if(index == 5){
+					
+				}
+			},
+			goIn() {
+				api.getInviteCode({}).then((res) => {
+					if (res.code == 200 || res.code == 0) {
+						if (res.data.status == 0) {
+							uni.navigateTo({
+								url: '../familyExplain/familyExplain?familyStatus=' + res.data.status,
+							})
+						} else if (res.data.status == 1) {
+							uni.navigateTo({
+								url: '../familyCenter/familyCenter',
+							})
+						} else {
+							uni.navigateTo({
+								url: '../family/family',
+							})
+						}
+			
+					}
+				})
+			
+			},
+			
 			// 取佣金页面
 			goRecordList(index){
 				uni.navigateTo({
@@ -485,7 +534,7 @@
 		}
 
 		ul {
-			background-color: blue;
+			// background-color: blue;
 			display: flex;
 			display: -webkit-flex;
 			/* Safari */

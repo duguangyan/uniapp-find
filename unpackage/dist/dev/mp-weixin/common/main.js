@@ -14,27 +14,32 @@ var _api = _interopRequireDefault(__webpack_require__(/*! utils/api.js */ "E:\\u
 {
   onLaunch: function onLaunch() {
     console.log('App Launch');
-    uni.login({
-      success: function success(res) {
-        console.log(res);
-        if (res.code) {
-          var data = {
-            code: res.code,
-            from: 3 };
 
-          _api.default.getOpenId({
-            data: data }).
-          then(function (res) {
-            if (res.code == 200 || res.code == 0) {
-              uni.setStorageSync('open_id', res.data.openid);
-            } else {
-              _util.default.errorTips(res.msg);
+    // 版本更新
+    if (uni.getUpdateManager) {
+
+      var updateManager = uni.getUpdateManager();
+      console.log('updata version', updateManager);
+
+      updateManager.onCheckForUpdate(function (res) {
+        // 请求完新版本信息的回调
+        console.log(res.hasUpdate);
+      });
+
+      updateManager.onUpdateReady(function () {
+        uni.showModal({
+          title: '更新提示',
+          content: '新版本已经准备好，是否重启应用？',
+          success: function success(res) {
+            if (res.confirm) {
+              // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+              updateManager.applyUpdate();
             }
-          }).catch(function (res) {
-            _util.default.errorTips(res.msg);
-          });
-        }
-      } });
+          } });
+
+
+      });
+    }
 
   },
   onLoad: function onLoad() {
@@ -44,54 +49,13 @@ var _api = _interopRequireDefault(__webpack_require__(/*! utils/api.js */ "E:\\u
 
   },
   onShow: function onShow() {
-    this.initSocket();
+    //this.initSocket();
     console.log('App Show');
   },
   onHide: function onHide() {
     console.log('App Hide');
   },
-  methods: {
-    initSocket: function initSocket() {
-      var that = this;
-      if (JSON.stringify(that.globalData.localSocket) != '{}') {
-        console.log('连接已存在!!!');
-        that.globalData.localSocket.close();
-      }
-      var userId = wx.getStorageSync("userId");
-      that.globalData.localSocket = wx.connectSocket({
-        //此处 url 可以用来测试 // im.yidap.com webapi.yidapi.com.cn
-        url: "wss://webapi.yidapi.com.cn/notice/socket?userId=".concat(userId, "&openType=sms") });
-
-      //版本库需要在 1.7.0 以上
-      that.globalData.localSocket.onOpen(function (res) {
-        console.log('WebSocket连接已打开！readyState=' + that.globalData.localSocket.readyState);
-        that.start();
-        that.globalData.connectTime = 3000;
-      });
-      that.globalData.localSocket.onError(function (res) {
-        console.log('WebSocket连接出错readyState=' + that.globalData.localSocket.readyState);
-        that.reconnect();
-        that.globalData.connectTime = that.globalData.connectTime * 2;
-      });
-      that.globalData.localSocket.onClose(function (res) {
-        console.log('WebSocket连接已关闭！readyState=' + that.globalData.localSocket.readyState);
-      });
-      that.globalData.localSocket.onMessage(function (res) {
-        // 用于在其他页面监听 websocket 返回的消息
-        var result = JSON.parse(res.data);
-        console.log('收到消息', result);
-        if (!result.length && !result.currentPage) {
-          if (result.fromUserId != 0) {
-            var message = { id: result.id, fromUserId: 0, toUserId: result.fromUserId, messageId: result.messageId, content: 'page', smsType: 'TEXT', sysType: 1, smsStatus: 40, smsList: false, currentPage: '', pageSize: '' };
-
-            that.sendSocketMessage(JSON.stringify(message));
-            console.log('通知对方已经收到消息！！！');
-          }
-        }
-        that.globalData.callback(result);
-        that.reset();
-      });
-    } } };exports.default = _default;
+  methods: {} };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
 /***/ }),
@@ -1141,6 +1105,7 @@ __webpack_require__(/*! uni-pages */ "E:\\uniapp\\find.yidapi.com.cn\\pages.json
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ "./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mpvue/index.js"));
 var _App = _interopRequireDefault(__webpack_require__(/*! ./App */ "E:\\uniapp\\find.yidapi.com.cn\\App.vue"));
 
+var _global = _interopRequireDefault(__webpack_require__(/*! ./utils/global.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\global.js"));
 
 
 
@@ -1149,77 +1114,16 @@ var _App = _interopRequireDefault(__webpack_require__(/*! ./App */ "E:\\uniapp\\
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _store = _interopRequireDefault(__webpack_require__(/*! ./store */ "E:\\uniapp\\find.yidapi.com.cn\\store\\index.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // 生产环境的提示 开关
-_vue.default.config.productionTip = false;_vue.default.prototype.socket = '';_vue.default.prototype.globalData = { userInfo: null, addressIndex: 0, lockReconnect: false, // 是否真正建立连接
-  timeoutObj: null, // 心跳心跳倒计时
-  timeoutNum: null, // 断开 重连倒计时
-  timeout: 30 * 1000, // 30秒一次心跳
-  connectTime: 3000, localSocket: {}, callback: function callback() {} }; //统一发送消息，可以在其他页面调用此方法发送消息
-_vue.default.prototype.sendSocketMessage = function (msg) {var _this = this;var that = this;return new Promise(function (resolve, reject) {if (_this.globalData.localSocket.readyState === 1) {console.log('发送消息', msg);_this.globalData.localSocket.send({ data: msg, success: function success(res) {resolve(res);}, fail: function fail(e) {reject(e);} });} else {that.reconnect();}});};_vue.default.prototype.reconnect = function () {// 3秒后重连
-  var that = this;if (that.globalData.lockReconnect) {return false;}that.globalData.lockReconnect = true;that.globalData.timeoutNum && clearTimeout(that.globalData.timeoutNum);that.globalData.timeoutNum = setTimeout(function () {that.initSocket();that.globalData.lockReconnect = false;}, that.globalData.connectTime);}, _vue.default.prototype.reset = function () {clearTimeout(this.globalData.timeoutObj);this.start();};_vue.default.prototype.start = function () {var that = this;that.globalData.timeoutObj && clearTimeout(that.globalData.timeoutObj);that.globalData.timeoutObj = setTimeout(function () {if (that.globalData.localSocket.readyState == 1) {var message = { id: 0, fromUserId: 0, toUserId: 0, userInfoId: 0, content: 'ping', smsType: 'TEXT', sysType: 1, smsStatus: 10, smsList: false, currentPage: '', pageSize: '' };that.sendSocketMessage(JSON.stringify(message));} else {that.reconnect();}}, that.globalData.timeout);}; // 引入vuex 状态库
+var _store = _interopRequireDefault(__webpack_require__(/*! ./store */ "E:\\uniapp\\find.yidapi.com.cn\\store\\index.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};var ownKeys = Object.keys(source);if (typeof Object.getOwnPropertySymbols === 'function') {ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {return Object.getOwnPropertyDescriptor(source, sym).enumerable;}));}ownKeys.forEach(function (key) {_defineProperty(target, key, source[key]);});}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}_vue.default.prototype.globalData = _global.default; // 生产环境的提示 开关
+_vue.default.config.productionTip = false; // 引入vuex 状态库
 // 状态数据
-_vue.default.prototype.$store = _store.default;_vue.default.prototype.$eventHub = new _vue.default();_App.default.mpType = 'app';var app = new _vue.default(_objectSpread({ store: _store.default },
+_vue.default.prototype.$store = _store.default;
+_vue.default.prototype.$eventHub = new _vue.default();
+
+_App.default.mpType = 'app';
+var app = new _vue.default(_objectSpread({
+
+  store: _store.default },
 _App.default));
 
 app.$mount();

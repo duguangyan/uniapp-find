@@ -101,9 +101,6 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
     } },
 
   onLoad: function onLoad(options) {
-
-
-
     if (options.from) {
       this.$data.from = options.from;
     }
@@ -112,19 +109,54 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
     this.$data.userType = uni.getStorageSync('userType');
   },
   methods: {
+
+    getOpenId: function getOpenId() {
+      uni.login({
+        success: function success(res) {
+          console.log(res);
+          if (res.code) {
+            var data = {
+              code: res.code,
+              from: 3 };
+
+            _api.default.getOpenId({
+              data: data }).
+            then(function (res) {
+              if (res.code == 200 || res.code == 0) {
+                uni.setStorageSync('open_id', res.data.openid);
+              } else {
+                _util.default.errorTips(res.msg);
+              }
+            }).catch(function (res) {
+              // util.errorTips(res.msg)
+            });
+          }
+        } });
+
+    },
     showNotes: function showNotes() {
       uni.navigateTo({
         url: '../protocol/protocol' });
 
     },
     goBtn: function goBtn(index) {
-      if (index == 1) {// 找料员
-        uni.reLaunch({
-          url: '../index/index?menuFrom=1&authentication=1' });
 
+      if (index == 1) {// 找料员
+        //uni.removeStorageSync('isExamine1');
+        // uni.reLaunch({
+        // 	url: '../index/index?menuFrom=1&authentication=1'
+
+        uni.navigateTo({
+          url: '../setting/authentication/authentication' });
+
+        // })
       } else if (index == 2) {// 配送员
-        uni.reLaunch({
-          url: '../index/index?menuFrom=2&authentication=1' });
+        // uni.removeStorageSync('isExamine2');
+        // uni.reLaunch({
+        // 	url: '../index/index?menuFrom=2&authentication=1'
+        // })
+        uni.navigateTo({
+          url: '../setting/authentication/authentication' });
 
       }
     },
@@ -212,7 +244,15 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
       }
     },
     doLogin: function doLogin() {var _this2 = this;
-
+      var userType = uni.getStorageSync('userType');
+      var access_token = uni.getStorageSync('access_token');
+      var token = uni.getStorageSync('token');
+      var v = uni.getStorageSync('v');
+      uni.clearStorageSync();
+      uni.setStorageSync('userType', userType);
+      uni.setStorageSync('access_token', access_token);
+      uni.setStorageSync('token', token);
+      uni.setStorageSync('v', v);
       console.log(uni.getStorageSync("page") == "order");
       if (this.$data.isLogin) {
         if (this.$store.state.fromRest == 0) {
@@ -226,9 +266,10 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
 
           then(function (res) {
             if (res.code == 0 || res.code == 200) {
+              _this2.getOpenId();
               console.log("login:" + res);
               var resData = res;
-              uni.removeStorageSync('invite_code');
+              if (uni.getStorageSync('invite_code')) uni.removeStorageSync('invite_code');
               uni.setStorageSync("token", resData.data.token);
               uni.setStorageSync("userId", resData.data.id);
 
@@ -238,7 +279,7 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
               uni.setStorageSync("nick_name", resData.data.nick_name);
               _this2.$store.commit('updateNickName', resData.data.nick_name);
               _this2.$store.commit('updateAvatarPath', resData.data.avatar_path);
-              _api.default.getUserInfo().then(function (res) {
+              _api.default.getUserInfo({}).then(function (res) {
                 resData.data.name = name;
               });
               uni.setStorageSync('userInfo', resData.data);
@@ -268,13 +309,15 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
             data: {
               mobile: this.$data.phone,
               password: this.$data.passworld,
-              invite_code: uni.getStorageSync('invite_code') } }).
+              invite_code: uni.getStorageSync('invite_code') || '' } }).
 
           then(function (res) {
             if (res.code == 0 || res.code == 200) {
-
+              _this2.getOpenId();
+              console.log("login:" + res.toString());
               var resData = res;
-              uni.removeStorageSync('invite_code');
+              if (uni.getStorageSync('invite_code')) uni.removeStorageSync('invite_code');
+
 
               uni.setStorageSync("token", resData.data.token);
               uni.setStorageSync("userId", resData.data.id);
@@ -302,11 +345,12 @@ var _md5Min = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.min
               uni.reLaunch({
                 url: '../index/index?menuFrom=' + _this2.$data.from });
 
+
             } else {
               _util.default.errorTips(res.msg);
             }
           }).catch(function (res) {
-            _util.default.errorTips(res.msg);
+            _util.default.errorTips(res.msg || res.message);
           });
         }
 

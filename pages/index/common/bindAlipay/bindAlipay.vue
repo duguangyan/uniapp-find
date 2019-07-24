@@ -112,6 +112,7 @@
 					if(res.code == 200 || res.code == 0){
 						this.$data.code_id = res.data.id;
 						util.errorTips('短信发送成功');
+						this.$data.codeBtnTxt = '重新获取';
 					}else{
 						util.errorTips(res.msg);
 					}
@@ -138,7 +139,7 @@
 		color: #fff;
 		position: absolute;
 		right:0;
-		top:30upx;
+		top:0upx;
 		border-radius:0upx 10upx 10upx 0upx;
 	}
 	.alipay{
@@ -154,7 +155,7 @@
 			text-align: center;
 			margin: 0 auto;
 			border-radius: 10upx;
-			margin-top: 740upx;
+			margin-top: 140upx;
 		}
 		.items{
 			padding: 50upx 30upx;
@@ -177,7 +178,7 @@
 					color: #333;
 					padding-left: 20upx;
 					position: relative;
-					top: 30upx;
+					top: 0upx;
 					border-radius: 10upx;
 				}
 			}

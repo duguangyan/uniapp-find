@@ -24,7 +24,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.start .btn.data-v-0004b846 {
+.start .btn.data-v-6f5a50e0 {
   height: 120rpx;
   width: 420rpx;
   text-align: center;
@@ -37,17 +37,17 @@
   margin-top: 40rpx;
   position: relative;
 }
-.start .btn .icon-jiantou1.data-v-0004b846 {
+.start .btn .icon-jiantou1.data-v-6f5a50e0 {
     font-size: 70rpx;
     position: absolute;
     top: 0rpx;
     right: 20rpx;
 }
-.start .logo.data-v-0004b846 {
+.start .logo.data-v-6f5a50e0 {
   text-align: center;
   margin: 50rpx 0;
 }
-.start .logo image.data-v-0004b846 {
+.start .logo image.data-v-6f5a50e0 {
     width: 240rpx;
     height: 240rpx;
 }

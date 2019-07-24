@@ -5,7 +5,7 @@
 				<text :class="index == navIndex?'active':''">{{item}}</text>
 			</view>
 		</view>
-		<view class="zfb">
+		<view class="zfb" v-if="navIndex == 0 || navIndex == 1">
 			<view class="t1">{{navIndex == 0?txts.z:txts.g}}</view>
 			<view class="t2 cf">
 				<image class="fll" :src="userInfo.avatarUrl" mode=""></image>
@@ -16,12 +16,24 @@
 				<view class="v2" @click="bindWxInfo" v-if="!wxIsBind">点击绑定微信信息 <text class="arrow-right"></text></view>
 			</view>
 		</view>
+		<view class="bankCard pd-20" v-if="navIndex == 2">
+			<view class="bb-1 cf item-1">
+				<view class="fll">持卡人:{{bankCardInfo.real_name}}</view>
+				<view class="flr">{{bankCardInfo.bank_name}}</view>
+			</view>
+			<view class="item-2 fs30">
+				<view>储蓄卡卡号</view>
+				<view class="ellipsis-line2">{{bankCardInfo.bank_card_number}}</view>
+				<view class="ar text-yellow" @click="editBankCardInfo">更换<text class="arrow-right text-yellow"></text></view>
+			</view>
+		</view>
+		
 		<view class="get">
 			{{txts.m}}
 		</view>
 		<view class="input">
 			<text class="t1">￥</text>
-			<input class="t2" type="number" :placeholder="'本次最多可转出'+moreMoney+'元'" v-model='amount' />
+			<input class="t2" type="digit" :placeholder="'本次最多可转出'+moreMoney+'元'" v-model='amount' />
 			<text class="t3" @click="getMoreMoney">全部</text>
 		</view>
 		<!-- <view class="type">
@@ -142,14 +154,14 @@
 				bott:'',
 				txts:{
 					j:'提现记录',
-					m:'提取金额',
+					m:'提现金额',
 					t:'提现方式',
 					n:'普通转账',
 					s:'预计确认提现后，24小时内到账',
 					z:'绑定微信信息',
 					g:'绑定支付宝信息'
 				},
-				navs:['转出到微信','转出到支付宝'],
+				navs:['转出到微信','转出到支付宝','转出到银行卡'],
 				navIndex: 0,  
 				moreMoney:5000,       // 最多提取金额
 				amount:'',          // 提取金额
@@ -165,7 +177,8 @@
 				code_msg:'',
 				now_amount:'',
 				pageIndex:0,
-				wxNickName:''
+				wxNickName:'',
+				bankCardInfo:''
 			};
 		},
 		onLoad(options) {
@@ -179,17 +192,36 @@
 				uni.setNavigationBarTitle({
 					title: "代采提现"
 				})
+			}else if(this.$data.pageIndex == 3){
+				uni.setNavigationBarTitle({
+					title: "小鹿家人提现"
+				})
 			}
 		},
 		onShow() {
-			this.apiMemberWxBind();
+			
+			let navIndex = this.$data.navIndex;
+			if(navIndex == 0){
+				this.apiMemberWxBind(navIndex);
+			}else if(navIndex == 1){
+				this.memberAliBind(navIndex);
+			}else if(navIndex == 2){
+				this.memberBankCardBind(navIndex);
+			}
+			
 		},
 		methods: {
-			
+			// 修改银行卡绑定信息
+			editBankCardInfo(){
+				uni.navigateTo({
+					url:'../bindBankCard/bindBankCard?edit=1'
+				})
+			},
 			// 获取微信绑定信息
-			apiMemberWxBind(){
+			apiMemberWxBind(index){
 				api.apiMemberWxBind({}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
+						this.$data.navIndex = index;
 						this.$data.wxIsBind = true;
 						this.$data.userInfo = res.data;
 						this.$data.wxNickName = res.data.nickName
@@ -288,14 +320,21 @@
 						"type": "wx",
 						"amount": this.$data.amount,
 					}
-					
+					if(this.$data.navIndex == 0){
+						data.type = "wx"
+					}
 					if(this.$data.navIndex == 1){
 						data.type = "ali"
+					}
+					if(this.$data.navIndex == 2){
+						data.type = "bank"
 					}
 					if(this.$data.pageIndex == 1){
 						data.asset_type = 'commission';
 					}else if(this.$data.pageIndex == 2){
 						data.asset_type = 'replace';
+					}else if(this.$data.pageIndex == 3){
+						data.asset_type = 'marketing';
 					}
 					api.apiAssetTake({
 						method:'POST',
@@ -314,7 +353,8 @@
 						_this.$data.array = ''
 						util.errorTips(res.msg || res.message);
 					})	
-				}
+					
+					}
 			},
 			reset(){
 				this.$data.array = []
@@ -326,18 +366,28 @@
 			},
 			masks(){
 				 let _this = this;
-				if(!this.$data.wxIsBind){
-					if(_this.$data.encryptedData == "" || _this.$data.iv == "" || _this.$data.session_key == "" || _this.$data.open_id == ""){
-						_this.$data.showCon = true;
-						util.errorTips('请绑定用户微信信息');
-						return false;
-					}
-				}
+				 
+				 if(this.$data.navIndex == 0){
+					 if(!this.$data.wxIsBind){
+					 	if(_this.$data.encryptedData == "" || _this.$data.iv == "" || _this.$data.session_key == "" || _this.$data.open_id == ""){
+					 		_this.$data.showCon = true;
+					 		util.errorTips('请绑定用户微信信息');
+					 		return false;
+					 	}
+					 }
+				 }
+				
 				
 				if(_this.$data.amount == ""){
 					util.errorTips('请填写提现金额');
 					return false;
 				}
+				
+				if(_this.$data.amount > parseFloat(_this.$data.now_amount)){
+					util.errorTips('转出金额不能大于提现金额');
+					return false;
+				}
+				
 				
 				
 				api.regSMS({
@@ -368,7 +418,7 @@
 			},
 			goCashRecord(){
 				uni.navigateTo({
-					url:'../cashRecord/cashRecord'
+					url:'../cashRecord/cashRecord?pageIndex='+ this.$data.pageIndex
 				})
 			},
 			bindWxInfo(){
@@ -387,6 +437,7 @@
 				}else{
 					this.$data.amount = this.$data.now_amount;
 				}
+				
 			},
 			checkTransfer(){
 				this.$data.isTransfer = !this.$data.isTransfer;
@@ -433,12 +484,59 @@
 					});
 				})
 			},
+			// 获取支付宝绑定信息
+			memberBankCardBind(index){
+				
+				api.memberBankCardBind({}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						this.$data.bankCardInfo = res.data;
+						this.$data.navIndex = index;
+					}else{
+						uni.showModal({
+							title: '提示',
+							content: '绑定银行卡?',
+							confirmText:'立即绑定',
+							cancelColor:'#000000',
+							success: function (res) {
+								if (res.confirm) {
+									uni.navigateTo({
+										url:'../bindBankCard/bindBankCard'
+									})
+								} else if (res.cancel) {
+									console.log('用户点击取消');
+								}
+							}
+						});
+					}
+				}).catch((res)=>{
+					
+					uni.showModal({
+						title: '提示',
+						content: '绑定银行卡?',
+						confirmText:'立即绑定',
+						cancelColor:'#000000',
+						success: function (res) {
+							if (res.confirm) {
+								uni.navigateTo({
+									url:'../bindBankCard/bindBankCard'
+								})
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+				})
+				
+				
+				
+			},
 			checkNav(index) {
 				if(index == 1){
 					this.memberAliBind(index);
-				}else{
-					this.$data.navIndex = index;
-					this.$data.userInfo.nickName = this.$data.wxNickName;
+				}else if(index == 2){
+					this.memberBankCardBind(index);
+				}else if(index == 0){
+					this.apiMemberWxBind(index);
 				}
 				
 			}
@@ -447,7 +545,36 @@
 </script>
 
 <style lang="scss" scoped>
-	
+	.bankCard{
+		border-bottom: 20upx solid #f4f4f4;
+		background: #fff;
+		.item-1{
+			height: 100upx;
+			line-height: 100upx;
+			font-size: 30upx;
+		}
+		.item-2{
+			padding: 40upx 0;
+			position: relative;
+			width: 560upx;
+			.ar{
+				position: absolute;
+				right: -140upx;
+				top: 66upx;
+				z-index: 99;
+				.arrow-right{
+					border-right:1upx solid #F29800;
+					border-bottom:1upx solid #F29800;
+					font-size: 24upx;
+					width: 14upx;
+					height: 14upx;
+					position: relative;
+					top: -2upx;
+				}
+			}
+		}
+		
+	}
 	.password{
 		width: 25%;flex-grow:1;padding: 3%;font-size:40upx;border-bottom: 1px solid#eee;
 	}

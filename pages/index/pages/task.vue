@@ -35,17 +35,17 @@
 						</view>
 						
 						
-						<view class="">
+						<!-- <view class="">
 							<text class="fs28">限时找料:</text>
 							<text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':' '}}</text>
 							
-						</view>
+						</view> -->
 						<view>
 							<text class="fs28">比价优选:</text>
 							<text class="fs24 text-999 mgl-20">参考价格￥{{item.reference_price}}</text>
 						</view>
 						<view v-if='item.find_type == 1'>
-							<image class='item-img' v-for='(imgItem , imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
+							<image @click="previewImage(item)" class='item-img' v-for='(imgItem , imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
 						</view>
 						<view v-if='item.find_type == 2'>
 
@@ -53,7 +53,7 @@
 								
 							</view>
 							<view v-if="item.address">
-								<view class='fs24 pdr-20 text-999' style='word-break:break-all;'>
+								<view class='fs24 pdr-20 text-999 w500' style='word-break:break-all;'>
 									<!-- <text class='remark' v-if="item.address.remark !=''">{{item.address.remark||''}}</text> -->
 								<text class="fs28 text-333">取样地址:</text>	
 								<text class="fs24 text-999 mgl-20">{{item.address.city_str||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
@@ -68,13 +68,13 @@
 							</view>
 						</view>
 
-						<view v-if='item.find_type == 3'>
+						<view v-if="item.find_type == 3 && companyaddress!=''">
 							<view class='pdr-20'>
 								寄样地址:
 							</view>
 							<view>
 								<view class='fs24 pdr-20' style='word-break:break-all;'>
-									<text class='remark' v-if='companyaddress[0].tag'>{{companyaddress[0].tag||''}}</text>
+									<text class='remark' v-if='companyaddress[0].tag'>{{companyaddress[0].tag?companyaddress[0].tag:''}}</text>
 									{{companyaddress[0].address||''}}
 								</view>
 								<view class='fs24 pdr-20 text-999' style='word-break:break-all;'>
@@ -135,10 +135,10 @@
 							</text>
 						</view>
 						
-						<view>
+						<!-- <view>
 							<text class="fs28">限时找料:</text>
 							<text class="fs24 text-999 mgl-20">{{item.is_limit==1?'三小时':' '}}</text>
-						</view>
+						</view> -->
 						<view v-if="item.address">
 							
 							<!-- <view class='pdr-20'>取料地址:</view> -->
@@ -156,7 +156,7 @@
 						</view>
 						
 						<view v-if='item.desc_img.length > 0'>
-							<image class='item-img' v-for='(imgItem, imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
+							<image @click="previewImage(item)" class='item-img' v-for='(imgItem, imgIndex) in item.desc_img' :key='imgIndex' :src='imgItem'></image>
 						</view>
 					</view>
 				</view>
@@ -273,6 +273,13 @@
 			})
 		},
 		methods: {
+			 previewImage (item) {
+				var current = item.desc_img[0];
+				uni.previewImage({
+				  current: current, // 当前显示图片的http链接
+				  urls: item.desc_img// 需要预览的图片http链接列表
+				})
+			 },
 			// 回到首页
 			goIndex(index){
 				if(index == 1){ // 去找料订单
@@ -308,6 +315,8 @@
 						this.$data.hasFinds = finds.length<=0?true:false;
 						this.$data.hasFetchs = finds.length<=0?true:false;
 						
+						
+						
 						finds.forEach((v, i) => {
 							v.isTouchMove = false;
 							finds[i].address = finds[i].address ? finds[i].address : null;
@@ -341,7 +350,14 @@
 						// 计算价格
 						this.doSumPrice();
 						this.isHasData();
+					}else{
+						this.$data.hasFinds  = true;
+						this.$data.hasFetchs = true;
 					}
+				}).catch((res)=>{
+					this.$data.hasFinds  = true;
+					this.$data.hasFetchs = true;
+					util.errorTips(res.msg);
 				})
 			},
 			// 判断是否还有数据
@@ -753,6 +769,9 @@
 </script>
 
 <style lang="scss" scoped>
+	.w500{
+		width: 500upx;
+	}
 	.address-fetch{
 		width: 450upx;
 	}

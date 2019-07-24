@@ -37,7 +37,7 @@
   color: #fff;
   position: absolute;
   right: 0;
-  top: 30rpx;
+  top: 0rpx;
   border-radius: 0rpx 10rpx 10rpx 0rpx;
 }
 .alipay.data-v-19a63c55 {
@@ -54,7 +54,7 @@
     text-align: center;
     margin: 0 auto;
     border-radius: 10rpx;
-    margin-top: 740rpx;
+    margin-top: 140rpx;
 }
 .alipay .items.data-v-19a63c55 {
     padding: 50rpx 30rpx;
@@ -79,7 +79,7 @@
         color: #333;
         padding-left: 20rpx;
         position: relative;
-        top: 30rpx;
+        top: 0rpx;
         border-radius: 10rpx;
 }
 

@@ -7,7 +7,7 @@
 				</view>
 				<view class='cf item-2'>
 					<text class='fll'></text>
-					<input class='fll' type='text' v-model='price' :placeholder="index==1?'请输入充值金额':'请输入购买数量'"></input>
+					<input class='fll' type='digit' v-model='price' :placeholder="index==1?'请输入充值金额':'请输入购买数量'"></input>
 				</view>
 
 
@@ -43,7 +43,7 @@
 							<image class='wx' src='../../static/icon/icon-balance.png'></image>
 						</view>
 						<view class='fll'>
-							鹿币支付
+							余额支付
 						</view>
 						<view class='flr lb'>
 						<text v-if='payIndex == 1' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
@@ -126,7 +126,9 @@
 			this.$data.index = options.index;
 		},
 		onShow() {
-
+			if(uni.getStorageSync('open_id') == ''){
+				this.getOpenId();
+			}
 		},
 		methods: {
 			checkPayIndex(i){
@@ -158,8 +160,34 @@
 			doInput(e) {
 				this.$data.price = e.detail.value;
 			},
+			getOpenId(){
+				
+				uni.login({
+					success: function (res) {
+					  console.log(res);
+					  if (res.code) {
+						let data = {
+						  code: res.code,
+						  from: 3
+						}
+						api.getOpenId({
+						  data
+						}).then((res) => {
+						  if (res.code == 200 || res.code == 0) {
+							uni.setStorageSync('open_id', res.data.openid)
+						  } else {
+							util.errorTips(res.msg)
+						  }
+						}).catch((res) => {
+						 // util.errorTips(res.msg)
+						})
+					  }
+					}
+				 });
+			},
 			// 去支付
 			doPay(e) {
+				
 				if (!util.verificationAmount(this.$data.price)) {
 					util.errorTips("请输入正确的金额");
 					return false;

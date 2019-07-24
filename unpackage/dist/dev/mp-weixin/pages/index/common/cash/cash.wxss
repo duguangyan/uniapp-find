@@ -579,6 +579,35 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.bankCard.data-v-02251ed5 {
+  border-bottom: 20rpx solid #f4f4f4;
+  background: #fff;
+}
+.bankCard .item-1.data-v-02251ed5 {
+    height: 100rpx;
+    line-height: 100rpx;
+    font-size: 30rpx;
+}
+.bankCard .item-2.data-v-02251ed5 {
+    padding: 40rpx 0;
+    position: relative;
+    width: 560rpx;
+}
+.bankCard .item-2 .ar.data-v-02251ed5 {
+      position: absolute;
+      right: -140rpx;
+      top: 66rpx;
+      z-index: 99;
+}
+.bankCard .item-2 .ar .arrow-right.data-v-02251ed5 {
+        border-right: 1rpx solid #F29800;
+        border-bottom: 1rpx solid #F29800;
+        font-size: 24rpx;
+        width: 14rpx;
+        height: 14rpx;
+        position: relative;
+        top: -2rpx;
+}
 .password.data-v-02251ed5 {
   width: 25%;
   -webkit-box-flex: 1;

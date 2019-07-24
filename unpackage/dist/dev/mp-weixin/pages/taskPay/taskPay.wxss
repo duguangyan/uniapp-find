@@ -150,7 +150,7 @@
 }
 .address.data-v-122e613a {
   position: relative;
-  padding-right: 150rpx;
+  padding-right: 100rpx;
   padding-bottom: 30rpx;
 }
 .address .address-info view.data-v-122e613a {

@@ -7,8 +7,8 @@
   "id": "__UNI__6F097C0",
   "name": "一鹿找",
   "version": {
-    "name": "2.0.8",
-    "code": 208
+    "name": "2.1.1",
+    "code": 20101
   },
   "description": "皮箱行业一站式找料取送业务",
   "launch_path": "__uniappservice.html",
@@ -37,6 +37,9 @@
       "immersed": "supportedDevice",
       "style": "dark",
       "background": "#F8F8F8"
+    },
+    "kernel": {
+      "ios": "WKWebview"
     },
     "distribute": {
       "icons": {
@@ -86,7 +89,15 @@
           "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
         ]
       },
-      "apple": {},
+      "apple": {
+        "plistcmds": [
+          "Set :NSPhotoLibraryUsageDescription 一鹿找需要打开您的手机相册获取照片",
+          "Set :NSCameraUsageDescription 一鹿找需要打开您的手机相机获取照片",
+          "Set :NSLocationAlwaysUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息",
+          "Set :NSLocationWhenInUseUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息",
+          "Set :NSLocationAlwaysAndWhenInUseUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息"
+        ]
+      },
       "plugins": {
         "push": {},
         "audio": {
@@ -98,7 +109,7 @@
     },
     "allowsInlineMediaPlayback": true,
     "uni-app": {
-      "compilerVersion": "2.1.0",
+      "compilerVersion": "2.1.1",
       "control": "webview",
       "nvueCompiler": "weex"
     }

@@ -73,7 +73,10 @@
 				
 			},
 			getRecords(){
-				if(this.$data.pageIndex = 1){
+				if(this.$data.page == 1){
+					this.$data.list = [];
+				}
+				if(this.$data.pageIndex == 2){
 					api.staffReplace({
 						data:{
 							page:this.$data.page
@@ -92,13 +95,14 @@
 						}
 					})
 					
-				}else{
+				}else if(this.$data.pageIndex == 1){
 					api.staffCommissions({
 						data:{
 							page:this.$data.page
 						}
 					}).then((res)=>{
 						if(res.code == 200 || res.code == 0){
+							
 							this.$data.records = res.data;
 							this.$data.now_amount = res.data.now_amount;
 							this.$data.total_amount = res.data.total_amount;

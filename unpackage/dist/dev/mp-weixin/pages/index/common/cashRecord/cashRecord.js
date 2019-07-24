@@ -44,13 +44,14 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/uti
         t2: '提现方式:',
         t3: '提现金额:' },
 
-      list: [] };
+      list: [],
 
 
+      pageIndex: 1 };
 
   },
-  onLoad: function onLoad() {
-
+  onLoad: function onLoad(options) {
+    this.$data.pageIndex = options.pageIndex;
   },
   onShow: function onShow() {
     this.apiAssetTake();
@@ -63,10 +64,18 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/uti
       }
     },
     apiAssetTake: function apiAssetTake() {var _this = this;
+
+      // commission 小鹿佣金，replace 代采款 ',
+      var asset_type = 'commission';
+      if (this.$data.pageIndex == 2) {
+        asset_type = 'replace';
+      } else if (this.$data.pageIndex == 3) {
+        asset_type = 'marketing';
+      }
       _api.default.apiAssetTake({
         data: {
-          "page": this.$data.page,
-          "asset_type": "commission" } }).
+          page: this.$data.page,
+          asset_type: asset_type } }).
 
       then(function (res) {
         if (res.code == 200 || res.code == 0) {
@@ -115,24 +124,26 @@ var render = function() {
       _vm._l(_vm.list, function(item, index) {
         return _c("view", { key: index, staticClass: "item" }, [
           _c("view", [
-            _c("text", [_vm._v("提现时间：")]),
+            _c("text", [_vm._v("提现时间:")]),
             _c("text", { staticClass: "mgl-20 text-666" }, [
               _vm._v(_vm._s(item.created_at))
             ])
           ]),
           _c("view", [
-            _c("text", [_vm._v("提现方式：")]),
+            _c("text", [_vm._v("提现方式:")]),
             _c("text", { staticClass: "mgl-20  text-666" }, [
               _vm._v(_vm._s(item.type_label))
             ])
           ]),
           _c("view", [
-            _c("text", [_vm._v("提现金额")]),
+            _c("text", [_vm._v("提现金额:")]),
             _c("text", { staticClass: "mgl-20  text-666" }, [
-              _vm._v("￥" + _vm._s(item.type_label))
+              _vm._v("￥" + _vm._s(item.amount))
             ])
           ]),
-          _c("view", { staticClass: "text-yellow" }, [_vm._v("提现中")])
+          _c("view", { staticClass: "text-yellow" }, [
+            _vm._v(_vm._s(item.status_label))
+          ])
         ])
       })
     ),

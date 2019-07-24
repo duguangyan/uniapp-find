@@ -529,7 +529,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -7534,378 +7534,6 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../utils/api.js */ "E:
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--18-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default2 =
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{
-  name: 'xfl-select',
-  props: {
-    list: { //原始数据
-      type: Array,
-      default: function _default() {
-        return [];
-      } },
-
-    initValue: null, //初始值
-    isCanInput: { // 是否可以输入值
-      type: Boolean,
-      default: false },
-
-    placeholder: { // placeholder
-      type: String,
-      default: '请选择' },
-
-    style_Container: {
-      type: String,
-      default: '' },
-
-    disabled: { //是否禁用整个选择框
-      type: Boolean,
-      default: false },
-
-    showItemNum: { //显示列表的窗口高度，数字表示能显示几个列表项
-      type: Number,
-      default: 5 },
-
-    listShow: { //是否显示列表
-      type: Boolean,
-      default: false },
-
-    clearable: { //是否显示清除按钮
-      type: Boolean,
-      default: true } },
-
-
-  data: function data() {
-    return {
-      isShowList: false, //是否显示列表
-      selectText: '', //已经选择的内容
-      activeIndex: -1, //列表中当前活动的索引号
-      isRotate: false, //右侧的小三角是否旋转
-      boxHeight: 50 //本组件的总高度
-    };
-  },
-  watch: { // 监听变化 ，注意，初始的值是不会被监听到的，只有在mounted回调中手动赋值
-    listShow: function listShow(newVal, oldVal) {
-      this.listShow_change(newVal, oldVal);
-    } },
-
-  computed: {
-    showBoxHeight: function showBoxHeight() {
-      return this.showItemNum * 2;
-    },
-    showInput: function showInput() {
-      return this.isCanInput && !this.disabled;
-    },
-    innerList: function innerList() {
-      return this.convertListData(this.list);
-    } },
-
-  mounted: function mounted() {
-    this.listShow_change(this.listShow, null);
-    this.init(); //进行初始化
-  },
-  methods: {
-    listShow_change: function listShow_change(newVal, oldVal) {
-      this.toggleList(newVal || false);
-    },
-    convertListData: function convertListData(orginArr) {//转换列表的数据格式
-      var arr = [];
-      orginArr.forEach(function (val, index) {
-        var value = typeof val === 'object' && 'value' in val ? val.value : val;
-        var isDisabled = typeof val === 'object' && val.disabled == true;
-        arr.push({
-          isActive: false,
-          value: value,
-          disabled: isDisabled });
-
-      });
-      return arr;
-    },
-
-    /************************** “输入框”的操作 ****************************/
-    // 输入框获得焦点时
-    focus: function focus(event) {
-      this.showList();
-      this.$emit('focus', event);
-    },
-
-    // 输入框失去焦点时
-    blur: function blur(event) {
-      // this.hideList();
-      this.$emit('blur', event);
-    },
-
-    //当显示的不是输入框时，上面的点击事件
-    upperClick: function upperClick() {
-      this.toggleList();
-    },
-
-    //清空已经选择的内容
-    clear: function clear() {
-      this.activeIndex = -1;
-      if (this.showInput) {
-        this.selectText = '';
-      } else {
-        this.changePlaceholder();
-      }
-      this.$emit('clear');
-    },
-
-    // 输入框的值变化时
-    input: function input(event) {
-      var inputVal = event.detail.value;
-      this.changeActiveIndex(inputVal);
-    },
-    /************************** “输入框”的操作 ****************************/
-
-
-    /************************** 初始化函数 ****************************/
-
-    //进行初始化
-    init: function init() {
-      this.changeActiveIndex(this.initValue);
-      this.changePlaceholder(this.initValue);
-      this.initBoxHeight();
-    },
-
-    // 获取input的总高度
-    initBoxHeight: function initBoxHeight() {var _this = this;
-      this.getStyle(this, '.show-box', function (data) {
-        if (data) {
-          _this.boxHeight = data.height + 6;
-        }
-      });
-    },
-
-    //设置 placeholder 的显示
-    changePlaceholder: function changePlaceholder() {var initValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      if (!this.showInput) {
-        this.selectText = initValue == null ? this.placeholder : initValue;
-      } else {
-        if (initValue != null) {
-          this.selectText = initValue;
-        }
-      }
-    },
-
-    //改变列表中的活动项
-    changeActiveIndex: function changeActiveIndex(initValue) {
-      this.activeIndex = this.searchIndex(
-      this.innerList, '.value', initValue,
-      function (val, value, index, arrVal) {
-        return val === value && !arrVal.disabled;
-      });
-    },
-    /************************** 初始化函数 ****************************/
-
-    /************************** 列表的操作 ****************************/
-    //列表框上的点击事件
-    listClick: function listClick() {},
-
-    //列表项上的点击事件
-    clickItem: function clickItem(index, value) {
-      if (this.disabled) {
-        return;
-      }
-      if (this.innerList[index].disabled) {//如果本项被禁用
-        this.cancelHide();
-        return;
-      }
-      if (index !== this.activeIndex) {//如果点在非活动项上
-        this.$emit('change', { newVal: value, oldVal: this.selectText,
-          index: index, orignItem: this.list[index] });
-      }
-      this.selectText = value;
-      this.activeIndex = index;
-      this.hideList();
-    },
-
-    toggleList: function toggleList(toVal) {//切换隐藏和显示列表
-      if (typeof toVal === 'boolean') {
-        toVal ? this.showList() : this.hideList();
-      } else {
-        this.isShowList ? this.hideList() : this.showList();
-      }
-    },
-    showList: function showList() {//显示列表
-      if (this.disabled) {
-        return;
-      }
-      this.isShowList = true;
-      this.isRotate = true;
-      this.$emit('visible-change', true);
-    },
-    hideList: function hideList() {var _this2 = this; //隐藏列表
-      if (this.disabled) {
-        return;
-      }
-      this.timer = setTimeout(function () {
-        _this2.isRotate = false;
-        _this2.isShowList = false;
-        _this2.$emit('visible-change', false);
-      }, 100);
-    },
-    cancelHide: function cancelHide() {
-      clearTimeout(this.timer);
-      this.timer = null;
-    },
-    /************************** 列表的操作 ****************************/
-
-    /************************** libs ****************************/
-    // 获取指定元素的样式
-    getStyle: function getStyle(component, slector, callback) {
-      //在手机和开发者工具中必须加in(this)才能获取到
-      var spaceTime = 250;
-      var currNum = 0,totalNum = 3;
-      var getFunc = function getFunc() {
-        var viewObj = uni.createSelectorQuery().in(component).select(slector);
-        viewObj.boundingClientRect(function (data) {
-          /*
-                                                    data = {
-                                                    	bottom: 10.76388931274414,
-                                                    	dataset:{},
-                                                    	height:10.416666984558105,
-                                                    	id:"1555469782064",
-                                                    	left:0.5097222328186035,
-                                                    	right:69.95417022705078,
-                                                    	top:0.347222238779068,
-                                                    	width:69.44445037841797, 
-                                                    }
-                                                    当获取失败时，data为null
-                                                    */
-          if (data) {
-            callback && callback(data);
-          } else {
-            currNum++;
-            if (totalNum < currNum) {
-              callback && callback(null);
-            } else {
-              setTimeout(getFunc, spaceTime);
-            }
-          }
-        }).exec();
-      };
-      getFunc();
-    },
-
-    /*
-       * 对象的属性访问
-       * @example
-       * 1. prop({aa: {bb: {cc: 99}}}, '.aa.bb.cc'); 
-       * // => 99
-       * */
-    prop: function prop(obj, propPath) {
-      if (typeof obj !== 'object' || typeof propPath !== 'string') {
-        return;
-      }
-      propPath = propPath.replace(/^[\,\.\s\/\\]*|[\,\.\s\/\\]*$/g, '');
-      var propArr = propPath.split(/[\,\.\s\/\\]+/);
-      var lastProp = propArr.pop();
-      var currObj = obj;
-      for (var i = 0, prop; i < propArr.length; i++) {
-        prop = propArr[i];
-        var isObj = prop in currObj && currObj[prop] && typeof currObj[prop] === 'object';
-        if (!isObj) {
-          return;
-        }
-        currObj = currObj[prop];
-      }
-      return currObj[lastProp];
-    },
-    searchIndex: function searchIndex(arr, prop, value) {var compareFunc = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-      var result_index = -1;
-      this.forEachProp(arr, prop, function (val, index, arrVal) {
-        if (
-        typeof compareFunc === 'function' ?
-        compareFunc(val, value, index, arrVal) :
-        val === value)
-        {
-          result_index = index;
-          return false;
-        }
-      });
-      return result_index;
-    },
-
-    forEachProp: function forEachProp(arr, prop, callback) {
-      for (var i = 0, val, result; i < arr.length; i++) {
-        val = this.prop(arr[i], prop);
-        if (val !== undefined) {
-          result = callback(val, i, arr[i]);
-          if (result === false) {
-            return;
-          }
-        }
-      }
-    } } };exports.default = _default2;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
-
-/***/ }),
-
-/***/ "./node_modules/mini-css-extract-plugin/dist/loader.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/less-loader/dist/cjs.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less&":
-/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js??ref--10-oneOf-1-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--10-oneOf-1-1!./node_modules/css-loader??ref--10-oneOf-1-2!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--10-oneOf-1-3!./node_modules/less-loader/dist/cjs.js??ref--10-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--10-oneOf-1-5!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less& ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "./node_modules/mini-css-extract-plugin/dist/loader.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/lib/loader.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\dialog.vue?vue&type=style&index=0&id=da047ea2&lang=scss&scoped=true&":
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/mini-css-extract-plugin/dist/loader.js??ref--8-oneOf-1-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-1!./node_modules/css-loader??ref--8-oneOf-1-2!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--8-oneOf-1-3!./node_modules/sass-loader/lib/loader.js??ref--8-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-5!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:/uniapp/find.yidapi.com.cn/components/dialog.vue?vue&type=style&index=0&id=da047ea2&lang=scss&scoped=true& ***!
@@ -8301,181 +7929,6 @@ var render = function() {
     ),
     _c("view", { staticClass: "fll text" }, [_vm._v(_vm._s(_vm.headTitle))])
   ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=template&id=bcc61210&scoped=true&":
-/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--17-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue?vue&type=template&id=bcc61210&scoped=true& ***!
-  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      staticClass: "show-box",
-      class: { disabled: _vm.disabled, active: _vm.isShowList },
-      style: _vm.style_Container
-    },
-    [
-      _vm.showInput
-        ? _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.selectText,
-                expression: "selectText"
-              }
-            ],
-            staticClass: "input",
-            attrs: {
-              type: "text",
-              placeholder: _vm.placeholder,
-              eventid: "2f9cb023-1"
-            },
-            domProps: { value: _vm.selectText },
-            on: {
-              focus: _vm.focus,
-              blur: _vm.blur,
-              input: [
-                function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.selectText = $event.target.value
-                },
-                _vm.input
-              ],
-              confirm: function($event) {
-                _vm.$emit("confirm", $event)
-              }
-            }
-          })
-        : _c(
-            "div",
-            {
-              staticClass: "input",
-              attrs: { eventid: "2f9cb023-0" },
-              on: { click: _vm.upperClick }
-            },
-            [_vm._v(_vm._s(_vm.selectText))]
-          ),
-      _c("span", {
-        staticClass: "iconfont iconarrowBottom-fill right-arrow",
-        class: { isRotate: _vm.isRotate },
-        attrs: { eventid: "2f9cb023-2" },
-        on: { click: _vm.toggleList }
-      }),
-      _c(
-        "span",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value:
-                _vm.clearable &&
-                _vm.selectText &&
-                _vm.selectText != _vm.placeholder,
-              expression: "clearable && selectText && selectText != placeholder"
-            }
-          ],
-          staticClass: "right-arrow",
-          attrs: { eventid: "2f9cb023-3" },
-          on: { click: _vm.clear }
-        },
-        [_c("span", { staticClass: "iconfont iconshanchu1 clear" })]
-      ),
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.isShowList,
-              expression: "isShowList"
-            }
-          ],
-          staticClass: "list-container",
-          style: "top:" + _vm.boxHeight + "px;",
-          attrs: { eventid: "2f9cb023-5" },
-          on: {
-            click: function($event) {
-              $event.stopPropagation()
-              _vm.listClick($event)
-            }
-          }
-        },
-        [
-          _c("span", { staticClass: "popper__arrow" }),
-          _c(
-            "scroll-view",
-            {
-              staticClass: "list",
-              staticStyle: { "background-color": "#fff" },
-              style: "max-height: " + _vm.showBoxHeight + "em;",
-              attrs: { "scroll-y": "true", "scroll-x": "true" }
-            },
-            [
-              _vm._l(_vm.innerList, function(item, index) {
-                return _c(
-                  "div",
-                  {
-                    key: index,
-                    staticClass: "item",
-                    class: {
-                      active: _vm.activeIndex == index,
-                      disabled: item.disabled
-                    },
-                    attrs: { eventid: "2f9cb023-4-" + index },
-                    on: {
-                      click: function($event) {
-                        _vm.clickItem(index, item.value)
-                      }
-                    }
-                  },
-                  [_c("div", [_vm._v(_vm._s(item.value))])]
-                )
-              }),
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.innerList.length == 0,
-                      expression: "innerList.length==0"
-                    }
-                  ],
-                  staticClass: "data-state item"
-                },
-                [_vm._v("无数据")]
-              )
-            ],
-            2
-          )
-        ],
-        1
-      )
-    ]
-  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -9162,96 +8615,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue":
-/*!*************************************************************************!*\
-  !*** E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _xfl_select_vue_vue_type_template_id_bcc61210_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./xfl-select.vue?vue&type=template&id=bcc61210&scoped=true& */ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=template&id=bcc61210&scoped=true&");
-/* harmony import */ var _xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./xfl-select.vue?vue&type=script&lang=js& */ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less& */ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less&");
-/* harmony import */ var _D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _xfl_select_vue_vue_type_template_id_bcc61210_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _xfl_select_vue_vue_type_template_id_bcc61210_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  "bcc61210",
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************************!*\
-  !*** E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _D_software_HBuilderX_plugins_uniapp_cli_node_modules_babel_loader_lib_index_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_12_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_18_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_script_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--18-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!./xfl-select.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=script&lang=js&");
-/* harmony import */ var _D_software_HBuilderX_plugins_uniapp_cli_node_modules_babel_loader_lib_index_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_12_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_18_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_script_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_D_software_HBuilderX_plugins_uniapp_cli_node_modules_babel_loader_lib_index_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_12_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_18_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_script_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _D_software_HBuilderX_plugins_uniapp_cli_node_modules_babel_loader_lib_index_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_12_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_18_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_script_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _D_software_HBuilderX_plugins_uniapp_cli_node_modules_babel_loader_lib_index_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_12_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_18_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_script_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_D_software_HBuilderX_plugins_uniapp_cli_node_modules_babel_loader_lib_index_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_12_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_18_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_script_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less&":
-/*!***********************************************************************************************************************************!*\
-  !*** E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less& ***!
-  \***********************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _D_software_HBuilderX_plugins_uniapp_cli_node_modules_mini_css_extract_plugin_dist_loader_js_ref_10_oneOf_1_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_css_loader_index_js_ref_10_oneOf_1_2_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_stylePostLoader_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_postcss_loader_src_index_js_ref_10_oneOf_1_3_D_software_HBuilderX_plugins_uniapp_cli_node_modules_less_loader_dist_cjs_js_ref_10_oneOf_1_4_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_5_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!./node_modules/mini-css-extract-plugin/dist/loader.js??ref--10-oneOf-1-0!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--10-oneOf-1-1!./node_modules/css-loader??ref--10-oneOf-1-2!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--10-oneOf-1-3!./node_modules/less-loader/dist/cjs.js??ref--10-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--10-oneOf-1-5!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!./xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less& */ "./node_modules/mini-css-extract-plugin/dist/loader.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/less-loader/dist/cjs.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=style&index=0&id=bcc61210&scoped=true&lang=less&");
-/* harmony import */ var _D_software_HBuilderX_plugins_uniapp_cli_node_modules_mini_css_extract_plugin_dist_loader_js_ref_10_oneOf_1_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_css_loader_index_js_ref_10_oneOf_1_2_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_stylePostLoader_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_postcss_loader_src_index_js_ref_10_oneOf_1_3_D_software_HBuilderX_plugins_uniapp_cli_node_modules_less_loader_dist_cjs_js_ref_10_oneOf_1_4_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_5_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_D_software_HBuilderX_plugins_uniapp_cli_node_modules_mini_css_extract_plugin_dist_loader_js_ref_10_oneOf_1_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_css_loader_index_js_ref_10_oneOf_1_2_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_stylePostLoader_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_postcss_loader_src_index_js_ref_10_oneOf_1_3_D_software_HBuilderX_plugins_uniapp_cli_node_modules_less_loader_dist_cjs_js_ref_10_oneOf_1_4_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_5_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _D_software_HBuilderX_plugins_uniapp_cli_node_modules_mini_css_extract_plugin_dist_loader_js_ref_10_oneOf_1_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_css_loader_index_js_ref_10_oneOf_1_2_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_stylePostLoader_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_postcss_loader_src_index_js_ref_10_oneOf_1_3_D_software_HBuilderX_plugins_uniapp_cli_node_modules_less_loader_dist_cjs_js_ref_10_oneOf_1_4_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_5_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _D_software_HBuilderX_plugins_uniapp_cli_node_modules_mini_css_extract_plugin_dist_loader_js_ref_10_oneOf_1_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_css_loader_index_js_ref_10_oneOf_1_2_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_stylePostLoader_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_postcss_loader_src_index_js_ref_10_oneOf_1_3_D_software_HBuilderX_plugins_uniapp_cli_node_modules_less_loader_dist_cjs_js_ref_10_oneOf_1_4_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_5_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_D_software_HBuilderX_plugins_uniapp_cli_node_modules_mini_css_extract_plugin_dist_loader_js_ref_10_oneOf_1_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_1_D_software_HBuilderX_plugins_uniapp_cli_node_modules_css_loader_index_js_ref_10_oneOf_1_2_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_stylePostLoader_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_postcss_loader_src_index_js_ref_10_oneOf_1_3_D_software_HBuilderX_plugins_uniapp_cli_node_modules_less_loader_dist_cjs_js_ref_10_oneOf_1_4_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_10_oneOf_1_5_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_style_index_0_id_bcc61210_scoped_true_lang_less___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=template&id=bcc61210&scoped=true&":
-/*!********************************************************************************************************************!*\
-  !*** E:/uniapp/find.yidapi.com.cn/components/xfl-select/xfl-select.vue?vue&type=template&id=bcc61210&scoped=true& ***!
-  \********************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_17_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_template_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_template_id_bcc61210_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--17-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!./xfl-select.vue?vue&type=template&id=bcc61210&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/vue-loader/lib/index.js?!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!E:\\uniapp\\find.yidapi.com.cn\\components\\xfl-select\\xfl-select.vue?vue&type=template&id=bcc61210&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_17_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_template_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_template_id_bcc61210_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_17_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_template_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_xfl_select_vue_vue_type_template_id_bcc61210_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "E:\\uniapp\\find.yidapi.com.cn\\pages.json":
 /*!***********************************************!*\
   !*** E:/uniapp/find.yidapi.com.cn/pages.json ***!
@@ -9304,25 +8667,25 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _util = _interopRequireDefault(__webpack_require__(/*! ./util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var apiUrl = 'https://apibeta.yidap.com'; // 体验
+var _util = _interopRequireDefault(__webpack_require__(/*! ./util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} // const apiUrl = 'https://apibeta.yidap.com'; // 体验
 // const apiUrl = 'https://devv2.yidap.com'; // 测试
-//const apiUrl = 'https://apiv2.yidap.com';     // 正式
-var versionNumber = 'v4.0.2'; //版本号
-if (apiUrl == 'https://apiv2.yidap.com') {uni.setStorageSync('v', versionNumber + ' 正式');} else if (apiUrl == 'https://apibeta.yidap.com') {uni.setStorageSync('v', versionNumber + ' 体验');} else {uni.setStorageSync('v', versionNumber + ' 测试');}Promise.prototype.finally = function (callback) {var P = this.constructor;return this.then(function (value) {return P.resolve(callback()).then(function () {return value;});}, function (reason) {return P.resolve(callback()).then(function () {throw reason;});});}; /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           *  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {*} params 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {*} url String
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {*} data Object
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {*} success Function
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {*} fail Function
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {*} complete Function
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */ // id 类型或id   st 状态
+var apiUrl = 'https://apiv2.yidap.com'; // 正式
+var versionNumber = 'v4.0.12'; //版本号
+if (apiUrl == 'https://apiv2.yidap.com') {uni.setStorageSync('v', versionNumber + ' 正式');} else if (apiUrl == 'https://apibeta.yidap.com') {uni.setStorageSync('v', versionNumber + ' 体验');} else {uni.setStorageSync('v', versionNumber + '测试');}Promise.prototype.finally = function (callback) {var P = this.constructor;return this.then(function (value) {return P.resolve(callback()).then(function () {return value;});}, function (reason) {return P.resolve(callback()).then(function () {throw reason;});});}; /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * @param {*} params 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * @param {*} url String
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * @param {*} data Object
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * @param {*} success Function
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * @param {*} fail Function
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * @param {*} complete Function
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */ // id 类型或id   st 状态
 var showModel = '';var myRequest = function myRequest() {var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var url = arguments.length > 1 ? arguments[1] : undefined;var id = arguments.length > 2 ? arguments[2] : undefined;var st = arguments.length > 3 ? arguments[3] : undefined;var page = arguments.length > 4 ? arguments[4] : undefined;return new Promise(function (resolve, reject) {var timestamp = Date.parse(new Date());var data = {};data = params.data || {};data.timestamp = timestamp;data.sign = _util.default.makeSign(url, data);data.deviceId = "wx";data.platformType = "2";data.versionCode = '4.0';var header = { 'Accept': 'application/json',
       // 'Content-Type': 'application/x-www-form-urlencoded',
       'content-type': 'application/json',
-      'token': uni.getStorageSync("token") || ""
-      // 'accessToken':'ssupplier'
-    };
+      'token': uni.getStorageSync("token") || "",
+      'Authorization': 'Bearer ' + uni.getStorageSync("access_token") || false };
+
     var apiUrl = url;
     if (id != undefined) {
       apiUrl = url + '/' + id;
@@ -9350,60 +8713,152 @@ var showModel = '';var myRequest = function myRequest() {var params = arguments.
           return false;
         }
         var res = res.data;
-        if (200 === res.code || 0 === res.code) {
-          resolve(res);
-        } else {
-          if (401 === res.code) {
-            var userType = uni.getStorageSync('userType');
-            if (userType == 1 || userType == 2) {
+        if (201 === res.code || -1 == res.code || 1 == res.code) {
 
-              if (apiUrl != 'https://apiv2.yidap.com/api/member/audit' && apiUrl != 'https://devv2.yidap.com/api/member/audit') {
-                showModel = uni.showModal({
-                  title: '提示',
-                  content: '请认证身份',
-                  confirmText: '前往',
-                  success: function success(res) {
-                    if (res.confirm) {
-                      uni.navigateTo({
-                        url: '/pages/setting/authentication/authentication' });
-
-                      showModel = '';
-                      return false;
-                    } else if (res.cancel) {
-                      _util.default.errorTips('您点击了取消');
-                      showModel = '';
-                    }
-                  } });
-
-              }
-            } else {
-              showModel = uni.showModal({
-                title: '您尚未登录',
-                content: '是否前往登录页面',
-                confirmText: '前往',
-                success: function success(res) {
-                  if (res.confirm) {
-                    uni.navigateTo({
-                      url: '../login/login' });
-
-                    showModel = '';
-                    return false;
-                  } else if (res.cancel) {
-                    _util.default.errorTips('您点击了取消');
-                    showModel = '';
-                  }
-                } });
-
-            }
-
-          }
-          if (201 === res.code || -1 == res.code || 1 == res.code) {
+          setTimeout(function () {
             uni.showToast({
               title: res.msg,
               icon: 'none',
               duration: 2000 });
 
+          }, 10);
+
+          resolve(res);
+        } else if (200 === res.code || 0 === res.code) {
+          resolve(res);
+        } else if (401 === res.code) {
+          var userType = uni.getStorageSync('userType');
+          if (userType == 1 || userType == 2) {
+
+            if (apiUrl != 'https://apiv2.yidap.com/api/member/audit' && apiUrl !=
+            'https://devv2.yidap.com/api/member/audit') {
+
+              if (userType == 1) {
+
+                if (uni.getStorageSync('isExamine1') != '') {
+                  uni.navigateTo({
+                    url: '../login/login' });
+
+                  showModel = uni.showModal({
+                    title: '您尚未登录',
+                    content: '是否前往登录页面',
+                    confirmText: '前往',
+                    cancelText: '返回',
+                    success: function success(res) {
+                      if (res.confirm) {
+                        uni.navigateTo({
+                          url: '../login/login' });
+
+                        showModel = '';
+                        return false;
+                      } else if (res.cancel) {
+                        uni.reLaunch({
+                          url: '/pages/start/start' });
+
+                        showModel = '';
+                      }
+                    } });
+
+                } else {
+                  showModel = uni.showModal({
+                    title: '提示',
+                    content: '请认证身份',
+                    confirmText: '前往',
+                    cancelText: '返回',
+                    success: function success(res) {
+                      if (res.confirm) {
+                        uni.navigateTo({
+                          url: '/pages/setting/authentication/authentication' });
+
+                        showModel = '';
+                        return false;
+                      } else if (res.cancel) {
+                        uni.clearStorageSync();
+                        uni.reLaunch({
+                          url: '/pages/start/start' });
+
+                        showModel = '';
+                      }
+                    } });
+
+                }
+              } else if (userType == 2) {
+                if (uni.getStorageSync('isExamine2') != '') {
+
+                  showModel = uni.showModal({
+                    title: '您尚未登录',
+                    content: '是否前往登录页面',
+                    confirmText: '前往',
+                    cancelText: '返回',
+                    success: function success(res) {
+                      if (res.confirm) {
+                        uni.navigateTo({
+                          url: '../login/login' });
+
+                        showModel = '';
+                        return false;
+                      } else if (res.cancel) {
+                        uni.clearStorageSync();
+                        uni.reLaunch({
+                          url: '/pages/start/start' });
+
+                        showModel = '';
+                      }
+                    } });
+
+                } else {
+                  showModel = uni.showModal({
+                    title: '提示',
+                    content: '请认证身份',
+                    confirmText: '前往',
+                    cancelText: '返回',
+                    success: function success(res) {
+                      if (res.confirm) {
+                        uni.navigateTo({
+                          url: '/pages/setting/authentication/authentication' });
+
+                        showModel = '';
+                        return false;
+                      } else if (res.cancel) {
+                        uni.clearStorageSync();
+                        uni.reLaunch({
+                          url: '/pages/start/start' });
+
+                        showModel = '';
+                      }
+                    } });
+
+                }
+              }
+
+
+            }
+          } else {
+
+            showModel = uni.showModal({
+              title: '您尚未登录',
+              content: '是否前往登录页面',
+              confirmText: '前往',
+              cancelText: '返回',
+              success: function success(res) {
+                if (res.confirm) {
+                  uni.navigateTo({
+                    url: '../login/login' });
+
+                  showModel = '';
+                  return false;
+                } else if (res.cancel) {
+                  uni.clearStorageSync();
+                  uni.reLaunch({
+                    url: '/pages/start/start' });
+
+                  showModel = '';
+                }
+              } });
+
           }
+
+        } else {
           reject(res);
         }
 
@@ -9418,7 +8873,7 @@ var showModel = '';var myRequest = function myRequest() {var params = arguments.
             duration: 3000 });
 
         }
-        // reject(err)
+        reject(err);
       },
       complete: function complete(res) {
         // 请求结束
@@ -9452,6 +8907,12 @@ var login = function login(params) {
 var memberInfo = function memberInfo(params) {
   return myRequest(params, "".concat(apiUrl, "/api/show"));
 };
+
+// 获取业务端用户信息
+var apiStaffShow = function apiStaffShow(params) {
+  return myRequest(params, "".concat(apiUrl, "/api/staff/show"));
+};
+
 
 // 修改用户信息
 var modifyMemberInfo = function modifyMemberInfo(params) {
@@ -9838,7 +9299,7 @@ var smsLogin = function smsLogin(params) {return myRequest(params, "".concat(api
 // 小鹿人家累计客户
 var inviteCodeUser = function inviteCodeUser(params) {return myRequest(params, "".concat(apiUrl, "/api/member/invite_code/user"));};
 
-// 小鹿人家累计客户
+// 小鹿人家累计订单
 var inviteCodeOrder = function inviteCodeOrder(params) {return myRequest(params, "".concat(apiUrl, "/api/member/invite_code/order"));};
 
 // 更新头像
@@ -9947,12 +9408,41 @@ var memberAliBind = function memberAliBind(params) {
   return myRequest(params, "".concat(apiUrl, "/api/member/ali/bind"));
 };
 
+// 绑定银行卡信息
+var memberBankCardBind = function memberBankCardBind(params) {
+  return myRequest(params, "".concat(apiUrl, "/api/member/bank_card/bind"));
+};
+
+
+
 // 小鹿家人
 var inviteCodeRecommend = function inviteCodeRecommend(params) {return myRequest(params, "".concat(apiUrl, "/api/member/invite_code/recommend"));};
+
+// 用户获取小鹿电话
+var apiPhoneUser = function apiPhoneUser(params) {return myRequest(params, "".concat(apiUrl, "/api/phone/user"));};
+
+// 小鹿获取用户电话
+var apiPhoneStaff = function apiPhoneStaff(params) {return myRequest(params, "".concat(apiUrl, "/api/phone/staff"));};
+
+// 银行卡识别
+var apiOcrBankCard = function apiOcrBankCard(params) {return myRequest(params, "".concat(apiUrl, "/api/ocr/bank_card"));};
+
+// 业务端找料订单查询
+var apiStaffFetchSearch = function apiStaffFetchSearch(params) {return myRequest(params, "".concat(apiUrl, "/api/staff/fetch/search"));};
+
+// 业务端配送订单查询
+var apiStaffShipSearch = function apiStaffShipSearch(params) {return myRequest(params, "".concat(apiUrl, "/api/staff/ship/search"));};
 
 
 
 module.exports = {
+  apiStaffFetchSearch: apiStaffFetchSearch,
+  apiStaffShipSearch: apiStaffShipSearch,
+  apiStaffShow: apiStaffShow,
+  apiOcrBankCard: apiOcrBankCard,
+  memberBankCardBind: memberBankCardBind,
+  apiPhoneStaff: apiPhoneStaff,
+  apiPhoneUser: apiPhoneUser,
   inviteCodeRecommend: inviteCodeRecommend,
   memberAliBind: memberAliBind,
   staffReplace: staffReplace,
@@ -10088,6 +9578,30 @@ module.exports = {
   activitySubmit: activitySubmit,
   getUserInfoformSocket: getUserInfoformSocket };
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
+
+/***/ }),
+
+/***/ "E:\\uniapp\\find.yidapi.com.cn\\utils\\global.js":
+/*!****************************************************!*\
+  !*** E:/uniapp/find.yidapi.com.cn/utils/global.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  userId: '',
+  toUserId: '',
+  initType: 0,
+  url: 'wss://webapi.yidapi.com.cn', // wss://im.yidap.com wss://webapi.yidapi.com.cn
+  lockReconnect: false, // 是否真正建立连接
+  timeoutObj: null, // 心跳心跳倒计时
+  timeoutNum: null, // 断开 重连倒计时
+  timeout: 30 * 1000, // 30秒一次心跳
+  connectTime: 3000,
+  localSocket: {},
+  connentSocket: false,
+  callback: function callback() {} };exports.default = _default;
 
 /***/ }),
 
@@ -10351,6 +9865,160 @@ function md5(string, key, raw) {
   }
   return raw_hmac_md5(key, string);
 }
+
+/***/ }),
+
+/***/ "E:\\uniapp\\find.yidapi.com.cn\\utils\\socket-io.js":
+/*!*******************************************************!*\
+  !*** E:/uniapp/find.yidapi.com.cn/utils/socket-io.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _global = _interopRequireDefault(__webpack_require__(/*! ./global.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\global.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+function initSocket(userId, toUserId) {
+  if (_global.default.connentSocket) {
+    console.warn('连接已存在！');
+    return false;
+  }
+  if (!userId || userId == '') {
+    console.error('用户id为空连接失败！');
+    return false;
+  }
+  if (_global.default.initType == 2 && toUserId == '') {
+    console.error('用户id为空连接失败！');
+    return false;
+  }
+  _global.default.localSocket = wx.connectSocket({
+    //此处 url 可以用来测试 // im.yidap.com webapi.yidapi.com.cn
+    url: "".concat(_global.default.url, "/notice/socket?userId=").concat(userId, "&openType=sms"),
+    success: function success() {
+      _global.default.userId = userId;
+      if (_global.default.initType == 2) {
+        _global.default.toUserId = toUserId;
+      }
+      _global.default.connentSocket = true;
+    } });
+
+  //版本库需要在 1.7.0 以上
+  _global.default.localSocket.onOpen(function (res) {
+    console.log('socket连接成功，initType = ' + _global.default.initType);
+    if (_global.default.initType == 1) {
+      sendChatList(userId);
+    } else if (_global.default.initType == 2) {
+      sendChat(userId, toUserId);
+    }
+    _global.default.connentSocket = true;
+    startConnect();
+    _global.default.connectTime = 3000;
+  });
+  _global.default.localSocket.onError(function (res) {
+    _global.default.connentSocket = false;
+    reconnect();
+    _global.default.connectTime = _global.default.connectTime * 2;
+  });
+  _global.default.localSocket.onClose(function (res) {
+    _global.default.connentSocket = false;
+  });
+  _global.default.localSocket.onMessage(function (res) {
+    // 用于在其他页面监听 websocket 返回的消息
+    var result = JSON.parse(res.data);
+    console.log('收到消息', result);
+    if (!result.length && !result.currentPage) {
+      if (result.fromUserId != 0) {
+        var message = { id: result.id, fromUserId: 0, toUserId: result.fromUserId, messageId: result.messageId, content: 'page', smsType: 'TEXT', sysType: 1, smsStatus: 40, smsList: false, currentPage: '', pageSize: '' };
+
+        sendSocketMessage(JSON.stringify(message));
+      }
+    }
+    _global.default.callback(result);
+    resetConnect();
+  });
+}
+
+function sendSocketMessage(msg) {
+  return new Promise(function (resolve, reject) {
+    if (_global.default.connentSocket) {
+      _global.default.localSocket.send({
+        data: msg,
+        success: function success(res) {
+          resolve(res);
+        },
+        fail: function fail(e) {
+          reject(e);
+        } });
+
+    }
+  });
+}
+
+function reconnect() {
+  if (_global.default.lockReconnect) {
+    return false;
+  }
+  _global.default.lockReconnect = true;
+  _global.default.timeoutNum && clearTimeout(_global.default.timeoutNum);
+  _global.default.timeoutNum = setTimeout(function () {
+    if (_global.default.userId && _global.default.userId != '') {
+      initSocket(_global.default.userId, _global.default.toUserId);
+      _global.default.lockReconnect = false;
+    }
+  }, _global.default.connectTime);
+}
+
+function resetConnect() {
+  clearTimeout(_global.default.timeoutObj);
+  startConnect();
+}
+
+function startConnect() {
+  _global.default.timeoutObj && clearTimeout(_global.default.timeoutObj);
+  _global.default.timeoutObj = setTimeout(function () {
+    if (_global.default.connentSocket) {
+      var message = { id: 0, fromUserId: 0, toUserId: 0, userInfoId: 0, content: 'ping', smsType: 'TEXT', sysType: 1, smsStatus: 10, smsList: false, currentPage: '', pageSize: '' };
+      sendSocketMessage(JSON.stringify(message));
+    } else {
+      reconnect();
+    }
+  }, _global.default.timeout);
+}
+
+function sendChatList(userId) {
+  var message = {
+    fromUserId: userId,
+    toUserId: '',
+    content: 'page',
+    smsType: 'TEXT',
+    sysType: 1,
+    smsStatus: 10,
+    smsList: true,
+    currentPage: '',
+    pageSize: '' };
+
+  console.log('获取聊天列表！！！');
+  sendSocketMessage(JSON.stringify(message));
+}
+
+function sendChat(userId, toUserId) {
+  var message = {
+    fromUserId: userId,
+    toUserId: toUserId,
+    content: 'page',
+    smsType: 'TEXT',
+    sysType: 1,
+    smsStatus: 10,
+    smsList: false,
+    currentPage: 1,
+    pageSize: 15 };
+
+  console.log('获取聊天历史！！！');
+  sendSocketMessage(JSON.stringify(message));
+}var _default =
+
+{
+  initSocket: initSocket };exports.default = _default;
 
 /***/ }),
 
@@ -10659,7 +10327,7 @@ function getNowFormatDate() {var date = new Date();var sign1 = "-";var sign2 = "
   var weekArr = ['', '', '', '', '', '', ''];var week = weekArr[date.getDay()]; // 给一位数数据前面加 “0”
   if (month >= 1 && month <= 9) {month = "0" + month;}if (day >= 0 && day <= 9) {day = "0" + day;}if (hour >= 0 && hour <= 9) {hour = "0" + hour;}if (minutes >= 0 && minutes <= 9) {minutes = "0" + minutes;}if (seconds >= 0 && seconds <= 9) {seconds = "0" + seconds;}var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds + " " + week;return currentdate;}function extend(des, src, override) {if (src instanceof Array) {for (var i = 0, len = src.length; i < len; i++) {extend(des, src[i], override);}}for (var i in src) {if (override || !(i in des)) {des[i] = src[i];}}return des;} // 获取url参数
 function getQueryString(name) {var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');var r = window.location.search.substr(1).match(reg);if (r != null) {return unescape(r[2]);}return null;} // sign签名拼接方法
-function makeSign(url, Obj) {delete Obj['sign'];delete Obj['deviceId'];delete Obj['platformType'];delete Obj['versionCode'];Obj['timestamp'] = new Date().getTime();var newKey = Object.keys(Obj).sort();var newObj = {};for (var i = 0; i < newKey.length; i++) {newObj[newKey[i]] = Obj[newKey[i]];}var str = '';for (var key in newObj) {str += key + '=' + newObj[key] + '&';}var newUrl = '';if (url.indexOf('https://devv2.yidap.com') > -1) {newUrl = url.split('https://devv2.yidap.com')[1];} else {newUrl = url.split('https://apibeta.yidap.com')[1];}var newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian';newStr = newStr.replace('sign=&', '');console.log(newStr);return (0, _md5Min.default)(newStr); // let newKey = Object.keys(Obj).sort()
+function makeSign(url, Obj) {delete Obj['sign'];delete Obj['deviceId'];delete Obj['platformType'];delete Obj['versionCode'];Obj['timestamp'] = new Date().getTime();var newKey = Object.keys(Obj).sort();var newObj = {};for (var i = 0; i < newKey.length; i++) {newObj[newKey[i]] = Obj[newKey[i]];}var str = '';for (var key in newObj) {str += key + '=' + newObj[key] + '&';}var newUrl = '';if (url.indexOf('https://devv2.yidap.com') > -1) {newUrl = url.split('https://devv2.yidap.com')[1];} else if (url.indexOf('https://apiv2.yidap.com') > -1) {newUrl = url.split('https://apiv2.yidap.com')[1];} else {newUrl = url.split('https://apibeta.yidap.com')[1];}var newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian';newStr = newStr.replace('sign=&', '');console.log(newStr);return (0, _md5Min.default)(newStr); // let newKey = Object.keys(Obj).sort()
   // let newObj = {}
   // for (let i = 0; i < newKey.length; i++) {
   // 	newObj[newKey[i]] = Obj[newKey[i]]
@@ -10704,7 +10372,9 @@ function makeSign(url, Obj) {delete Obj['sign'];delete Obj['deviceId'];delete Ob
   // console.log('newStr:->' + newStr)
   // 
   // return md5(newStr)
-}function fmoney(s, n) {
+}
+
+function fmoney(s, n) {
   n = n > 0 && n <= 20 ? n : 2;
   s = parseFloat((s + "").replace('/[^\d\.-]/g', "")).toFixed(n) + "";
   var l = s.split(".")[0].split("").reverse(),

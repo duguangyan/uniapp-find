@@ -1,10 +1,6 @@
 {
     "pages" : [
         //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-		    "path" : "pages/protocol/protocol",
-		    "style" : {}
-		},
         {
             "path" : "pages/start/start",
             "style" : {
@@ -168,7 +164,7 @@
         ,{
             "path" : "pages/index/fetchPage/fetchOrderDetail/fetchOrderDetail",
             "style" : {
-				"navigationBarTitleText" : "取送详情"
+				"navigationBarTitleText" : "配送订单详情"
 			}
         }
         ,{
@@ -221,9 +217,30 @@
         }
         ,{
             "path" : "pages/rechargeSuccess/rechargeSuccess",
+            "style" : {
+				"navigationBarTitleText" : "充值成功"
+			}
+        }
+        ,{
+            "path" : "pages/protocol/protocol",
+            "style" : {
+				"navigationBarTitleText" : "一鹿找须知"
+			}
+        }
+        ,{
+            "path" : "pages/index/common/bindBankCard/bindBankCard",
+            "style" : {
+				"navigationBarTitleText" : "绑定银行卡"
+			}
+        }
+        ,{
+            "path" : "pages/listCustomer/listCustomer",
             "style" : {}
         }
-        
+        ,{
+            "path" : "pages/listOrder/listOrder",
+            "style" : {}
+        }
     ],
 	"permission": {
 		"scope.userLocation": {

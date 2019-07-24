@@ -2,10 +2,13 @@
     "name" : "一鹿找",
     "appid" : "__UNI__6F097C0",
     "description" : "皮箱行业一站式找料取送业务",
-    "versionName" : "2.0.8",
-    "versionCode" : 208,
+    "versionName" : "2.1.1",
+    "versionCode" : 20101,
     "transformPx" : false,
     "app-plus" : {
+        "kernel" : {
+            "ios" : "WKWebview"
+        },
         /* 5+App特有相关 */
         "modules" : {},
         /* 模块配置 */
@@ -27,7 +30,15 @@
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ]
             },
-            "ios" : {},
+            "ios" : {
+                "plistcmds" : [
+                    "Set :NSPhotoLibraryUsageDescription 一鹿找需要打开您的手机相册获取照片",
+                    "Set :NSCameraUsageDescription 一鹿找需要打开您的手机相机获取照片",
+                    "Set :NSLocationAlwaysUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息",
+                    "Set :NSLocationWhenInUseUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息",
+                    "Set :NSLocationAlwaysAndWhenInUseUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息"
+                ]
+            },
             /* ios打包配置 */
             "sdkConfigs" : {
                 "push" : {}
@@ -85,6 +96,6 @@
         "router" : {
             "mode" : "history"
         },
-        "domain" : "protocol.du-u.top"
+        "domain" : "ylz.du-u.top"
     }
 }

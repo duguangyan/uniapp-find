@@ -14,7 +14,7 @@
 						<view @click='getOrderData' :data-nav="1" class="relative" :class="nav == 1 ? 'selected' : ''">找料订单</view>
 						<view @click='getOrderData' :data-nav="2" class="relative" :class="nav == 2 ? 'selected' : ''">取料订单</view>
 					</view> -->
-					<scroll-view :scroll-x="true" class="status-section find-section">
+					<scroll-view scroll-x="true" :scroll-left="scrolLeft" class="status-section find-section">
 						<view v-for='(item, index) in navTexts' :key="index" @click='getOrderTypeData' :data-type="index">
 						 <text  :class="status == index ? 'selected' : ''">{{item}}</text>
 						 </view>
@@ -64,7 +64,7 @@
 													限时找料：<text class="fs24 text-666">{{item.limit_time_text}}</text>
 												</view> -->
 												<view class="ellipsis">
-													比较优选：<text class="fs24 text-666" v-if="item.reference_price">参考价格:￥{{item.reference_price}}</text>
+													比价优选：<text class="fs24 text-666">参考价格:￥{{item.reference_price || '0.00'}}</text>
 												</view>
 											</view>
 											<view class="item-right">
@@ -114,7 +114,8 @@
 											<view class="mgb-20">送料地址</view>
 
 											<view class="flex align-item-start lh42 mgb-20">
-												<view class="fs26 c999 mgr30"> 收货人 {{item.shipping_address.mobile}} <text v-if="item.shipping_address.remark" class="tag lh42 mgl-20">{{item.shipping_address.remark}}</text></view>
+												<!-- <text v-if="item.shipping_address.remark" class="tag lh42 mgl-20">{{item.shipping_address.remark}}</text> -->
+												<view class="fs26 c999 mgr30"> {{item.shipping_address.consignee}} {{item.shipping_address.mobile}} <text class="mgl-20">{{item.shipping_address.stall}}</text></view>
 												<!-- <view class="flex-1 fs26 c999">
 													{{item.get_address.stall || ''}}
 												</view> -->
@@ -134,19 +135,22 @@
 									<view :data-type='1' :data-id="item.id" @click='showForm' class="ctheme warm-border">{{nav==1?'找':'取'}}到物料</view>
 								</view> -->
 
-								<view v-if="status == 1" class="flex find-status mgr-20" @click="receiptOrder(item.id)">
+								<view v-if="item.distribution_status == 2" class="flex find-status mgr-20" @click="receiptOrder(item.id)">
 									<view>确认接单</view>
 								</view>
-								<view v-if="item.user_id!=''" class="flex find-status mgr-20" @click="goChat(item)">
-									<view>联系客户</view>
+								<view v-if="item.distribution_status == 3" class="flex find-status mgr-20" @click="serviceOrder(item)">
+									<view>确认送达</view>
 								</view>
-								
-								<!-- <view class="cancat flr" v-if="status != 1">
-									<image src="../../static/icon/concat.png"></image>
-									<text>{{orderNavNum== 0?'联系找料员':'联系取料员'}}</text>
-									<view class="btn-1" @click.stop="goChat"></view>
-									<view class="btn-2" @click.stop="contact"></view>
+								<!-- <view v-if="item.user_id!=''" class="flex find-status mgr-20" @click="goChat(item)">
+									<view>联系客户</view>
 								</view> -->
+								
+								<view class="cancat flr" v-if="item.user_id!=''">
+									<image src="../../static/icon/concat.png"></image>
+									<text>联系客户</text>
+									<view class="btn-1" @click.stop="goChat(item)"></view>
+									<view class="btn-2" @click.stop="contact(item)"></view>
+								</view>
 								
 							</view>
 						</view>
@@ -237,6 +241,26 @@
     </view>
 </view>
 
+<view class="logistics-wap" v-if="isLogistics">
+			<view class="bg" @click.stop='hideLogistics'></view>
+			<view class="content">
+				<view class="v1">
+					<text>物流公司:</text>  <input type="text" :class="{ 'isiP': isiP }" v-model="express_name" placeholder="请输入物流公司名称">
+				</view>
+				<view class="v2">
+					<text>联系电话:</text>  <input type="number" :class="{ 'isiP': isiP }" v-model="express_phone" placeholder="请输入物流公司电话">
+				</view>
+				<view class="v3" @click="logisticsSubmit">
+					<text>物流单号:</text>  <input type="number" :class="{ 'isiP': isiP }" v-model="express_sn" placeholder="请输入物流单号">
+				</view>
+				<view class="btn" @click.stop="logisticsSubmit">提交</view>
+				<view class="closeBtn" @click.stop="hideLogistics">
+					<image src="/static/icon/closed_btn.png" mode=""></image>
+				</view>
+			</view>
+		</view>
+
+
 <view  v-if="showCon" class="modal-mask" @click="changeModalCancel">
     <view class="modal-dialog">
       <view class="modal-title">温馨提示</view>
@@ -270,7 +294,14 @@
 			    isFullLoad:false,
 			    address:'',
 			    name:'',
-				navTexts:['全部','待接单','派送中','待收货','待评价','已完成']
+				navTexts:['全部','待接单','派送中','待收货','待评价','已完成'],
+				isLogistics:false,
+				express_name:'',
+				express_phone:'',
+				express_sn:'',
+				result_img:'',
+				isiP:false,
+				scrolLeft:1
 			};
 		},
 	
@@ -279,6 +310,20 @@
 			uni.setNavigationBarTitle({
 				title: "配送订单"
 			})
+			
+			 switch(uni.getSystemInfoSync().platform){
+				case 'android':
+				   console.log('运行Android上')
+				   break;
+				case 'ios':
+				   console.log('运行iOS上')
+				   this.$data.isiP = true
+				   break;
+				default:
+				   console.log('运行在开发者工具上')
+				   break;
+			}
+			
 		},
 		onShow() {
 			console.log('onShow')
@@ -299,35 +344,163 @@
 			this.getMyOrders();
 		},
 		methods: {
-			// 取聊天室
-			goChat(item){
-				
-				uni.navigateTo({
-					url:'/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户'
-				})
-			},
+			
 			// 搜索
 			doSearch(){
-				
-				this.$data.scrolLeft = 0;
 				if(this.$data.searchValue == ''){
 					util.errorTips('搜索关键字不能为空');
 					return false;
 				}
-				this.$data.page = 1;
-				api.staffShipSearch({
+				api.apiStaffShipSearch({
 					data:{
-						page:this.$data.page,
 						keyword:this.$data.searchValue
 					}
 				}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
-						this.$data.orderList = [];
-						this.$data.status = 0;
-						this.$data.orderList = this.$data.orderList.concat(res.data);
+						if(res.data.length>0){
+							this.$data.status = 0;
+							this.$data.scrolLeft = 0;
+							this.$data.orderList = [];
+							this.$data.orderList = res.data;
+						}else{
+							util.errorTips('搜索不到相关数据')
+						}
+					}else{
+						util.errorTips(res.msg)
 					}
+				}).catch((e)=>{util.errorTips(e.msg || e.message)})
+			},
+			
+			logisticsSubmit(){
+				if(this.$data.express_name == ""){
+					util.errorTips('请填写物流公司');
+					return false;
+				}
+				if(this.$data.express_phone == ""){
+					util.errorTips('请填写物流电话');
+					return false;
+				}
+				if(!util.vailPhone(this.$data.express_phone)){
+					util.errorTips('请填写正确的电话');
+					return false;
+				}
+				
+				if(this.$data.express_sn == ""){
+					util.errorTips('请填写物流单号');
+					return false;
+				}
+				api.staffShipExpress({
+					method:'POST',
+					data:{
+						id:this.$data.id,
+						express_name:this.$data.express_name,
+						express_phone:this.$data.express_phone,
+						express_sn:this.$data.express_sn,
+						express_img:this.$data.result_img
+					}
+				}).then((res)=>{
+					if(res.code == 0 || res.code == 200){
+						this.$data.isLogistics = false;
+						this.$data.orderList = [] 
+						  // 获取数据
+						this.getMyOrders();
+					}else{
+						util.errorTips(res.msg);
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg || res.meessage);
 				})
 			},
+			hideLogistics(){
+				this.$data.isLogistics = false;
+			},
+			// 送达
+			serviceOrder(item){
+				let _this = this;
+				let id = item.id;
+				let shipping_type = item.shipping_type;
+				this.$data.result_img = item.result_img[0];
+				this.$data.id = item.id;
+				uni.showModal({
+					title: '提示',
+					content: '确认送达?',
+					success: function (res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+							if(shipping_type != 2 ){ // 送货上门
+								api.staffShipConfirm({
+									method:'POST',
+									data:{
+										id
+									}
+								}).then((res)=>{
+									if(res.code == 0 || res.code == 200){
+										_this.$data.orderList = [] 
+										  // 获取数据
+										_this.getMyOrders();
+									}
+								})
+							}else{  // 物流
+								_this.$data.isLogistics = true;
+							}
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
+			},
+			// 联系客户
+			contact(item){
+				let data={
+					id:item.id,
+					type:2
+				}
+				api.apiPhoneStaff({
+					method:'POST',
+					data
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						uni.makePhoneCall({
+							phoneNumber: res.data
+						})
+					}else{
+						util.errorTips(res.msg);
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg)
+				})
+			},
+			
+			// 取聊天室
+			goChat(item){
+				
+				uni.navigateTo({
+					url:'/pages/chat/chat?fromUserId='+uni.getStorageSync('userInfo').id+'&toUserId=' + item.user_id + '&name=客户'
+				})
+			},
+			// 搜索
+			// doSearch(){
+			// 	
+			// 	this.$data.scrolLeft = 0;
+			// 	if(this.$data.searchValue == ''){
+			// 		util.errorTips('搜索关键字不能为空');
+			// 		return false;
+			// 	}
+			// 	this.$data.page = 1;
+			// 	api.staffShipSearch({
+			// 		data:{
+			// 			page:this.$data.page,
+			// 			keyword:this.$data.searchValue
+			// 		}
+			// 	}).then((res)=>{
+			// 		if(res.code == 200 || res.code == 0){
+			// 			this.$data.orderList = [];
+			// 			this.$data.status = 0;
+			// 			this.$data.orderList = this.$data.orderList.concat(res.data);
+			// 		}
+			// 	})
+			// },
 			
 			// 确认接单
 			receiptOrder(id){
@@ -372,8 +545,18 @@
 						 status:s
 					 }
 				   }).then((res) => {
-					 if(res.data.length <10) this.$data.isFullLoad = true;
-					 this.$data.orderList = this.$data.orderList.concat(res.data);
+					   if(res.code == 200 || res.code == 0){
+						   if(res.data.length <10) this.$data.isFullLoad = true;
+						   this.$data.orderList = this.$data.orderList.concat(res.data);
+					   }else{
+						   // if(res.msg == "您不是配送员"){
+							  //  uni.navigateTo({
+							  //  	url:'/pages/login/login?from='+ uni.getStorageSync('userType')
+							  //  })
+						   // }
+					   }
+				   }).catch((res)=>{
+					   util.errorTips(res.msg || res.message)
 				   })
 				
 			  },
@@ -453,7 +636,7 @@
 		text{
 			position: absolute;
 			top: 34upx;
-			left: 38upx;
+			left: 60upx;
 			font-size: 28upx;
 			color: #F29800;
 		}
@@ -754,6 +937,84 @@
 					top: 0;
 					z-index: 99999;
 				}
+			}
+		}
+		
+		.logistics-wap{
+			position: fixed;
+			left: 0;
+			top : 0;
+			width: 100%;
+			height: 100%;
+			.content{
+				width: 450upx;
+				height: 450upx;
+				position: absolute;
+				left: 130upx;
+				top : 200upx;
+				background: #fff;
+				z-index: 99999;
+				border-radius: 10upx;
+				padding: 50upx;
+				margin-top: 20upx;
+				.closeBtn{
+					position: absolute;
+					top: 0upx;
+					right:20upx;
+					width: 40upx;
+					height: 40upx;
+					z-index: 999999;
+					image{
+						width: 40upx;
+						height: 40upx;
+					}
+				}
+				.btn{
+					width:436upx;
+					height:64upx;
+					line-height: 64upx;
+					text-align: center;
+					background:rgba(242,152,0,1);
+					border-radius:8upx;
+					font-size: 32upx;
+					margin: 0 auto;
+					color: #fff;
+					position: relative;
+					top: 60upx;
+				}
+				view{
+					line-height: 100upx;
+					text{
+						display: inline-block;
+						font-size: 32upx;
+					}
+					input{
+						display: inline-block;
+						border: 1upx solid #f4f4f4;
+						padding-left: 20upx;
+						margin-left: 30upx;
+						position: relative;
+						top: 20upx;
+						width: 250upx;
+						background: #f4f4f4;
+						color: #333;
+						border-radius: 10upx;
+						position: relative;
+						top: 20upx;
+						text-align: left;
+					}
+					.isiP{
+						top: -4upx;
+					}
+					
+				}
+				
+			}
+			.bg{
+				width  : 100%;
+				height : 100%;
+				background : #000;
+				opacity    : .6;
 			}
 		}
 </style>

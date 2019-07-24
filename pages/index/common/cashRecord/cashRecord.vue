@@ -4,16 +4,16 @@
 			<view class="item" v-for="(item, index) in list" :key="index">
 				
 				<view>
-					<text>提现时间：</text><text class="mgl-20 text-666">{{item.created_at}}</text>
+					<text>提现时间:</text><text class="mgl-20 text-666">{{item.created_at}}</text>
 				</view>
 				<view>
-					<text>提现方式：</text><text class="mgl-20  text-666">{{item.type_label}}</text>
+					<text>提现方式:</text><text class="mgl-20  text-666">{{item.type_label}}</text>
 				</view>
 				<view>
-					<text>提现金额</text><text class="mgl-20  text-666">￥{{item.type_label}}</text>
+					<text>提现金额:</text><text class="mgl-20  text-666">￥{{item.amount}}</text>
 				</view>
 				
-				<view class="text-yellow">提现中</view>
+				<view class="text-yellow">{{item.status_label}}</view>
 			</view>
 		</view>
 		
@@ -36,11 +36,12 @@
 				},
 				list:[
 					
-				]
+				],
+				pageIndex:1
 			};
 		},
-		onLoad() {
-			
+		onLoad(options) {
+			this.$data.pageIndex = options.pageIndex;
 		},
 		onShow() {
 			this.apiAssetTake();
@@ -53,10 +54,18 @@
 				}
 			},
 			apiAssetTake() {
+				
+				// commission 小鹿佣金，replace 代采款 ',
+				let asset_type = 'commission';
+				if(this.$data.pageIndex == 2){
+					asset_type = 'replace';
+				}else if(this.$data.pageIndex == 3){
+					asset_type = 'marketing';
+				}
 				api.apiAssetTake({
 					data:{
-						"page":this.$data.page,
-						"asset_type": "commission"
+						page:this.$data.page,
+						asset_type
 					}
 				}).then((res)=>{
 					if(res.code == 200 || res.code == 0){

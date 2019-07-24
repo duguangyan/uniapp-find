@@ -90,9 +90,19 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ 
     this.$data.avatarPath = uni.getStorageSync('avatarPath');
   },
   methods: {
+
+    withdrawal: function withdrawal() {
+      if (this.$data.profit <= 0) {
+        _util.default.errorTips('当前推广收益小于零');
+        return false;
+      }
+      uni.navigateTo({
+        url: '/pages/index/common/cash/cash?pageIndex=3&now_amount=' + this.$data.profit });
+
+    },
     /**
-              * 拨打电话
-              */
+        * 拨打电话
+        */
     call: function call() {
       uni.makePhoneCall({
         phoneNumber: '400-8088-156' });
@@ -165,10 +175,10 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ 
     var that = this;
     // 设置菜单中的转发按钮触发转发事件时的转发内容
     var onShareAppMessage = {
-      title: "众皮联小鹿快找", // 默认是小程序的名称(可以写slogan等)
+      title: "邀请使用一鹿找找料一对一服务", // 默认是小程序的名称(可以写slogan等)
       path: '/pages/index/index?invite_code=' + that.$data.familyInfo.code,
       // 默认是当前页面，必须是以‘/’开头的完整路径
-      imageUrl: 'https://static.yidap.com/miniapp/o2o/imgs/ic_launcher.png', //自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
+      imageUrl: 'https://static.yidap.com/miniapp/o2o/imgs/ic_launcher_1.png', //自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
       success: function success(res) {
         // 转发成功之后的回调
         if (res.errMsg == 'shareAppMessage:ok') {}
@@ -263,7 +273,15 @@ var render = function() {
       _c("view", { staticClass: "t" }, [_vm._v("当前推广收益")]),
       _c("view", { staticClass: "m" }, [_vm._v(_vm._s(_vm.profit))])
     ]),
-    _vm._m(0),
+    _c(
+      "view",
+      {
+        staticClass: "profit-btn",
+        attrs: { eventid: "18d02457-2" },
+        on: { click: _vm.withdrawal }
+      },
+      [_c("view", [_vm._v("提现")])]
+    ),
     _c("view", { staticClass: "item" }, [
       _c(
         "view",
@@ -319,7 +337,7 @@ var render = function() {
                 "line-height": "115rpx",
                 "text-align": "left"
               },
-              attrs: { eventid: "18d02457-2" },
+              attrs: { eventid: "18d02457-3" },
               on: { click: _vm.call }
             },
             [
@@ -336,18 +354,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "view",
-      { staticClass: "profit-btn", attrs: { bindtap: "withdrawal" } },
-      [_c("view", [_vm._v("提现")])]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

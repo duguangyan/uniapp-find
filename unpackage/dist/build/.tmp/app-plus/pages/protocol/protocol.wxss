@@ -24,7 +24,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.index-popup.data-v-0a5cfd48 {
+.index-popup.data-v-59591a48 {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -32,7 +32,7 @@
   left: 0;
   z-index: 999999;
 }
-.index-popup-content.data-v-0a5cfd48 {
+.index-popup-content.data-v-59591a48 {
   width: 700rpx;
   min-height: 330rpx;
   background-color: #fff;
@@ -41,25 +41,25 @@
   left: 25rpx;
   border-radius: 10rpx;
 }
-.index-popup-title.data-v-0a5cfd48 {
+.index-popup-title.data-v-59591a48 {
   height: 100rpx;
   line-height: 100rpx;
   font-size: 36rpx;
   text-align: center;
   position: relative;
 }
-.index-popup-main.data-v-0a5cfd48 {
+.index-popup-main.data-v-59591a48 {
   font-size: 30rpx;
   padding: 20rpx 30rpx;
   border-bottom: 1px solid #f4f4f4;
 }
-.index-popup-main .index-popup-view-1.data-v-0a5cfd48 {
+.index-popup-main .index-popup-view-1.data-v-59591a48 {
   letter-spacing: 9px;
   line-height: 90rpx;
   height: 90rpx;
   float: left;
 }
-.index-popup-main input.data-v-0a5cfd48 {
+.index-popup-main input.data-v-59591a48 {
   display: inline-block;
   height: 68rpx;
   line-height: 68rpx;
@@ -70,47 +70,47 @@
   margin: 0 20rpx;
   margin-top: 10rpx;
 }
-.index-popup-check.data-v-0a5cfd48 {
+.index-popup-check.data-v-59591a48 {
   padding: 0 80rpx;
   height: 90rpx;
   line-height: 90rpx;
   border-bottom: 1rpx solid #f4f4f4;
 }
-.index-popup-check view.data-v-0a5cfd48 {
+.index-popup-check view.data-v-59591a48 {
   display: inline-block;
   margin-left: 30rpx;
   font-size: 30rpx;
 }
-.index-popup-check view.data-v-0a5cfd48:first-child {
+.index-popup-check view.data-v-59591a48:first-child {
   margin-left: 0;
 }
-.notes-btn view.data-v-0a5cfd48 {
+.notes-btn view.data-v-59591a48 {
   margin-left: 218rpx;
   background-color: #F29800;
   color: #fff;
 }
-.notes-btn-content.data-v-0a5cfd48 {
+.notes-btn-content.data-v-59591a48 {
   height: 96%;
   top: 2%;
   overflow-y: auto;
 }
-.index-popup-main view.data-v-0a5cfd48 {
+.index-popup-main view.data-v-59591a48 {
   line-height: 50rpx;
 }
-.icon-gantan1.data-v-0a5cfd48 {
+.icon-gantan1.data-v-59591a48 {
   color: #F29800;
   position: relative;
   top: 2rpx;
   margin-right: 5rpx;
 }
-.icon-del1.data-v-0a5cfd48 {
+.icon-del1.data-v-59591a48 {
   position: absolute;
   font-size: 50rpx;
   right: 10rpx;
   top: -15rpx;
   color: #999;
 }
-.index-popup-btn view.data-v-0a5cfd48 {
+.index-popup-btn view.data-v-59591a48 {
   display: inline-block;
   width: 256rpx;
   height: 80rpx;
@@ -121,7 +121,7 @@
   border: 1rpx solid #F29800;
   border-radius: 10rpx;
 }
-.notes-btn.data-v-0a5cfd48 {
+.notes-btn.data-v-59591a48 {
   margin-bottom: 10rpx;
 }
 

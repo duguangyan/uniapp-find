@@ -24,7 +24,7 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.VerificationCode.data-v-1b290f3a {
+.VerificationCode.data-v-21756233 {
   width: 160rpx;
   text-align: center;
   border: 1rpx solid #F29800;
@@ -38,28 +38,28 @@
   color: #fff;
   background: #F29800;
 }
-.info.data-v-1b290f3a {
+.info.data-v-21756233 {
   line-height: 100rpx;
   padding-left: 30rpx;
   border-top: 20rpx solid #f4f4f4;
   background: #fff;
 }
-.wx_content.data-v-1b290f3a {
+.wx_content.data-v-21756233 {
   background: #f4f4f4;
   height: 100%;
 }
-.height160.data-v-1b290f3a {
+.height160.data-v-21756233 {
   height: 140rpx;
 }
-.authentication.data-v-1b290f3a {
+.authentication.data-v-21756233 {
   background: #fff;
   margin-bottom: 240rpx;
 }
-.authentication .btn-warp.data-v-1b290f3a {
-    background: #f4f4f4;
+.authentication .btn-warp.data-v-21756233 {
+    background: #fff;
     padding-bottom: 100rpx;
 }
-.authentication .btn-warp .btn.data-v-1b290f3a {
+.authentication .btn-warp .btn.data-v-21756233 {
       height: 80rpx;
       line-height: 80rpx;
       text-align: center;
@@ -72,16 +72,16 @@
       bottom: 40rpx;
       border-radius: 10rpx;
 }
-.authentication .image.data-v-1b290f3a {
+.authentication .image.data-v-21756233 {
     width: 100%;
     position: relative;
 }
-.authentication .image image.data-v-1b290f3a {
+.authentication .image image.data-v-21756233 {
       width: 400rpx;
       height: 240rpx;
       margin-left: 175rpx;
 }
-.authentication .image .bgszie.data-v-1b290f3a {
+.authentication .image .bgszie.data-v-21756233 {
       position: absolute;
       font-size: 140rpx;
       top: 20rpx;
@@ -89,45 +89,45 @@
       z-index: 9999;
       color: #fff;
 }
-.authentication .image .text.data-v-1b290f3a {
+.authentication .image .text.data-v-21756233 {
       text-align: center;
       line-height: 60rpx;
       padding-bottom: 10rpx;
 }
-.authentication .input.data-v-1b290f3a {
+.authentication .input.data-v-21756233 {
     margin: 20rpx 30rpx;
 }
-.authentication .input .li.data-v-1b290f3a {
+.authentication .input .li.data-v-21756233 {
       border-bottom: 1rpx solid #eee;
       height: 80rpx;
       line-height: 80rpx;
 }
-.authentication .input .li .name.data-v-1b290f3a {
+.authentication .input .li .name.data-v-21756233 {
         width: 200rpx;
 }
-.authentication .input .li .value.data-v-1b290f3a {
+.authentication .input .li .value.data-v-21756233 {
         width: 490rpx;
         position: relative;
 }
-.authentication .input .li .value input.data-v-1b290f3a {
+.authentication .input .li .value input.data-v-21756233 {
           height: 80rpx;
           line-height: 80rpx;
 }
-.authentication .nav.data-v-1b290f3a {
+.authentication .nav.data-v-21756233 {
     position: relative;
     border-bottom: 20rpx solid #eee;
     padding-bottom: 40rpx;
 }
-.authentication .nav image.data-v-1b290f3a {
+.authentication .nav image.data-v-21756233 {
       width: 80rpx;
       height: 80rpx;
       margin: 10rpx auto;
       margin-top: 40rpx;
 }
-.authentication .nav .flex-1.data-v-1b290f3a {
+.authentication .nav .flex-1.data-v-21756233 {
       text-align: center;
 }
-.authentication .nav .line.data-v-1b290f3a {
+.authentication .nav .line.data-v-21756233 {
       position: absolute;
       height: 60%;
       width: 1rpx;
@@ -135,7 +135,7 @@
       left: 375rpx;
       top: 50rpx;
 }
-.modal-mask.data-v-1b290f3a {
+.modal-mask.data-v-21756233 {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -157,24 +157,24 @@
       -ms-flex-pack: center;
           justify-content: center;
 }
-.modal-dialog.data-v-1b290f3a {
+.modal-dialog.data-v-21756233 {
   width: 540rpx;
   overflow: hidden;
   z-index: 9999;
   background: #f9f9f9;
   border-radius: 5rpx;
 }
-.modal-title.data-v-1b290f3a {
+.modal-title.data-v-21756233 {
   padding-top: 30rpx;
   font-size: 32rpx;
   color: #030303;
   text-align: center;
 }
-.modal-content.data-v-1b290f3a {
+.modal-content.data-v-21756233 {
   padding: 20rpx 32rpx;
   font-size: 28rpx;
 }
-.modal-footer.data-v-1b290f3a {
+.modal-footer.data-v-21756233 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -189,13 +189,13 @@
   font-size: 34rpx;
   line-height: 86rpx;
 }
-.btn-cancel.data-v-1b290f3a {
+.btn-cancel.data-v-21756233 {
   width: 50%;
   color: #abb4bd;
   text-align: center;
   border-right: 1px solid #dedede;
 }
-.btn-confirm.data-v-1b290f3a {
+.btn-confirm.data-v-21756233 {
   width: 50%;
   color: #6fb64b;
   text-align: center;

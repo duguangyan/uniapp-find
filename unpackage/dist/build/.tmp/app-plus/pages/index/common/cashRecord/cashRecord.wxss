@@ -24,27 +24,27 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.record.data-v-021eb63a {
+.record.data-v-4fb925d6 {
   background: #f4f4f4;
   height: 100%;
 }
-.record .footer-text.data-v-021eb63a {
+.record .footer-text.data-v-4fb925d6 {
     line-height: 100rpx;
     text-align: center;
     color: #999;
 }
-.record .items.data-v-021eb63a {
+.record .items.data-v-4fb925d6 {
     font-size: 28rpx;
     padding-top: 20rpx;
 }
-.record .items .item.data-v-021eb63a {
+.record .items .item.data-v-4fb925d6 {
       margin: 0 20rpx 20rpx 20rpx;
       border-radius: 10rpx;
       background: #fff;
       padding: 20rpx;
       position: relative;
 }
-.record .items .item .text-yellow.data-v-021eb63a {
+.record .items .item .text-yellow.data-v-4fb925d6 {
         position: absolute;
         right: 30rpx;
         top: 50rpx;

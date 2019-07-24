@@ -13,7 +13,7 @@
 			<view @click="doFamily" v-if="userType == 0 || userType == 3">
 				<list-item title="绑定小鹿家人" id="item_mid_top"></list-item>
 			</view>
-			<view @click="goAuthentication" class="bb20">
+			<view @click="goAuthentication" class="bb20" v-if="userType == 0 || userType == 3">
 				<list-item :title="authent" id="item_mid_bottom"></list-item>
 			</view>
 
@@ -77,13 +77,13 @@
 		onShow() {
 			let _this = this;
 			this.$data.userType = uni.getStorageSync('userType');
-			if (this.$data.userType == 0 || this.$data.userType == 3) {
-				this.$data.authent = '用户认证';
-			} else if (this.$data.userType == 1) {
-				this.$data.authent = '认证找料员';
-			} else if (this.$data.userType == 2) {
-				this.$data.authent = '认证配送员';
-			}
+			// if (this.$data.userType == 0 || this.$data.userType == 3) {
+			// 	this.$data.authent = '用户认证';
+			// } else if (this.$data.userType == 1) {
+			// 	this.$data.authent = '认证找料员';
+			// } else if (this.$data.userType == 2) {
+			// 	this.$data.authent = '认证配送员';
+			// }
 			uni.getStorageInfo({
 				success: function(res) {
 					// console.log(res.keys);
@@ -153,7 +153,20 @@
 			},
 			// 清除缓存
 			clearSync() {
-
+				let _this = this;
+				uni.showModal({
+					title: '提示',
+					content: '确认清除缓存吗？',
+					confirmText: '确认',
+					success: (res) => {
+						if (res.confirm) {
+							_this.$data.currentSize = '0 kb'
+						} else if (res.cancel) {
+							util.errorTips('您点击了取消')
+						}
+					}
+				})
+				
 			},
 			// 去认证中心
 			goAuthentication() {

@@ -122,6 +122,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
         if (res.code == 200 || res.code == 0) {
           _this.$data.code_id = res.data.id;
           _util.default.errorTips('短信发送成功');
+          _this.$data.codeBtnTxt = '重新获取';
         } else {
           _util.default.errorTips(res.msg);
         }

@@ -42,8 +42,8 @@
 
 				<view class='type3' v-if="itemObj.find_type==3">
 					<view class='fs30 title'>寄样地址: </view>
-					<view v-for='(item, index) in companyaddress' :key='index' class='bb1 mg10 con'>
-						<view>
+					<view v-for='(item, index) in companyaddress' :key='index' class='bb1 mg10 con find-order-detail-address bb1 fs30 pdl-30'>
+						<!-- <view>
 							<text class='remark' v-if='item.tag'>{{item.tag||''}}</text>
 							<text>{{item.address}}</text>
 						</view>
@@ -54,7 +54,17 @@
 						</view>
 						<view class='text-999'>
 							{{item.desc}}
+						</view> -->
+						
+						<view class='lh50 fs28' style='word-break:break-all;'>
+							{{item.consignee}}  {{item.mobile||''}}
+							<text class="mgl-20">{{item.stall}}</text>
+							<text class='remark mgl-20' v-if='item.tag'>{{item.tag || ''}}</text>
 						</view>
+						<view class='lh50 fs24 text-999'>
+							{{item.address||''}} {{item.name||''}} {{item.room||''}}
+						</view>
+						
 					</view>
 					<view class='text-red'>
 						<text class='iconfont icon-gantan1'></text>寄样不支持到付,请客户自行承担寄样费用
@@ -67,8 +77,9 @@
 
 					<view v-if='itemObj.get_address'>
 						<view class='lh50 fs28' style='word-break:break-all;'>
-							收货人  {{itemObj.get_address.mobile||''}}
-							<text class='remark' v-if='itemObj.get_address.remark'>{{itemObj.get_address.remark || ''}}</text>
+							{{itemObj.get_address.consignee}}  {{itemObj.get_address.mobile||''}}
+							<text class="mgl-20">{{itemObj.get_address.stall}}</text>
+							<text class='remark mgl-20' v-if='itemObj.get_address.remark'>{{itemObj.get_address.remark || ''}}</text>
 						</view>
 						<view class='lh50 fs24 text-999'>
 							{{itemObj.get_address.address||''}} {{itemObj.get_address.name||''}} {{itemObj.get_address.room||''}}
@@ -82,7 +93,7 @@
 
 					<view v-if='itemObj.get_address.length>1' class='mg10' v-for='(item, index) in itemObj.get_address' :key='index'>
 						<view class='lh50 fs28' style='word-break:break-all;'>
-							收货人{{item.mobile||''}}
+							{{item.consignee}}{{item.mobile||''}}
 							<text class='remark' v-if='item.tag'>{{item.tag || ''}}</text>
 						</view>
 						
@@ -100,8 +111,9 @@
 				</view>
 				<view class='find-order-detail-address bb-1 fs30 pdl-30' v-if='itemObj.shipping_address'>
 					<view class='lh50  fs28' style='word-break:break-all;'>
-						收货人 {{itemObj.shipping_address.mobile||''}}
-						<text class='remark' v-if='itemObj.shipping_address.remark'>{{itemObj.shipping_address.remark ||''}}</text>
+						{{itemObj.shipping_address.consignee}} {{itemObj.shipping_address.mobile||''}}
+						<text class="mgl-20">{{itemObj.shipping_address.stall}}</text>
+						<text class='remark mgl-20' v-if='itemObj.shipping_address.remark'>{{itemObj.shipping_address.remark ||''}}</text>
 					</view>
 					<view class='lh50 text-999 fs24'>
 						
@@ -161,7 +173,7 @@
 						{{nav==1?'联系找料员':'联系取料员'}}</button>
 					<button :data-id='itemObj.distribution_id' @click='goChat' v-if='itemObj.distribution_id!=null && status==2' class='order-footer-btn-red order-chat'>
 						联系配送员</button> -->
-						<view v-if="itemObj.find_status !=''">
+						<!-- <view v-if="itemObj.find_status !=''">
 							<button v-if="status!=3 && itemObj.find_status!=5 && itemObj.type==1 && itemObj.findman_id!=''"  @click="goChat(itemObj)">联系找料员</button>
 							<button v-if="itemObj.find_status!=5 && itemObj.type==2 && itemObj.findman_id!=''"  @click="goChat(itemObj)">联系找料员</button>
 							
@@ -169,19 +181,31 @@
 						<view v-if="itemObj.distribution_status !=''">
 							<button v-if="itemObj.distribution_status>1 && itemObj.distribution_status!=5 && itemObj.type==1 && itemObj.distribution_id !=''"  @click="goChat(itemObj)">联系配送员</button>
 							<button v-if="itemObj.distribution_status>1 && itemObj.distribution_status!=5 && itemObj.type==2 && itemObj.distribution_id !=''"  @click="goChat(itemObj)">联系配送员</button>
-						</view>
-						<!-- <view class="cancat flr" v-if='itemObj.findman_id'>
-							<image src="../../static/icon/concat.png"></image>
-							<text>{{nav==1?'联系找料员':'联系取料员'} }</text>
-							<view class="btn-1" @click="goChat(itemObj)"></view>
-							<view class="btn-2" @click="contact"></view>
 						</view> -->
+						
+						<view class="cancat flr" v-if="itemObj.findman_id!='' || itemObj.distribution_id!=''">
+							<image src="../../static/icon/concat.png"></image>
+							<!-- <text>{{nav==1?'联系找料员':'联系取料员'}}</text> -->
+				<!-- 			<text v-if="status!=3 && itemObj.find_status!=5 && itemObj.type==1 && itemObj.findman_id!=''"  @click="goChat(itemObj)">联系找料员</text>
+							<text v-if="itemObj.find_status!=5 && itemObj.type==2 && itemObj.findman_id!=''"  @click="goChat(itemObj)">联系找料员</text>
+							<text v-if="itemObj.distribution_status>1 && itemObj.distribution_status!=5 && itemObj.type==1 && itemObj.distribution_id !=''"  @click="goChat(itemObj)">联系配送员</text>
+							<text v-if="itemObj.distribution_status>1 && itemObj.distribution_status!=5 && itemObj.type==2 && itemObj.distribution_id !=''"  @click="goChat(itemObj)">联系配送员</text> -->
+							<text @click="goChat(itemObj)">{{itemObj.distribution_id!=''?'联系配送员':'联系找料员'}}</text>
+							<view class="btn-1" @click="goChat(itemObj)"></view>
+							<view class="btn-2" @click="contact(itemObj)"></view>
+						</view>
+						
+						
+						
 				</view>
 			</view>
 			<!-- 取料 -->
 		</view>
 		
 		<view class="status-2" v-if="itemObj.find_status>=4">
+			<view class="li">
+				<text class="fs28">物料描述:</text>  <text class="fs24 text-999 mgl-20">{{itemObj.result_desc}}</text>
+			</view>
 			<view class="li">
 				<text class="fs28">物料单价:</text> <text class="fs24 text-999 mgl-20">￥{{itemObj.result_price}}</text>
 			</view>
@@ -191,11 +215,10 @@
 			<view class="li">
 				<text class="fs28">大货配送费:</text>  <text class="fs24 text-999 mgl-20">￥{{itemObj.result_extra_fee}} ({{itemObj.result_big_num}} * {{big_price}})</text>
 			</view>
-			<view class="img cf" v-if="itemObj.desc_img.length>0 && itemObj.desc_img">
-				<image class="fll" v-for="(item, index) in itemObj.desc_img" :key="index" :src="item" mode=""></image>
+			<view class="img cf" v-if="itemObj.result_img.length>0 && itemObj.result_img">
+				<image class="fll" v-for="(item, index) in itemObj.result_img" :key="index" :src="item" mode=""></image>
 			</view>
 		</view>
-		
 		
 		<view class='task-get cell-padding fs30 mgt-30 pay-type' v-if="itemObj.find_status==4">
 			<view class='title'>选择支付方式</view>
@@ -212,6 +235,7 @@
 				</view>
 			</view>
 		</view>
+		
 	<view style='height:140upx;' v-if="itemObj.find_status==4"></view>
 	<view class='task-pay fs30 lh120' v-if="itemObj.find_status==4">
 		<view class='flr task-paybtn' style='margin-right:240upx;'>
@@ -223,7 +247,7 @@
 	<view style='height:120rpx;'></view>
 
 
-<view v-if="isCommentModel" class="comment-model">
+	<view v-if="isCommentModel" class="comment-model">
 			<view class="comment-model-bg"></view>
 			<view class="comment-content">
 				<view class="title">评价本次服务</view>
@@ -319,7 +343,13 @@
 				this.getUserAsset();
 		},
 		methods: {
-			
+			 previewImage: function (e) {
+				var current = e.target.dataset.src;
+				uni.previewImage({
+				  current: current, // 当前显示图片的http链接
+				  urls: this.$data.itemObj.desc_img || this.$data.itemObj.desc_img// 需要预览的图片http链接列表
+				})
+			  },
 			// 去评价
 			toComment(id) {
 				this.$data.commentMsg = ''; // 评价内容
@@ -401,18 +431,33 @@
 			goChat(item){
 				if(item.type == 1){
 					uni.navigateTo({
-						url:'/pages/chat/chat?id=' + item.findman_id + '&fmUserName='+item.findman_name
+						url:'/pages/chat/chat?fromUserId='+uni.getStorageSync('userInfo').id+'&toUserId=' + item.findman_id + '&name='+item.findman_name
 					})
 				}else{
 					uni.navigateTo({
-						url:'/pages/chat/chat?id=' + item.distribution_id + '&fmUserName='+item.distribution_name
+						url:'/pages/chat/chat?fromUserId='+uni.getStorageSync('userInfo').id+'&toUserId=' + item.distribution_id + '&name='+item.distribution_name
 					})
 				}
 			},
 			//  联系我们电话
-			contact() {
-				wx.makePhoneCall({
-					phoneNumber: '400-8088-156'
+			contact(item) {
+				let data={
+					id:item.id,
+					type:item.type
+				}
+				api.apiPhoneUser({
+					method:'POST',
+					data
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						uni.makePhoneCall({
+							phoneNumber: res.data
+						})
+					}else{
+						util.errorTips(res.msg);
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg)
 				})
 			},
 			// 确认收货
@@ -663,6 +708,12 @@
 </script>
 
 <style lang="scss" scoped>
+	.remark {
+		padding: 0 10upx;
+		border: 1upx solid #F29800;
+		color: #F29800;
+		border-radius: 4upx;
+	}
 	.status-2{
 		padding: 30upx;
 		border-top: 1upx solid #f4f4f4; 

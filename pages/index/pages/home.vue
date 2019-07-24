@@ -74,7 +74,7 @@
 					'https://static.yidap.com/miniapp/o2o_find/index/index_banner_3.png',
 					'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png'
 				],
-				banner:[],
+				banner:['static/images/image.png'],
 				title: "小鹿快找",
 				isArrow: false,
 				navArr: [{
@@ -248,7 +248,7 @@
 		}
 
 		.index-content-warp {
-			
+			background: #fff;
 			height: 490upx;
 			border-radius: 20upx;
 			margin: 20upx;
@@ -286,7 +286,7 @@
 			border-radius: 20upx;
 			overflow: hidden;
 			box-shadow: 0px 4px 12px -6px rgba(102, 102, 102, 0.5);
-
+			background: #fff;
 			swiper {
 				height: 360upx
 			}

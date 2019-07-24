@@ -1,29 +1,47 @@
 <template>
-	<view>
-		<view class='no-data' v-if="lists.length<=0">暂无数据</view>
-
-		<!-- 自定义单选/多选/全选实现删除功能 -->
-		<view class="chat-list">
-			<view class="items">
-				<view v-for="(item, index) in lists" :key="index" class="item" :data-key='index' :data-name='item.nickName || item.userName'
-				 :data-photo='item.avatarPath' :data-id='item.toUserId' @tap='goChat'>
-				 <!-- @touchstart="touchS" @touchmove="touchM" @touchend="touchE" -->
-					<view  :data-index="index" :style="item.txtStyle"
-					 class="inner txt cf">
-						<view class='fll item-1'>
-							<image :src="item.avatarPath || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'"></image>
-							<view v-if="item.unRead > 0" class='spot'></view>
-						</view>
-						<view class='fll item-2'>
-							<view class='nickName'>{{item.nickName || item.userName}}</view>
-							<view class='ellipsis'>{{item.userMessage.smsType=="TEXT"?item.userMessage.content:'[图片]'}}</view>
-						</view>
-						<view class='flr item-3'>
-							{{item.userMessage.dateTime}}
-							<!-- {{dateUtil.dateFormat(item.update_time)}} -->
+	<view class="index" v-bind:style="[{'min-height': secondHeight + 'px' }]">
+		<!-- 数据列表 -->
+		<view class="list-box">
+			<view class="container_of_slide" v-for="(item,index) in list" :key="index">
+				<view class="slide_list" @touchstart="touchStart($event,index)" @touchend="touchEnd($event,index)" @touchmove="touchMove($event,index)"
+				 @tap="recover(item, index)" :style="{transform:'translate3d('+item.slide_x+'px, 0, 0)'}">
+					<view class="now-message-info" hover-class="uni-list-cell-hover" :style="{width:Screen_width+'px'}">
+						<view class="icon-circle"><image :src="item.toAvatarPath"></image></view>
+						<view class="list-right">
+							<view class="top">
+								<view class="username">{{item.nickName || item.userName}}</view>
+								<view class="time">{{item.userMessage.dateTime}}</view>
+							</view>
+							<view class="bottom">
+								<view class="msg">{{item.userMessage.smsType == 'TEXT' ? item.userMessage.content : '[图片]'}}</view>
+								<view class="tis" v-if="item.unRead>0">{{item.unRead > 99 ? '99..' : item.unRead}}</view>
+							</view>
 						</view>
 					</view>
-					<view :data-index="index" @tap="delItem" class="inner del">删除</view>
+					<view class="group-btn">
+						<view class="top btn-div" @tap="top(item.id)" v-if="item.isShare">
+							分享
+						</view>
+						<view class="removeM btn-div" @tap="removeM(index, item.userInfoId)">
+							删除
+						</view>
+					</view>
+					<view style="clear:both"></view>
+				</view>
+			</view>
+		</view>
+		<!-- 分享弹窗 -->
+		<view mode="top-right" class="scan-box" v-if="visible">
+			<view class="scan-item">
+				<view class="scan-content">
+					<view class="scan-icon">
+						<image src="../../static/slide-list/icon-scan.png" class="scan-icon-img"></image>
+					</view>
+					<image src="../../static/slide-list/fork.png" class="scan-btn" @click="cancelEvent"></image>
+					<image :src="img" class="scan-img"></image>
+					<view class="scan-text">
+						扫一扫查看分享信息
+					</view>
 				</view>
 			</view>
 		</view>
@@ -31,103 +49,130 @@
 </template>
 
 <script>
+	import socket from '../../../utils/socket-io.js'
 	export default {
-		data() {
-			return {
-				delBtnWidth: 180,
-				list: [{
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018-09-22",
-						txtStyle: "",
-					},
-					{
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018",
-						txtStyle: "",
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018",
-						txtStyle: "",
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018"
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018"
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018"
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018"
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018"
-					}, {
-						img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-						title: "小鹿小鹿",
-						text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-						time: "2018"
-					},
-				],
-				lists: [],
-				startX: ""
+		computed: {
+			Screen_width() {
+				return uni.getSystemInfoSync().windowWidth;
 			}
 		},
-
-		onLoad(options) {
-			// 页面初始化 options为页面跳转所带来的参数
-			this.initEleWidth();
-			uni.setStorageSync('chatListIds', []);
-			this.onSend()
-		},
-		onShow() {
-			
+		data() {
+			return {
+				img: '../../static/slide-list/qr_code.png',
+				visible: false,
+				start_slide_x: 0,
+				btnWidth: 0,
+				startX: 0,
+				LastX: 0,
+				startTime: 0,
+				screenName: '',
+				list : [],
+				btuBottom: '0',
+				secondHeight: '',
+				index: -1,
+				fromUserId: 0
+			};
 		},
 		mounted() {
 			let that = this;
-			this.globalData.callback = function(res) {
-				console.log('lists页面收到数据啦')
-				let resLists = res;
-				if (resLists && resLists.length > 0) {
-					that.$data.lists = resLists;
+			const res = uni.getSystemInfoSync();
+			// 计算主体部分高度,单位为px
+			this.secondHeight = res.windowHeight;
+			// 接收消息
+			this.globalData.callback = function (res) {
+				console.log('接收数据:',res);
+				if (res && res.length > 0) {
+					for (let value in res) {
+						res[value].slide_x = 0
+					}
+					that.list = res;
 				} else {
-					if (resLists.fromUserId != 0) {
-						let res = that.$data.lists.findIndex((value, index) => {
-							return value.userInfoId = resLists.userInfoId
+					if (res.fromUserId != 0) {
+						let key = that.list.findIndex((value, index) => {
+							return value.userInfoId == res.userInfoId
 						})
-						if (res != -1) {
-							that.$data.lists[res].userMessage = resLists
-							that.$data.lists[res].unRead++;
-							that.$data.lists = that.$data.lists
+						if (key != -1) {
+							that.list[key].userMessage = res
+							that.list[key].unRead++;
 						} else {
 							that.onSend()
 						}
 					}
 				}
+			};
+			uni.$on('message', function(data) {
+				that.list[that.index].userMessage = data
+			});
+			uni.$on('chatList', function(data) {
+				if (data) {
+					that.onSend()
+				}
+			})
+		},
+		onLoad(option) {
+			this.globalData.initType = 1;
+			if (this.globalData.userId && this.globalData.userId != '') {
+				socket.initSocket(this.globalData.userId, this.globalData.toUserId)
+			} else {
+				let fromUserId = uni.getStorageSync('userInfo').id;
+				if (fromUserId && fromUserId != '') {
+					socket.initSocket(fromUserId, option.toUserId)
+				} else {
+					console.warn('用户id不存在，连接失败！！！')
+					return;
+				}
+				this.fromUserId = fromUserId;
 			}
+			
+			uni.setStorageSync('token', option.token || uni.getStorageSync('token'))
+			
+			if (this.globalData.connentSocket) {
+				this.onSend()
+			}
+		},
+		onShow() {
+			let that = this;
+			const res = uni.getSystemInfoSync();
+			// 计算主体部分高度,单位为px
+			this.secondHeight = res.windowHeight;
+			// 接收消息
+			this.globalData.callback = function (res) {
+				console.log('接收数据:',res);
+				if (res && res.length > 0) {
+					for (let value in res) {
+						res[value].slide_x = 0
+					}
+					that.list = res;
+				} else {
+					if (res.fromUserId != 0) {
+						let key = that.list.findIndex((value, index) => {
+							return value.userInfoId == res.userInfoId
+						})
+						if (key != -1) {
+							that.list[key].userMessage = res
+							that.list[key].unRead++;
+						} else {
+							that.onSend()
+						}
+					}
+				}
+			};
+			uni.$on('message', function(data) {
+				that.list[that.index].userMessage = data
+			});
+			uni.$on('chatList', function(data) {
+				if (data) {
+					that.onSend()
+				}
+			})
+		},
+		onUnload() {
+			uni.$off()
 		},
 		methods: {
 			onSend: function() {
-				let userId = uni.getStorageSync('userId');
 				let message = {
-					fromUserId: userId,
+					fromUserId: this.fromUserId || this.globalData.userId,
 					toUserId: '',
 					content: 'page',
 					smsType: 'TEXT',
@@ -137,262 +182,395 @@
 					currentPage: '',
 					pageSize: ''
 				}
-				this.sendSocketMessage(JSON.stringify(message))
-			},
-
-			touchS: function(e) {
-				if (e.touches.length == 1) {
-					this.$data.startX = e.touches[0].clientX
-				}
-			},
-			touchM: function(e) {
-				if (e.touches.length == 1) {
-					//手指移动时水平方向位置
-					var moveX = e.touches[0].clientX;
-					//手指起始点位置与移动期间的差值
-					var disX = this.$data.startX - moveX;
-					var delBtnWidth = this.$data.delBtnWidth;
-					var txtStyle = "";
-					if (disX == 0 || disX < 0) { //如果移动距离小于等于0，说明向右滑动，文本层位置不变
-						txtStyle = "left:0px";
-					} else if (disX > 0) { //移动距离大于0，文本层left值等于手指移动距离
-						txtStyle = "left:-" + disX + "px";
-						if (disX >= delBtnWidth) {
-							//控制手指移动距离最大值为删除按钮的宽度
-							txtStyle = "left:-" + delBtnWidth + "px";
-						}
-					}
-
-					//获取手指触摸的是哪一项
-					var index = e.currentTarget.dataset.index;
-					var list = this.$data.list;
-					list[index].txtStyle = txtStyle;
-					//更新列表的状态
-					this.$data.list = list;
-				}
-			},
-			touchE: function(e) {
-				if (e.changedTouches.length == 1) {
-					//手指移动结束后水平位置
-					var endX = e.changedTouches[0].clientX;
-					//触摸开始与结束，手指移动的距离
-					var disX = this.$data.startX - endX;
-					var delBtnWidth = this.$data.delBtnWidth;
-					//如果距离小于删除按钮的1/2，不显示删除按钮
-					var txtStyle = disX > delBtnWidth / 2 ? "left:-" + delBtnWidth + "px" : "left:0px";
-					//获取手指触摸的是哪一项
-					var index = e.currentTarget.dataset.index;
-					var list = this.$data.list;
-					list[index].txtStyle = txtStyle;
-					//更新列表的状态
-					this.$data.list = list;
-				}
-			},
-			//获取元素自适应后的实际宽度
-			getEleWidth: function(w) {
-				var real = 0;
-				try {
-					var res = uni.getSystemInfoSync().windowWidth;
-					var scale = (750 / 2) / (w / 2); //以宽度750px设计稿做宽度的自适应
-					real = Math.floor(res / scale);
-					return real;
-				} catch (e) {
-					return false;
-					// Do something when catch error
-				}
-			},
-			initEleWidth: function() {
-				var delBtnWidth = this.getEleWidth(this.$data.delBtnWidth);
-				this.$data.delBtnWidth = delBtnWidth;
-			},
-			//点击删除按钮事件
-			delItem: function(e) {
-				//获取列表中要删除项的下标
-				var index = e.currentTarget.dataset.index;
-				var list = this.$data.list;
-				//移除列表中下标为index的项
-				list.splice(index, 1);
-				//更新列表的状态
-				this.$data.list = list;
-			},
-			getCacheMessage() {
-				IMapi.getCacheMessage({
-					data: {
-						receiveUserId: 1,
-						sendUserId: 2
-					}
-				}).then((res) => {
-					this.$data.list =  res.data
+				this.globalData.localSocket.send({
+					data: JSON.stringify(message)
 				})
 			},
-			goChat(e) {
-				let toUserId = e.currentTarget.dataset.id;
-				let chatListIndex = e.currentTarget.dataset.index;
-				let fromUserPhoto = e.currentTarget.dataset.photo;
-				let userName = e.currentTarget.dataset.name;
-				let key = e.currentTarget.dataset.key;
-
-				this.$data.lists[key].unRead = 0;
-				this.$data.lists = this.$data.lists;
-				
-				let oldArr = uni.getStorageSync('chatListIds') || [];
-				if (oldArr.length > 0) {
-					oldArr.forEach((o, i) => {
-						if (o != toUserId) {
-							oldArr.push(toUserId);
+			cancelEvent(){
+				this.visible = false
+			},
+			// 滑动开始
+			touchStart(e, index) {
+				//记录手指放上去的时间
+				this.startTime = e.timeStamp;
+				//记录滑块的初始位置
+				this.start_slide_x = this.list[index].slide_x;
+				// 按钮宽度
+				uni.createSelectorQuery()
+					.selectAll('.group-btn')
+					.boundingClientRect()
+					.exec(res => {
+						if (res[0] != null) {
+							this.btnWidth = res[0][index].width * -1;
 						}
-					})
+					});
+				// 记录上一次开始时手指所处位置
+				this.startX = e.touches[0].pageX;
+				// 记录上一次手指位置
+				this.lastX = this.startX;
+				//初始化非当前滑动消息列的位置
+				this.list.forEach((item, eq) => {
+					if (eq !== index) {
+						item.slide_x = 0;
+					}
+				});
+			},
+			// 滑动中
+			touchMove(e, index) {
+				const endX = e.touches[0].pageX;
+				const distance = endX - this.lastX;
+				// 预测滑块所处位置
+				const duang = this.list[index].slide_x + distance;
+				// 如果在可行区域内
+				if (duang <= 0 && duang >= this.btnWidth) {
+					this.list[index].slide_x = duang;
+				}
+				// 此处手指所处位置将成为下次手指移动时的上一次位置
+				this.lastX = endX;
+			},
+			// 滑动结束
+			touchEnd(e, index) {
+				let distance = 10;
+				const endTime = e.timeStamp;
+				const x_end_distance = this.startX - this.lastX;
+				if (Math.abs(endTime - this.startTime) > 200) {
+					distance = this.btnWidth / -2;
+				}
+				// 判断手指最终位置与手指开始位置的位置差距
+				if (x_end_distance > distance) {
+					this.list[index].slide_x = this.btnWidth;
+				} else if (x_end_distance < distance * -1) {
+					this.list[index].slide_x = 0;
 				} else {
-					oldArr.push(toUserId);
+					this.list[index].slide_x = this.start_slide_x;
 				}
-
-				uni.setStorageSync('chatListIds', oldArr);
-				uni.navigateTo({
-					url: '/pages/chat/chat?toUserId=' + toUserId + '&fmUserName=' + userName + '&fromUserPhoto=' + fromUserPhoto +
-						'&index=' + key,
-				})
+			},
+			// 点击回复原状
+			recover(item, index) {
+				this.index = index
+				if (item.slide_x && item.slide_x != 0) {
+					this.list[index].slide_x = 0
+				} else {
+					this.list[index].unRead = 0;
+					uni.setStorageSync('toAvatarPath', item.toAvatarPath);
+					uni.setStorageSync('fromAvatarPath', item.fromAvatarPath);
+					uni.navigateTo({
+						url: `../chat/chat?name=${item.nickName}&fromUserId=${this.fromUserId || this.globalData.userId}&toUserId=${item.toUserId}`
+					})
+				}
+			},
+			// 分享
+			top(id) {
+				console.log('点击分享')
+				if(this.visible){
+					this.visible = false
+				}else{
+					this.visible = true
+				}
+			},
+			// 删除
+			removeM(index, id) {
+				let self = this
+				uni.showModal({
+					title: '',
+					content: '确定要删除该信息吗？',
+					confirmText: '删除',
+					confirmColor: '#ff3b32',
+					success: function (res) {
+						if (res.confirm) {
+							self.list.splice(index, 1)
+							uni.showToast({
+								icon: "success",
+								title: '操作成功!',
+								duration: 2000
+							});
+						} else if (res.cancel) {
+							console.log('用户点击取消')
+						}
+					}
+				});
 			}
 		}
-	}
+	};
 </script>
 
 <style lang="scss" scoped>
-	/* pages/chatList/chatList.wxss */
-	.chat-list .items {
-		background: #fff;
-		border-top: 1rpx solid #eee;
+	.index{
+		background: #F8F8F8;
 	}
-
-	.chat-list .items .item {
-		height: 140rpx;
-		width: 730rpx;
-		margin-left: 20rpx;
-		padding: 20rpx 0;
-		border-bottom: 1rpx solid #eee;
+	.list-box{
+		padding: 20upx 0;
 	}
-
-	.no-data {
-		text-align: center;
-		line-height: 100rpx;
-	}
-
-	.chat-list .items .item .item-1 {
-		width: 120rpx;
-		position: relative;
-		text-align: center;
-	}
-
-	.chat-list .items .item .item-1 image {
-		width: 96rpx;
-		height: 96rpx;
-		border-radius: 10rpx;
-	}
-
-	.chat-list .items .item .item-1 .spot {
-		position: absolute;
-		width: 20rpx;
-		height: 20rpx;
-		background: #C81A29;
-		border-radius: 50%;
-		top: -5rpx;
-		right: 2rpx;
-	}
-
-	.chat-list .items .item .item-2 {
-		width: 450rpx;
-		font-size: 32rpx;
-		line-height: 50rpx;
-		margin-left: 12rpx;
-	}
-
-	.chat-list .items .item .item-2 .ellipsis {
-		font-size: 28rpx;
-		color: #999;
-		width: 420rpx;
-		display: block;
-		position: relative;
-	}
-
-	.chat-list .items .item .item-3 {
-		width: 140rpx;
-		text-align: right;
-		font-size: 24rpx;
-		color: #999;
-		padding-right: 30rpx;
-		line-height: 60rpx;
-	}
-
-	.nickName {
-		font-weight: 500;
-	}
-
-
-	/* 向左滑动实现删除操作 */
-	view {
-		box-sizing: border-box;
-	}
-
-	.item-box {
-		margin: 0 auto;
-	}
-
-	.items {
+	.container_of_slide {
 		width: 100%;
-	}
-
-	.item {
-		position: relative;
-		border-top: 2rpx solid #eee;
-		height: 140rpx;
-		line-height: 140rpx;
 		overflow: hidden;
 	}
-
-	.item:last-child {
-		border-bottom: 2rpx solid #eee;
+	.slide_list {
+		transition: all 100ms;
+		transition-timing-function: ease-out;
+		min-width: 200%;
+		height: 140upx;
 	}
-
-	.inner {
+	.slide_list:before {
+		content: " ";
 		position: absolute;
-		top: 0;
-	}
-
-	.inner.txt {
-		font-family: Monaco;
-		background: #fff;
+		z-index: 3;
+		left: 160upx;
+		bottom: -1px;
 		width: 100%;
-		z-index: 5;
-		transition: left 0.2s ease-in-out;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		padding: 20rpx 0;
+		height: 1px;
+		border-bottom: 1px solid #D9D9D9;
+		-webkit-transform-origin: 0 0;
+		transform-origin: 0 0;
+		-webkit-transform: scaleY(.5);
+		transform: scaleY(.5)
+	}
+	.container_of_slide:last-child .slide_list:before{
+		display: none;
+	}
+	.now-message-info {
+		box-sizing:border-box;
+		display: flex;
+		align-items: center;
+		font-size: 16px;
+		clear:both;
+		height: 140upx;
+		padding: 0 30upx;
+		background: #FFFFFF;
+	}
+	.now-message-info,.group-btn {
+		float: left;
 	}
 
-	.inner.del {
-		font-family: Monaco;
-		background-color: #e64340;
-		width: 180rpx;
-		text-align: center;
-		z-index: 4;
-		right: 0;
+	.group-btn {
+		display: flex;
+		flex-direction: row;
+		height: 140upx;
+		min-width: 100upx;
+		align-items: center;
+
+	}
+
+	.group-btn .btn-div {
+		height: 140upx;
 		color: #fff;
-		font-size: 32rpx;
+		text-align: center;
+		padding: 0 50upx;
+		font-size: 34upx;
+		line-height: 140upx;
 	}
 
-	.item-icon {
-		width: 64rpx;
-		height: 120rpx;
-		vertical-align: middle;
-		margin-right: 16rpx
+	.group-btn .top {
+		background-color: #c4c7cd;
 	}
 
-	::-webkit-scrollbar {
-		width: 6px;
-		background-color: #f5f5f5;
+	.group-btn .removeM {
+		background-color: #ff3b32;
 	}
 
-	::-webkit-scrollbar-thumb {
-		background-color: #999;
+	.icon-circle {
+		width:100upx;
+		height: 100upx;
+		line-height:100upx;
+		text-align:center;
+		color: #FFFFFF;
+		font-weight: bold;
+		font-size: 20px;
+		float: left;
+	}
+	.icon-circle image{
+		width:100upx;
+		height:100upx;
+		-webkit-border-radius:20upx;
+		border-radius:12upx;
+	}
+	.list-right {
+		flex-shrink:1;
+		width:98%;
+		padding:6upx 0 6upx 5%;
+	}
+	.list-right .top {
+		width: 100%;
+		display: flex;
+		margin-bottom: 10upx;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+	.list-right .top .username {
+		font-size: 30upx;
+		font-weight: 400;
+	}
+	.list-right .top .time {
+		font-size: 25upx;
+		color: #bebebe;
+	}
+	.list-right .bottom {
+		width: 100%;
+		height: 40upx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.list-right .bottom .msg {
+		width: 90%;
+		font-size: 25upx;
+		color: #777;
+		display:-webkit-box;
+		-webkit-box-orient:vertical;
+		-webkit-line-clamp:1;
+		overflow:hidden;
+		margin-right: 30upx;
+		text-align: left;
+	}
+	.list-right .bottom .tis {
+		padding: 3upx 12upx;
+		font-size: 22upx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #eb4d3d;
+		color: #fff;
+		border-radius: 6upx;
+	}
+	.button-box{
+		box-sizing: border-box;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		z-index: 998;
+		background: #F8F8F8;
+	}
+	.btn-sub{
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: flex;
+		-webkit-box-pack: center;
+		-webkit-justify-content: center;
+		justify-content: center;
+		-webkit-box-align: center;
+		-webkit-align-items: center;
+		align-items: center;
+		-webkit-box-orient: vertical;
+		-webkit-box-direction: normal;
+		float: left;
+		width: 100%;
+		height: 100upx;
+		background: #F8F8F8;
+		color: #7fb2ff;
+	}
+	.btn-plusempty{
+		width: 110upx;
+		height: 110upx;
+		background: #007bfa;
+		position: fixed;
+		bottom: 50upx;
+		right: 20upx;
+		border-radius: 100%;
+		overflow: hidden;
+		text-align: center;
+		line-height: 110upx;
+	}
+	.empty{
+		color: #999999;
+	}
+	.plusempty-img{
+		width: 50upx;
+		height: 50upx;
+		margin-top: 30upx;
+	}
+	.scan-box{
+		display:block;
+		position:fixed;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		background-color:rgba(0, 0, 0, 0.3);
+		z-index:99999;
+	}
+	.scan-item{
+		display:-webkit-box;
+		display:-webkit-flex;
+		display:-ms-flexbox;
+		display:flex;
+		position:relative;
+		margin:0 auto;
+		width:80%;
+		height:100%;
+		-webkit-box-pack:center;
+		-webkit-justify-content:center;
+		-ms-flex-pack:center;
+		justify-content:center;
+		-webkit-box-align:center;
+		-webkit-align-items:center;
+		-ms-flex-align:center;
+		align-items:center;
+		-webkit-box-sizing:border-box;
+		box-sizing:border-box;
+		opacity:1;
+
+	}
+	.scan-content{
+		position:relative;
+		width: 400upx;
+		height: 500upx;
+		background: #FFFFFF;
+		border-radius: 20upx;
+	}
+	.scan-icon{
+		position: absolute;
+		top: -50upx;
+		left: 150upx;
+		width: 100upx;
+		height: 100upx;
+		border-radius: 100%;
+		box-sizing:border-box;
+		background: #FFFFFF;
+		padding: 20upx;
+	}
+	.scan-icon-img{
+		width: 100%;
+		height: 100%;
+	}
+	.scan-text{
+		position: absolute;
+		bottom: 40upx;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		font-size: 14px;
+	}
+	.scan-share{
+		width: 100%;
+		height: 100%;
+	}
+	.scan-img{
+		width: 300upx;
+		height: 300upx;
+		margin: auto;
+		display: block;
+		position: absolute;
+		top: 80upx;
+		left: 50upx;
+		z-index: 99;
+	}
+	.scan-btn{
+		top:-30upx;
+		left:auto;
+		right:-30upx;
+		bottom:auto;
+		position:absolute;
+		width:64upx;
+		height:64upx;
+		border-radius:50%;
+		z-index:99999;
+		display: flex;
+	}
+	.uni-list-cell-hover {
+		background-color: #eeeeee;
+	}
+	.bottom-btn-hover{
+		background: #0564c7!important;;
 	}
 </style>

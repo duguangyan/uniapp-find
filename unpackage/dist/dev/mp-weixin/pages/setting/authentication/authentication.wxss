@@ -56,7 +56,7 @@
   margin-bottom: 240rpx;
 }
 .authentication .btn-warp.data-v-6b9a139a {
-    background: #f4f4f4;
+    background: #fff;
     padding-bottom: 100rpx;
 }
 .authentication .btn-warp .btn.data-v-6b9a139a {

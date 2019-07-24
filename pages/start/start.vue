@@ -11,17 +11,59 @@
 </template>
 
 <script>
+	
 	export default {
 		data() {
 			return {
 				btnText:['我要找料','我是找料员','我是配送员','小鹿家人']
 			};
 		},
-		onLoad() {
-			
+		onLoad(options) {
+			if(options.menuFrom){
+				
+				let access_token = uni.getStorageSync('access_token');
+				let token        = uni.getStorageSync('token');
+				let v            = uni.getStorageSync('v');
+				let user_name    = uni.getStorageSync('user_name');
+				let userInfo     = uni.getStorageSync('userInfo');
+				
+				uni.clearStorageSync();
+				
+				uni.setStorageSync('access_token',access_token);
+				uni.setStorageSync('token',       token);
+				uni.setStorageSync('userType',options.menuFrom);
+				uni.setStorageSync('v',v);
+				uni.setStorageSync('user_name',user_name);
+				uni.setStorageSync('userInfo',userInfo);
+				if(options.menuFrom == 0){
+					uni.reLaunch({
+						url: '../index/index?menuFrom=' + 0 +'&from=0'
+					})
+				}else if(options.menuFrom == 1){
+					uni.setStorageSync('isExamine1',1);
+					uni.reLaunch({
+						url: '../index/index?menuFrom=' + 1 +'&from=0'
+					})
+				}else if(options.menuFrom == 2){
+					uni.setStorageSync('isExamine2',1);
+					uni.reLaunch({
+						url: '../index/index?menuFrom=' + 2 +'&from=0'
+					})
+				}else if(options.menuFrom == 3){
+					uni.reLaunch({
+						url: '../index/index?menuFrom=' + 3 +'&from=0'
+					})
+				}
+			}
 		},
 		onShow() {
-			
+			let userType = uni.getStorageSync('userType');
+			console.log(userType);
+			if(userType === 0 || userType === 1 || userType === 2 || userType === 3) {
+				uni.reLaunch({
+					url: '../index/index?menuFrom=' + userType +'&from=0'
+				})
+			}
 		},
 		methods:{
 			goNextPage(index){

@@ -39,7 +39,7 @@
 							</text>
 							
 							<text class="mgl-30 fs30 reference_price">参考价格: </text>
-							<input class="flr mgr-20" type="text" @click="doCompare(item.is_compare)" :disabled="!item.is_compare" v-model="item.reference_price" placeholder="请输入参考价格" />
+							<input class="flr mgr-20" type="digit" @click="doCompare(item.is_compare)" :disabled="!item.is_compare" v-model="item.reference_price" placeholder="请输入参考价格" />
 						</view>
 					</view>
 				</view>
@@ -71,7 +71,7 @@
 							<text class='iconfont icon-jiantou address-icon'></text>
 							<view v-if="item.address != ''" @click='goConsigneeAddress(index)' class="flex-1 address-info address-q-i fs24">
 								<view>
-									<text> 收货人 {{item.address.mobile||''}}</text> <text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
+									<text> {{item.address.consignee}} {{item.address.mobile||''}}</text> <text class='remark' v-if="item.address && item.address.remark!=''">{{item.address.remark||''}}</text>
 								</view>
 								<view class="text-999">
 									
@@ -205,7 +205,8 @@
 					reference_price:''
 				}],
 				taskEditItem:'',
-				isTaskEditItem:false
+				isTaskEditItem:false,
+				isClock:true
 			};
 		},
 		components: {
@@ -267,14 +268,14 @@
 			this.getCompanyaddress();
 			// 获取默认地址
 			this.getSelectedAddress();
+			// 获取默认区域数据第一个
+			this.initArea();
+			// 获取说明内容
+			this.getNeedKnow();
 
 		},
 		onShow() {
-			// 获取说明内容
-			this.getNeedKnow();
-			// 获取默认区域数据第一个
-			this.initArea();
-			
+
 			this.$eventHub.$on('classifyData', (data) => {
 				console.log('classifyData:', data)
 				this.$data.isNotes = false;
@@ -338,7 +339,13 @@
 			},
 			// 选择服务区域
 			goAreaText(index){
+				if(!this.$data.isClock){
+					return false;
+				}else{
+					this.$data.isClock = false;
+				}
 				let _this = this;
+				
 				api.findArea({}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
 						let arr    = res.data;
@@ -346,20 +353,29 @@
 						arr.forEach((o,i)=>{
 							newArr.push(o.name);
 						})
+						
 						uni.showActionSheet({
 							itemList: newArr,
 							success: function (res) {
+								_this.$data.isClock = true;
 								console.log('选中了第' + (res.tapIndex + 1) + '个按钮');
 								_this.$data.finds[index].area_id  = arr[res.tapIndex].id;
 								_this.$data.finds[index].areaText = arr[res.tapIndex].name;
 								util.successTips('区域选择成功');
+								_this.$data.isClock = true;
 							},
 							fail: function (res) {
 								console.log(res.errMsg);
 								// util.successTips('区域选择失败');
+								_this.$data.isClock = true;
 							}
 						});
+					}else{
+						_this.$data.isClock = true;
 					}
+				}).catch((res)=>{
+					util.errorTips(res.msg || res.message);
+					_this.$data.isClock = true;
 				})
 			},
 			

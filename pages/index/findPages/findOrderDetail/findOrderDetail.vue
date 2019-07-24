@@ -41,10 +41,10 @@
 			<!--取样地址  -->
 			<view class="top20"></view>
 			<view class="get-address" v-if="detailData.get_address">
-				<view class="t1 fs28">寄料地址</view>
+				<view class="t1 fs28">{{index == 1?'取样地址':'取料地址'}}</view>
 				<view class="t2 fs24">
-					<text>收货人 {{detailData.get_address.mobile}}</text>
-					<text v-if="detailData.get_address.stall">{{detailData.get_address.stall}}</text>
+					<text>{{detailData.get_address.consignee}} {{detailData.get_address.mobile}}</text>
+					<text class="mgl-20" v-if="detailData.get_address.stall">{{detailData.get_address.stall}}</text>
 					<!-- <text class="stall">xxx</text> -->
 				</view>
 				<view class="t3 fs24 text-999">
@@ -55,8 +55,8 @@
 			<view class="get-address" v-if="detailData.shipping_address">
 				<view class="t1 fs28">寄料地址</view>
 				<view class="t2 fs24">
-					<text>收货人 {{detailData.shipping_address.mobile}}</text>
-					<text v-if="detailData.shipping_address.stall">{{detailData.shipping_address.stall}}</text>
+					<text>{{detailData.shipping_address.consignee}} {{detailData.shipping_address.mobile}}</text>
+					<text class="mgl-20" v-if="detailData.shipping_address.stall">{{detailData.shipping_address.stall}}</text>
 					<!-- <text class="stall">xxx</text> -->
 				</view>
 				<view class="t3 fs24 text-999">
@@ -108,7 +108,7 @@
 						<text class="text-red">*</text><text>物料单价:</text>
 					</view>
 					<view class="t2 fll">
-						<input type="text" @input="getPriceByOne" placeholder="请输入物料单价">
+						<input type="digit" @input="getPriceByOne" placeholder="请输入物料单价">
 					</view>
 				</view>
 				
@@ -141,6 +141,9 @@
 			
 			<view class="status-2" v-if="detailData.find_status>=4">
 				<view class="li">
+					<text class="fs28">物料描述:</text> <text class="fs24 text-999 mgl-20">￥{{detailData.result_desc}}</text>
+				</view>
+				<view class="li">
 					<text class="fs28">物料单价:</text> <text class="fs24 text-999 mgl-20">￥{{detailData.result_price}}</text>
 				</view>
 				<view class="li">
@@ -149,8 +152,8 @@
 				<view class="li">
 					<text class="fs28">大货配送费:</text>  <text class="fs24 text-999 mgl-20">￥{{detailData.result_extra_fee}} ({{detailData.result_big_num}} * {{big_price}})</text>
 				</view>
-				<view class="img cf" v-if="detailData.desc_img.length>0 && detailData.desc_img">
-					<image class="fll" v-for="(item, index) in detailData.desc_img" :key="index" :src="item" mode=""></image>
+				<view class="img cf" v-if="detailData.result_img.length>0 && detailData.result_img">
+					<image class="fll" v-for="(item, index) in detailData.result_img" :key="index" :src="item" mode=""></image>
 				</view>
 			</view>
 			
@@ -183,18 +186,19 @@
 					<view :data-type='2' :data-id="detailData.id" @click='showForm'>{{detailData.type==1?'找':'取'}}不到物料</view>
 				</view>
 				
-				<view v-if="detailData.find_status == 1" class="find-status flr" @click="receiptOrder(detailData.id)">
-					确认接单
-				</view>
-				<view v-if="detailData.user_id!=''" class="find-status flr" @click="goChat(detailData)">
+				
+				<!-- <view v-if="detailData.user_id!=''" class="find-status flr" @click="goChat(detailData)">
 					联系客户
-				</view>
-				<!-- <view class="cancat flr" v-if="detailData.find_status == 2">
+				</view> -->
+				<view class="cancat flr" v-if="detailData.user_id!=''">
 					<image src="/static/icon/concat.png"></image>
 					<text>联系客户</text>
 					<view class="btn-1" @click="goChat(detailData)"></view>
-					<view class="btn-2" @click="contact"></view>
-				</view> -->
+					<view class="btn-2" @click="contact(detailData)"></view>
+				</view>
+				<view v-if="detailData.find_status == 1" class="find-status flr" @click="receiptOrder(detailData.id)">
+					确认接单
+				</view>
 			</view>
 
 			<!-- <button :data-id='detailData.user_id' @click='goChat' class='order-footer-btn-red order-chat'>
@@ -230,11 +234,10 @@
 	import util from "../../../../utils/util.js";
 	import upload from "../../../../components/upload.vue";
 	import uniNumberBox from "@/components/uni-number-box/uni-number-box.vue";
-	import xflSelect from '@/components/xfl-select/xfl-select.vue'; 
 	import dialog from "@/components/dialog.vue";
 	export default {
 		components: {
-			upload,uniNumberBox,xflSelect,dialog
+			upload,uniNumberBox,dialog
 		},
 		data() {
 			return {
@@ -259,11 +262,12 @@
 				formShow:false,
 				remark: '',    // 找不到物料原因
 				shipping_extra_price:0,
-			
+				
 			};
 		},
 		onLoad(options) {
 			this.$data.id = options.id;
+			this.$data.index = options.index;
 			if(options.index == 1){
 				uni.setNavigationBarTitle({
 					title: "找料订单详情"
@@ -281,10 +285,32 @@
 
 		},
 		methods: {
+			// 联系用户
+			contact(item){
+				let data={
+					id:item.id,
+					type:1
+				}
+				api.apiPhoneStaff({
+					method:'POST',
+					data
+				}).then((res)=>{
+					
+					if(res.code == 200 || res.code == 0){
+						uni.makePhoneCall({
+							phoneNumber: res.data
+						})
+					}else{
+						util.errorTips(res.msg);
+					}
+				}).catch((res)=>{
+					util.errorTips(res.msg)
+				})
+			},
 			// 取聊天室
 			goChat(item){
 				uni.navigateTo({
-					url:'/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户'
+					url:'/pages/chat/chat?fromUserId='+uni.getStorageSync('userInfo').id+'&toUserId=' + item.user_id + '&name=客户'
 				})
 			},
 			// 确认接单

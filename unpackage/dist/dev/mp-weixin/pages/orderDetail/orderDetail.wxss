@@ -24,6 +24,12 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.remark.data-v-7a7a76f2 {
+  padding: 0 10rpx;
+  border: 1rpx solid #F29800;
+  color: #F29800;
+  border-radius: 4rpx;
+}
 .status-2.data-v-7a7a76f2 {
   padding: 30rpx;
   border-top: 1rpx solid #f4f4f4;

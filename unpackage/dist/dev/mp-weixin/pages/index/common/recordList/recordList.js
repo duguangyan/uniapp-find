@@ -83,7 +83,10 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/uti
 
     },
     getRecords: function getRecords() {var _this = this;
-      if (this.$data.pageIndex = 1) {
+      if (this.$data.page == 1) {
+        this.$data.list = [];
+      }
+      if (this.$data.pageIndex == 2) {
         _api.default.staffReplace({
           data: {
             page: this.$data.page } }).
@@ -102,13 +105,14 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/uti
           }
         });
 
-      } else {
+      } else if (this.$data.pageIndex == 1) {
         _api.default.staffCommissions({
           data: {
             page: this.$data.page } }).
 
         then(function (res) {
           if (res.code == 200 || res.code == 0) {
+
             _this.$data.records = res.data;
             _this.$data.now_amount = res.data.now_amount;
             _this.$data.total_amount = res.data.total_amount;

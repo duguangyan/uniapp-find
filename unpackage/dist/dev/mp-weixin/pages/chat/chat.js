@@ -98,391 +98,232 @@
 
 
 
-
-
-
-
-
-
-var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
-var _IMapi = _interopRequireDefault(__webpack_require__(/*! ../../utils/IMapi.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\IMapi.js"));
-var _util = _interopRequireDefault(__webpack_require__(/*! ../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
 var _md = _interopRequireDefault(__webpack_require__(/*! ../../utils/md5.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\md5.js"));
-var _math = _interopRequireDefault(__webpack_require__(/*! ../../utils/math.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\math.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
-
+var _math = _interopRequireDefault(__webpack_require__(/*! ../../utils/math.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\math.js"));
+var _util = _interopRequireDefault(__webpack_require__(/*! ../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
+var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
+var _socketIo = _interopRequireDefault(__webpack_require__(/*! ../../utils/socket-io.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\socket-io.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
   data: function data() {
     return {
-      content: '',
-      isFalse: false,
-      inputShowed: false,
-      isConfirmHold: true,
-      isScrollY: true,
-      toId: '',
-      sms: 0,
-      baseUrl: 'https://webapi.yidap.com',
-      message_list: [],
-      scroll_height: wx.getSystemInfoSync().windowHeight,
-      page_index: 0,
-      mode: true,
-      cancel: false,
-      status: 0,
-      tips: ['按住 说话', '松开 结束', '取消 发送'],
-      state: {
-        'normal': 0,
-        'pressed': 1,
-        'cancel': 2 },
-
-      toView: '',
-      userId: wx.getStorageSync('userId'),
-      to_avatar_path: 'https://static.yidap.com/miniapp/o2o/imgs/collection@2x.png',
-      currentPage: 2,
-      pageSize: 10,
-      scrollLoading: 0,
-      HideData: [],
-      EventData: [],
-      NoMoreEvent: 0,
-      noData: true,
-      fromUserPhoto: '',
-      toUserPhoto: '',
+      //文字消息
+      textMsg: '',
+      //消息列表
+      scrollAnimation: false,
+      scrollTop: 0,
+      scrollToView: '',
+      msgList: [],
+      hideMsgList: [],
+      msgImgList: [],
+      fromUserId: 0,
+      toUserId: 0,
+      toAvatarPath: '',
+      fromAvatarPath: '',
       userInfoId: '',
-      maxlength: 500,
-      messageCache: [],
-      prevIndex: -1,
-      totalSize: '',
-      scrollTop: 0 };
-
-  },
-  onLoad: function onLoad(options) {
-    var avatar_path = uni.getStorageSync('avatar_path');
-    var userId = uni.getStorageSync('userId');
-
-    if (options.id) {
-      this.$data.toId = options.id;
-    } else {
-      this.$data.toId = options.toUserId;
-    }
-    uni.setNavigationBarTitle({
-      title: options.fmUserName });
-
-
-    this.$data.prevIndex = options.chatListIndex ? options.chatListIndex : -1;
-    this.$data.fromUserPhoto = options.fromUserPhoto ? options.fromUserPhoto : 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png';
-    this.$data.toUserPhoto = avatar_path ||
-    'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png';
-    this.$data.userInfoId = parseInt(userId) > parseInt(this.$data.toId) ? _md.default.md5(this.$data.toId + userId) : _md.default.md5(userId +
-    this.$data.toId);
-
-
-    var message = {
-      fromUserId: userId,
-      toUserId: this.$data.toId,
-      content: 'page',
-      smsType: 'TEXT',
-      sysType: 1,
-      smsStatus: 10,
-      smsList: false,
+      toupperTop: true,
       currentPage: 1,
-      pageSize: 10 };
+      nextPage: true,
+      msgTotal: 0,
+      //录音相关参数
 
-    this.sendSocketMessage(JSON.stringify(message));
+      //H5不能录音
+      RECORDER: uni.getRecorderManager(),
+
+      isVoice: false,
+      voiceTis: '按住 说话',
+      recordTis: "手指上滑 取消发送",
+      recording: false,
+      willStop: false,
+      initPoint: { identifier: 0, Y: 0 },
+      recordTimer: null,
+      recordLength: 0,
+      //播放语音相关参数
+      AUDIO: uni.createInnerAudioContext(),
+      playMsgid: null,
+      VoiceTimer: null,
+      //表情定义
+      showEmji: '',
+      emojiList: [
+      [{ "url": "100.gif", alt: "[微笑]" }, { "url": "101.gif", alt: "[伤心]" }, { "url": "102.gif", alt: "[美女]" }, { "url": "103.gif", alt: "[发呆]" }, { "url": "104.gif", alt: "[墨镜]" }, { "url": "105.gif", alt: "[哭]" }, { "url": "106.gif", alt: "[羞]" }, { "url": "107.gif", alt: "[哑]" }, { "url": "108.gif", alt: "[睡]" }, { "url": "109.gif", alt: "[哭]" }, { "url": "110.gif", alt: "[囧]" }, { "url": "111.gif", alt: "[怒]" }, { "url": "112.gif", alt: "[调皮]" }, { "url": "113.gif", alt: "[笑]" }, { "url": "114.gif", alt: "[惊讶]" }, { "url": "115.gif", alt: "[难过]" }, { "url": "116.gif", alt: "[酷]" }, { "url": "117.gif", alt: "[汗]" }, { "url": "118.gif", alt: "[抓狂]" }, { "url": "119.gif", alt: "[吐]" }, { "url": "120.gif", alt: "[笑]" }, { "url": "121.gif", alt: "[快乐]" }, { "url": "122.gif", alt: "[奇]" }, { "url": "123.gif", alt: "[傲]" }],
+      [{ "url": "124.gif", alt: "[饿]" }, { "url": "125.gif", alt: "[累]" }, { "url": "126.gif", alt: "[吓]" }, { "url": "127.gif", alt: "[汗]" }, { "url": "128.gif", alt: "[高兴]" }, { "url": "129.gif", alt: "[闲]" }, { "url": "130.gif", alt: "[努力]" }, { "url": "131.gif", alt: "[骂]" }, { "url": "132.gif", alt: "[疑问]" }, { "url": "133.gif", alt: "[秘密]" }, { "url": "134.gif", alt: "[乱]" }, { "url": "135.gif", alt: "[疯]" }, { "url": "136.gif", alt: "[哀]" }, { "url": "137.gif", alt: "[鬼]" }, { "url": "138.gif", alt: "[打击]" }, { "url": "139.gif", alt: "[bye]" }, { "url": "140.gif", alt: "[汗]" }, { "url": "141.gif", alt: "[抠]" }, { "url": "142.gif", alt: "[鼓掌]" }, { "url": "143.gif", alt: "[糟糕]" }, { "url": "144.gif", alt: "[恶搞]" }, { "url": "145.gif", alt: "[什么]" }, { "url": "146.gif", alt: "[什么]" }, { "url": "147.gif", alt: "[累]" }],
+      [{ "url": "148.gif", alt: "[看]" }, { "url": "149.gif", alt: "[难过]" }, { "url": "150.gif", alt: "[难过]" }, { "url": "151.gif", alt: "[坏]" }, { "url": "152.gif", alt: "[亲]" }, { "url": "153.gif", alt: "[吓]" }, { "url": "154.gif", alt: "[可怜]" }, { "url": "155.gif", alt: "[刀]" }, { "url": "156.gif", alt: "[水果]" }, { "url": "157.gif", alt: "[酒]" }, { "url": "158.gif", alt: "[篮球]" }, { "url": "159.gif", alt: "[乒乓]" }, { "url": "160.gif", alt: "[咖啡]" }, { "url": "161.gif", alt: "[美食]" }, { "url": "162.gif", alt: "[动物]" }, { "url": "163.gif", alt: "[鲜花]" }, { "url": "164.gif", alt: "[枯]" }, { "url": "165.gif", alt: "[唇]" }, { "url": "166.gif", alt: "[爱]" }, { "url": "167.gif", alt: "[分手]" }, { "url": "168.gif", alt: "[生日]" }, { "url": "169.gif", alt: "[电]" }, { "url": "170.gif", alt: "[炸弹]" }, { "url": "171.gif", alt: "[刀子]" }],
+      [{ "url": "172.gif", alt: "[足球]" }, { "url": "173.gif", alt: "[瓢虫]" }, { "url": "174.gif", alt: "[翔]" }, { "url": "175.gif", alt: "[月亮]" }, { "url": "176.gif", alt: "[太阳]" }, { "url": "177.gif", alt: "[礼物]" }, { "url": "178.gif", alt: "[抱抱]" }, { "url": "179.gif", alt: "[拇指]" }, { "url": "180.gif", alt: "[贬低]" }, { "url": "181.gif", alt: "[握手]" }, { "url": "182.gif", alt: "[剪刀手]" }, { "url": "183.gif", alt: "[抱拳]" }, { "url": "184.gif", alt: "[勾引]" }, { "url": "185.gif", alt: "[拳头]" }, { "url": "186.gif", alt: "[小拇指]" }, { "url": "187.gif", alt: "[拇指八]" }, { "url": "188.gif", alt: "[食指]" }, { "url": "189.gif", alt: "[ok]" }, { "url": "190.gif", alt: "[情侣]" }, { "url": "191.gif", alt: "[爱心]" }, { "url": "192.gif", alt: "[蹦哒]" }, { "url": "193.gif", alt: "[颤抖]" }, { "url": "194.gif", alt: "[怄气]" }, { "url": "195.gif", alt: "[跳舞]" }],
+      [{ "url": "196.gif", alt: "[发呆]" }, { "url": "197.gif", alt: "[背着]" }, { "url": "198.gif", alt: "[伸手]" }, { "url": "199.gif", alt: "[耍帅]" }, { "url": "200.png", alt: "[微笑]" }, { "url": "201.png", alt: "[生病]" }, { "url": "202.png", alt: "[哭泣]" }, { "url": "203.png", alt: "[吐舌]" }, { "url": "204.png", alt: "[迷糊]" }, { "url": "205.png", alt: "[瞪眼]" }, { "url": "206.png", alt: "[恐怖]" }, { "url": "207.png", alt: "[忧愁]" }, { "url": "208.png", alt: "[眨眉]" }, { "url": "209.png", alt: "[闭眼]" }, { "url": "210.png", alt: "[鄙视]" }, { "url": "211.png", alt: "[阴暗]" }, { "url": "212.png", alt: "[小鬼]" }, { "url": "213.png", alt: "[礼物]" }, { "url": "214.png", alt: "[拜佛]" }, { "url": "215.png", alt: "[力量]" }, { "url": "216.png", alt: "[金钱]" }, { "url": "217.png", alt: "[蛋糕]" }, { "url": "218.png", alt: "[彩带]" }, { "url": "219.png", alt: "[礼物]" }]] };
+
 
   },
-  mounted: function mounted() {
-
-  },
-  onShow: function onShow() {
-    var _this = this;
-    this.globalData.callback = function (res) {
-      console.log('-->>', res);
-      var result = res;
-      if (String(result.userInfoId) == '0') {
-        return;
-      }
-      var HideData = _this.$data.HideData;
-      var EventData = _this.$data.EventData;
-      var arr = [];
-      if (result && result.list) {
-        _this.$data.totalSize = result.totalSize;
-        var dataTjson = result.list;
-        if (dataTjson.length > 0) {
-          if (_this.$data.currentPage > 2) {
-            _this.$data.HideData = dataTjson;
-            _this.$data.noData = true;
-          }
-          HideData = dataTjson.concat(HideData);
-        } else {
-          _this.$data.noData = false;
-          return false;
-        }
-
-        if (_this.$data.currentPage <= 2) {
-          _this.$data.EventData = HideData;
-          _this.$data.toView = 'row_10';
-          _this.scrollToBottom();
-        } else {
-          _this.$data.HideData = dataTjson;
-        }
-
-        var n = _this.$data.totalSize - _this.$data.EventData.length - _this.$data.HideData.length;
-        if (n == 0) {
-          _this.$data.noData = false;
-          var query = uni.createSelectorQuery();
-          query.select('#hideview').boundingClientRect();
-          query.exec(function (res) {
-            _this.$data.scrollTop = res[0].height;
-          });
-        }
-      } else {
-        // 单条数据
-        if (result instanceof Array) {
-          var pages = getCurrentPages();
-          var prevPage = pages[pages.length - 2];
-          prevPage.$data.lists = result;
-          // prevPage.setData({
-          // 	lists: result
-          // })
-          return;
-        } else {
-          if (result.fromUserId == 0) {
-            if (result.content.indexOf('消息含有敏感内容') != -1) {
-              var key = _this.$data.messageCache.findIndex(function (value, index) {
-                return value.messageId == result.messageId;
-              });
-              if (key != -1) {
-                var cache = _this.$data.messageCache[key];
-                _this.$data.EventData[cache.index].smsStatus = result.smsStatus;
-                _this.$data.messageCache.splice(key, 1);
-                clearTimeout(cache.delay);
-                // _this.$data.EventData = _this.$data.EventData;
-              }
-              return;
-            }
-            if (_this.$data.messageCache.length > 0) {
-              if (result.currentPage && result.currentPage != '') {
-                _this.$data.messageCache.forEach(function (value, index) {
-                  _this.$data.EventData[value.index].smsStatus = result.smsStatus;
-                });
-
-                // _this.$data.EventData = _this.$data.EventData;
-                _this.$data.messageCache = [];
-
-              } else {
-                var _key = _this.$data.messageCache.findIndex(function (value, index) {
-                  return value.messageId == result.messageId;
-                });
-                if (_key != -1) {
-                  var _cache = _this.$data.messageCache[_key];
-                  _this.$data.EventData[_cache.index].smsStatus = result.smsStatus;
-                  if (result.smsStatus == 50) {
-                    _this.$data.messageCache.splice(_key, 1);
-                  }
-                  clearTimeout(_cache.delay);
-                  // _this.$data.EventData =  _this.$data.EventData;
-                }
-              }
-            }
-            return;
-          } else {
-            // 通知对方我已经阅读消息
-            var message = {
-              id: result.id,
-              fromUserId: 0,
-              toUserId: result.fromUserId,
-              messageId: result.messageId,
-              content: 'page',
-              smsType: 'TEXT',
-              sysType: 1,
-              smsStatus: 50,
-              smsList: false,
-              currentPage: '',
-              pageSize: '' };
-
-            _this.sendSocketMessage(JSON.stringify(message));
-            console.log('通知对方我已经阅读消息');
-          }
-        }
-
-        if (result.userInfoId == _this.$data.userInfoId) {
-          _this.$data.EventData.push(result);
-
-
-        }
-
-        // _this.$data.EventData = _this.$data.EventData;
-        _this.scrollToBottom();
-
-        _this.getPrevPage(true, result);
-      }
-
-      if (_this.$data.currentPage <= 2) {
-        setTimeout(function () {
-          _this.bindscrolltoupper1();
-        }, 1000);
-      }
-      // 放开滚动置顶
-      _this.$data.scrollLoading = 0;
-    };
-  },
-  methods: {
-    bindscroll: function bindscroll(e) {
-      // console.log('bindscroll', this.$data.scrollLoading);
-      var that = this;
-      if (that.$data.scrollLoading == 1) {//防止多次触发
-        return false;
-      }
-      if (!that.$data.noData) {
-        return false;
-      }
-      if (e.detail.scrollTop <= 10) {//触发触顶事件
-        // console.log('触发顶部事件', e.detail.scrollTop)
-        // 获取隐藏的view 高度
-        var query = uni.createSelectorQuery();
-        query.select('#hideview').boundingClientRect();
-
-        query.exec(function (res) {
-          var EventData = that.$data.EventData; //此数据为展示的数据
-          var HideData = that.$data.HideData; //此数据为隐藏数据
-          EventData = HideData.concat(that.$data.EventData); // 拼接数据
-          if (HideData == '' || !HideData) {// 判断是否隐藏数据为空
-
-            that.$data.NoMoreEvent = 1;
-            that.$data.scrollTop = 0;
-
-            return false;
-          }
-          var n = that.$data.totalSize - that.$data.EventData.length - that.$data.HideData.length;
-          if (n < 10) {
-            setTimeout(function () {// 自行选择是否定时进行加载
-              that.$data.EventData = EventData;
-              that.bindscrolltoupper1(); // 请求新的数据
-            }, 1000);
-          } else {
-            setTimeout(function () {// 自行选择是否定时进行加载
-              that.$data.EventData = EventData;
-              that.$data.scrollTop = res[0].height;
-              that.bindscrolltoupper1(); // 请求新的数据
-            }, 1000);
-          }
-
-        });
-
-      }
-    },
-
-    bindscrolltoupper1: function bindscrolltoupper1() {
-      var _this = this;
-
-      if (_this.$data.scrollLoading == 1) {//防止多次触发
-        return false;
-      }
-      _this.$data.scrollLoading = 1;
-      var currentPage = this.$data.currentPage++;
-      var pageSize = this.$data.pageSize;
-      console.log('currentPage:' + currentPage);
-
-      uni.showNavigationBarLoading();
-      var fromUserId = uni.getStorageSync('userId');
-      var toUserId = this.$data.toId;
+  onLoad: function onLoad(option) {var _this = this;
+    this.globalData.initType = 2;
+    uni.setNavigationBarTitle({
+      title: option.name // 对方的名称
+    });
+    this.fromUserId = option.fromUserId; // 当前登录的用户 id
+    this.toUserId = option.toUserId; // 对方的用户 id
+    this.fromAvatarPath = uni.getStorageSync('fromAvatarPath') || option.fromAvatarPath || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'; // 当前登录用户的头像
+    this.toAvatarPath = uni.getStorageSync('toAvatarPath') || option.toAvatarPath || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'; // 对方的用户头像
+    this.userInfoId = parseInt(this.fromUserId) > parseInt(this.toUserId) ? _md.default.md5(this.toUserId + this.fromUserId) : _md.default.md5(this.fromUserId + this.toUserId);
+    if (this.globalData.connentSocket) {// 已连接则直接获取聊天历史
       var message = {
-        fromUserId: fromUserId,
-        toUserId: toUserId,
+        fromUserId: this.fromUserId,
+        toUserId: this.toUserId,
         content: 'page',
         smsType: 'TEXT',
         sysType: 1,
         smsStatus: 10,
         smsList: false,
-        currentPage: currentPage,
-        pageSize: pageSize };
+        currentPage: 1,
+        pageSize: 15 };
 
-      console.log('下拉message：', message);
-      this.sendSocketMessage(JSON.stringify(message));
-      uni.hideNavigationBarLoading(); //在当前页面隐藏导航条加载动画
-      uni.stopPullDownRefresh();
-    },
+      this.globalData.localSocket.send({
+        data: JSON.stringify(message) });
 
+    } else {// 未连接则连接过后再获取聊天历史
+      _socketIo.default.initSocket(this.fromUserId, this.toUserId);
+    }
+    //语音自然播放结束
+    this.AUDIO.onEnded(function (res) {
+      _this.playMsgid = null;
+    });
 
-    getPrevPage: function getPrevPage(type, result) {
-      if (this.$data.prevIndex != -1) {
-        var pages = getCurrentPages();
-        var prevPage = pages[pages.length - 2];
-        var lists = prevPage.$data.lists;
-        if (type) {
-          var _lists = prevPage.$data.lists;
-          var res = _lists.findIndex(function (value, index) {
-            return value.userInfoId = result.userInfoId;
-          });
-          if (res != -1) {
-            _lists[this.$data.prevIndex].userMessage = result;
-          } else {
-            prevPage.onSend();
-          }
-        } else {
-          var date = new Date();
-          var userMessage = {
-            content: result.content,
-            createTime: date.getTime(),
-            dateTime: date.getHours() + ':' + date.getMinutes(),
-            fromUserId: result.fromUserId,
-            smsStatus: 30,
-            smsType: result.smsType,
-            toUserId: result.toUserId,
-            userInfoId: result.userInfoId };
+    //录音开始事件
+    this.RECORDER.onStart(function (e) {
+      _this.recordBegin(e);
+    });
+    //录音结束事件
+    this.RECORDER.onStop(function (e) {
+      _this.recordEnd(e);
+    });
 
-          lists[this.$data.prevIndex].userMessage = userMessage;
-        }
-        prevPage.$data.lists = lists;
-
-      }
-    },
-    getMessageBySocket: function getMessageBySocket() {
-      var data = {};
-      data.userId = uni.getStorageSync("userId");
-      _IMapi.default.getMessageBySocket({
-        method: 'POST',
-        data: data }).
-      then(function (res) {
-
-      });
-    },
-    getUserInfoformSocket: function getUserInfoformSocket() {var _this2 = this;
-      var _this = this;
-      var data = {};
-      data.userId = uni.getStorageSync("userId");
-      _IMapi.default.getUserInfoformSocket({
-        method: 'POST',
-        data: data }).
-      then(function (res) {
-        _this2.$data.to_avatar_path = res.avatar_path;
-
-      });
-    },
-    audioPlay: function audioPlay(e) {
-      var id = e.currentTarget.dataset.id;
-      this.audioCtx = uni.createAudioContext(id);
-      this.audioCtx.play();
-    },
-
-    reply: function reply(e) {var _this3 = this;
-      var _this = this;
-
-      var content = e ? e.detail.value : this.$data.content;
-      this.$data.content = content;
-      if (content == '') {
-        uni.showToast({
-          title: '总要写点什么吧' });
-
+  },
+  onShow: function onShow() {
+    var that = this;
+    this.globalData.callback = function (res) {
+      if (String(res.userInfoId) == '0' || res.fromUserId == 0) {
         return;
       }
-      var EventData = this.$data.EventData;
-      // 发送消息
-      var fromUserId = uni.getStorageSync('userId');
-      var toUserId = this.$data.toId;
-      var messageId = new Date().getTime() + fromUserId + toUserId + _math.default.math(5);
+      if (res && res.list) {
+        that.nextPage = res.totalPage != that.currentPage;
+        var result = res.list;
+        if (result.length > 0) {
+          for (var i = 0; i < result.length; i++) {
+            if (result[i].smsType == 'IMAGE') {
+              result[i] = that.setPicSize(result[i]);
+            }
+          }
+          that.msgList = result.concat(that.msgList);
+
+          that.$nextTick(function () {
+            if (that.currentPage == 1) {
+              // 滚动到底部
+              that.scrollTop = 99999;
+            } else {
+              if (that.nextPage) {
+                uni.createSelectorQuery().
+                select('#msg' + (15 + that.msgTotal)).
+                boundingClientRect().
+                exec(function (res) {
+                  if (res[0] != null) {
+                    that.scrollTop = res[0].top;
+                  }
+                });
+              }
+              that.toupperTop = true;
+            }
+          });
+        }
+      } else {
+        if (res.userInfoId == that.userInfoId) {
+          var index = that.msgList.push(res);
+          that.toView(index);
+        } else {
+          that.$emit('chatList', true);
+        }
+      }
+    };
+  },
+  methods: {
+    toupper: function toupper() {
+      var that = this;
+      if (that.nextPage && that.toupperTop) {
+        that.toupperTop = false;
+        that.currentPage = that.currentPage + 1;
+        var message = {
+          fromUserId: that.fromUserId,
+          toUserId: that.toUserId,
+          content: 'page',
+          smsType: 'TEXT',
+          sysType: 1,
+          smsStatus: 10,
+          smsList: false,
+          currentPage: that.currentPage,
+          pageSize: 15 };
+
+        that.globalData.localSocket.send({
+          data: JSON.stringify(message) });
+
+      }
+    },
+    //处理图片尺寸，如果不处理宽高，新进入页面加载图片时候会闪
+    setPicSize: function setPicSize(row) {
+      var maxW = uni.upx2px(350);
+      var maxH = uni.upx2px(350);
+      if (row.width > maxW || row.height > maxH) {
+        var scale = row.width / row.height;
+        if (row.width > row.height) {
+          row.width = maxW;
+          row.height = row.width / scale;
+        } else {
+          row.height = maxH;
+          row.width = row.height * scale;
+        }
+      }
+      return row;
+    },
+    // 选择表情
+    chooseEmoji: function chooseEmoji() {
+      this.showEmji = this.showEmji == 'showEmoji' ? 'hideEmoji' : 'showEmoji';
+    },
+    // 隐藏表情
+    hideEmoji: function hideEmoji() {
+      this.showEmji = this.showEmji == 'showEmoji' ? 'hideEmoji' : '';
+    },
+    //添加表情
+    addEmoji: function addEmoji(em) {
+      this.textMsg += em.alt;
+    },
+    // 预览图片
+    showPic: function showPic(row) {
+      var src = row.content; //获取data-src
+      var index = src.indexOf('?');
+      if (index != -1) {
+        src = src.substring(0, index) + '?x-oss-process=style/big';
+      }
+      uni.previewImage({
+        indicator: "none",
+        current: src,
+        urls: [src] });
+
+    },
+    // 播放语音
+    playVoice: function playVoice(msg) {
+      this.playMsgid = msg.id;
+      this.AUDIO.src = msg.msg.url;
+      console.log("msg.msg.url: " + msg.msg.url);
+      this.AUDIO.play();
+    },
+    sendText: function sendText(e) {
+      this.hideEmoji();
+      var that = this;
+      var content = e.detail.value ? e.detail.value : that.textMsg;
+      if (!content || content == '') {
+        return;
+      }
+      var messageId = new Date().getTime() + that.fromUserId + that.toUserId + _math.default.math(5);
       messageId = _md.default.md5(messageId);
+
       var message = {
-        fromUserId: fromUserId,
-        toUserId: toUserId,
+        fromUserId: that.fromUserId,
+        toUserId: that.toUserId,
         messageId: messageId,
         content: content,
         smsType: 'TEXT',
@@ -492,258 +333,126 @@ var _math = _interopRequireDefault(__webpack_require__(/*! ../../utils/math.js *
         currentPage: '',
         pageSize: '' };
 
+
       this.globalData.localSocket.send({
         data: JSON.stringify(message),
         success: function success() {
-          console.log('sendSocketMessage:成功了');
-          var len = EventData.push(message);
-          console.log(EventData);
-
-
-          _this.$data.inputShowed = true;
-          _this.$data.EventData = EventData;
-          _this.$data.content = '';
-          _this.timeout(messageId, len - 1);
-          _this.getPrevPage(false, message);
-
+          var index = that.msgList.push(message);
+          that.toView(index);
+          that.textMsg = '';
+          that.msgTotal = that.msgTotal + 1;
+          message.dateTime = that.getTime();
+          uni.$emit('message', message);
         },
         fail: function fail() {
-          _this.sendError(len - 1);
+          console.log('发送失败！！！');
         } });
 
-      console.log('EventData -->');
-      console.log(this.$data.EventData);
-      setTimeout(function () {
-        _this3.scrollToBottom();
-      }, 100);
-
     },
-    chooseImage: function chooseImage() {var _this4 = this;
-      // 选择图片供上传
-      var _this = this;
+    // 选择图片发送
+    chooseImage: function chooseImage() {
+      this.hideEmoji();
+      var that = this;
       uni.chooseImage({
-        count: 9,
-        sizeType: ['compressed'],
-        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
         success: function success(res) {
-          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          uni.showLoading({
+            title: '发送中',
+            mask: false });
+
           var tempFilePaths = res.tempFilePaths;
-          console.log('选择的图片', tempFilePaths);
-          // 遍历多图
-          tempFilePaths.forEach(function (tempFilePath) {
-            var fromUserId = wx.getStorageSync('userId');
-            var toUserId = _this4.$data.toId;
-            var content = tempFilePath;
-            var messageId = new Date().getTime() + fromUserId + toUserId + _math.default.math(5);
-            messageId = _md.default.md5(messageId);
-            var message = {
-              fromUserId: fromUserId,
-              toUserId: toUserId,
-              messageId: messageId,
-              content: content,
-              smsType: 'IMAGE',
-              sysType: 1,
-              smsStatus: 10,
-              smsList: false,
-              currentPage: '',
-              pageSize: '' };
+          for (var index in tempFilePaths) {
+            uni.getImageInfo({
+              src: tempFilePaths[index],
+              success: function success(image) {
+                var messageId = new Date().getTime() + that.fromUserId + that.toUserId + _math.default.math(5);
+                messageId = _md.default.md5(messageId);
+                var message = {
+                  fromUserId: that.fromUserId,
+                  toUserId: that.toUserId,
+                  messageId: messageId,
+                  content: image.path,
+                  smsType: 'IMAGE',
+                  sysType: 1,
+                  smsStatus: 10,
+                  smsList: false,
+                  currentPage: '',
+                  pageSize: '',
+                  width: image.width,
+                  height: image.height };
 
+                that.upload(message);
+              } });
 
-            var EventData = _this.$data.EventData;
-
-            var len = EventData.push(message);
-
-            _this.$data.EventData = EventData;
-
-            _this4.upload(tempFilePath, 'image', message, len);
-          });
+          }
         } });
 
     },
-    preview: function preview(e) {
-      // 当前点击图片的地址加载高清大图
-      var src = e.currentTarget.dataset.src; //获取data-src
-      var index = src.indexOf('?');
-      if (index != -1) {
-        src = src.substring(0, index) + '?x-oss-process=style/big';
-      }
-      //图片预览
-      uni.previewImage({
-        current: src, // 当前显示图片的http链接
-        urls: [src] // 需要预览的图片http链接列表
+    upload: function upload(message) {
+      var that = this;
+      var data = {};
+      var access_token = wx.getStorageSync('access_token') || '';
+      data.file = '[object Object]';
+      data.type = 'big';
+      var timestamp = Date.parse(new Date());
+      data.timestamp = timestamp;
+      data.sign = _util.default.makeSign(_api.default.apiUrl + '/api/upload', data);
+      data.deviceId = "wx";
+      data.platformType = "2";
+      data.versionCode = '4.0';
+      var uploadTask = uni.uploadFile({
+        url: "".concat(_api.default.apiUrl, "/api/upload"),
+        filePath: message.content,
+        name: 'file',
+        header: {
+          'content-type': 'multipart/form-data',
+          'Accept': 'application/json',
+          'Authorization': "Bearer ".concat(access_token) },
+
+        formData: data,
+        success: function success(res) {
+          var result = JSON.parse(res.data);
+          console.log('result', result);
+          if (result.code == 200 || result.code == 0) {
+            message.content = result.data;
+            that.globalData.localSocket.send({
+              data: JSON.stringify(message),
+              success: function success() {
+                message = that.setPicSize(message);
+                var index = that.msgList.push(message);
+                that.toView(index);
+                that.msgTotal = that.msgTotal + 1;
+                message.dateTime = that.getTime();
+                that.$emit('message', message);
+              } });
+
+          }
+        },
+        complete: function complete() {
+          uni.hideLoading();
+        } });
+
+    },
+    toView: function toView(index) {
+      var that = this;
+      this.$nextTick(function () {
+        that.scrollToView = 'msg' + (index - 1);
       });
     },
-    switchMode: function switchMode() {
-      // 切换语音与文本模式
-      // this.setData({
-      //   mode: !this.data.mode
-      // });
+    getTime: function getTime() {
+      var date = new Date();
+      return date.getHours() + ':' + date.getMinutes();
     },
-    record: function record() {
-      // 录音事件
-      console.log("------------------");
-      console.log(this.$data.cancel);
-      var _this = this;
-      wx.startRecord({
-        success: function success(res) {
-          console.log("------------------");
-          console.log(_this.$data.cancel);
-          if (!_this.$data.cancel) {
-            _this.upload(res.tempFilePath, 'voice');
-          }
-        },
-        fail: function fail(res) {
-          console.log(res);
-          //录音失败
-        },
-        complete: function complete(res) {
-          console.log(res);
+    sendBlur: function sendBlur(event) {
 
-        } });
+
+
+
 
 
     },
-    stop: function stop() {
-      uni.stopRecord();
-    },
-    touchStart: function touchStart(e) {
-      // 触摸开始
-      var startY = e.touches[0].clientY;
-      // 记录初始Y值
-      this.setData({
-        startY: startY,
-        status: this.$data.state.pressed });
-
-    },
-    touchMove: function touchMove(e) {
-      // 触摸移动
-      var movedY = e.touches[0].clientY;
-      var distance = this.$data.startY - movedY;
-      // console.log(distance);
-      // 距离超过50，取消发送
-      this.setData({
-        status: distance > 50 ? this.$data.state.cancel : this.$data.state.pressed });
-
-    },
-    touchEnd: function touchEnd(e) {
-      // 触摸结束
-      var endY = e.changedTouches[0].clientY;
-      var distance = this.$data.startY - endY;
-      // console.log(distance);
-      // 距离超过50，取消发送
-      this.setData({
-        cancel: distance > 50 ? true : false,
-        status: this.$data.state.normal });
-
-      // 不论如何，都结束录音
-      this.stop();
-    },
-    upload: function upload(tempFilePath, type, message, len) {var _this5 = this;
-      var _this = this;
-      // 上传图片，返回链接地址跟id,返回进度对象
-      if (type == 'image') {
-        var access_token = uni.getStorageSync('access_token') || uni.getStorageSync('token') || "";
-        var data = {};
-        data.file = '[object Object]';
-        data.type = 'big';
-        var timestamp = Date.parse(new Date());
-        data.timestamp = timestamp;
-        data.sign = _util.default.makeSign(_api.default.apiUrl + '/api/upload', data);
-        data.deviceId = "wx";
-        data.platformType = "1";
-        data.versionCode = '4.0';
-        var uploadTask = uni.uploadFile({
-          url: "".concat(_api.default.apiUrl, "/api/upload"),
-          filePath: tempFilePath,
-          name: 'file',
-          header: {
-            'content-type': 'multipart/form-data',
-            'Accept': 'application/json',
-            'Authorization': "Bearer ".concat(access_token) },
-
-          formData: data,
-          success: function success(res) {
-            console.log(res);
-            var res = JSON.parse(res.data);
-            if (200 === res.code || 0 === res.code) {
-              // 发送消息
-              message.content = res.data;
-              _this5.globalData.localSocket.send({
-                data: JSON.stringify(message),
-                success: function success() {
-                  _this.timeout(message.messageId, len - 1);
-                  _this.getPrevPage(false, message);
-                },
-                fail: function fail() {
-                  _this.sendError(len - 1);
-                } });
-
-            } else {
-              _this.sendError(len - 1);
-            }
-          },
-          fail: function fail(err) {
-            _this.sendError(len - 1);
-          },
-          complete: function complete() {
-            _this5.scrollToBottom();
-          } });
-
-      }
-      setTimeout(function () {
-        _this5.scrollToBottom();
-        uni.hideLoading();
-      }, 300);
-    },
-    sendError: function sendError(len) {
-      var _this = this;
-      var error = this.$data.EventData[len];
-      if (error) {
-        error.smsStatus = 20;
-        _this.$data.EventData = _this.$data.EventData;
-      }
-    },
-    timeout: function timeout(messageId, len) {var _this6 = this;
-      var _this = this;
-      var delay = setTimeout(function () {
-        if (_this.$data.messageCache.length > 0) {
-          var key = _this.$data.messageCache.findIndex(function (value, index) {
-            return value.messageId == messageId;
-          });
-          if (key != -1) {
-            _this.$data.EventData[len].smsStatus = 20;
-            _this.$data.EventData = _this.$data.EventData;
-            clearTimeout(_this6);
-          }
-        }
-      }, 60000);
-      _this.$data.messageCache.push({
-        'messageId': messageId,
-        'delay': delay,
-        'index': len });
-
-    },
-    retry: function retry(e) {// 消息重试
-      var _this = this;
-      var index = e.currentTarget.dataset.key;
-      var message = _this.$data.EventData[index];
-      if (message) {
-        message.smsStatus = 10;
-        _this.$data.EventData = _this.$data.EventData;
-        this.globalData.localSocket.send({
-          data: JSON.stringify(message),
-          success: function success() {
-            _this.timeout(message.messageId, index);
-          },
-          fail: function fail() {
-            console.log('消息重试失败');
-          } });
-
-      }
-    },
-
-    scrollToBottom: function scrollToBottom() {
-      this.$data.toView = 'row_' + (this.$data.EventData.length - 1);
+    discard: function discard() {
+      return;
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
@@ -775,369 +484,283 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "view",
-    [
-      _c(
-        "scroll-view",
-        {
-          staticClass: "message-list",
-          style: { height: _vm.scroll_height + "px" },
-          attrs: {
-            "upper-threshold": "20",
-            "scroll-into-view": _vm.toView,
-            "scroll-top": _vm.scrollTop,
-            "scroll-y": "isScrollY",
-            focus: _vm.mode,
-            "enable-back-to-top": "true",
-            eventid: "73b8c1b7-6"
+  return _c("view", [
+    _c(
+      "view",
+      {
+        staticClass: "content",
+        attrs: { eventid: "73b8c1b7-5" },
+        on: { touchstart: _vm.hideEmoji }
+      },
+      [
+        _c(
+          "scroll-view",
+          {
+            staticClass: "msg-list",
+            attrs: {
+              "upper-threshold": "20",
+              "scroll-y": "true",
+              "scroll-with-animation": _vm.scrollAnimation,
+              "scroll-top": _vm.scrollTop,
+              "scroll-into-view": _vm.scrollToView,
+              eventid: "73b8c1b7-4"
+            },
+            on: { scrolltoupper: _vm.toupper }
           },
-          on: { scroll: _vm.bindscroll }
-        },
-        [
-          _c("view", { staticClass: "loding-img" }, [
-            _vm.noData
-              ? _c("image", { attrs: { src: "/static/images/loading.gif" } })
+          [
+            _vm.nextPage && !_vm.toupperTop
+              ? _c("view", { staticClass: "loding" }, [
+                  _c("image", { attrs: { src: "/static/img/loading.gif" } })
+                ])
               : _vm._e(),
-            !_vm.noData ? _c("view", [_vm._v("没有更多数据了")]) : _vm._e()
-          ]),
-          _c(
-            "view",
-            { attrs: { id: "hideview" } },
-            _vm._l(_vm.HideData, function(item, index) {
-              return _c(
-                "view",
-                { key: index, staticClass: "row" },
-                [
-                  item.timeInterval && item.timeInterval != ""
-                    ? _c("view", { staticClass: "datetime" }, [
-                        _vm._v(_vm._s(item.timeInterval))
-                      ])
-                    : _vm._e(),
-                  _c(
-                    "view",
-                    {
-                      staticClass: "body",
-                      style: {
-                        "flex-flow":
-                          item.fromUserId != _vm.userId ? "row" : "row-reverse"
-                      }
-                    },
-                    [
-                      _c("view", { staticClass: "avatar-container" }, [
-                        _c("image", {
-                          staticClass: "avatar",
-                          attrs: {
-                            src:
-                              item.fromUserId != _vm.userId
-                                ? _vm.fromUserPhoto
-                                : _vm.toUserPhoto
-                          }
-                        })
-                      ]),
-                      item.smsType == "TEXT"
-                        ? _c("block", [
-                            _c("view", {
-                              staticClass: "triangle",
-                              style:
-                                item.fromUserId == _vm.userId
-                                  ? "right: 110rpx; background: #7ECB4B"
-                                  : "left: 110rpx;"
-                            }),
-                            _c(
-                              "view",
-                              {
-                                staticClass: "msg-content",
-                                style:
-                                  item.fromUserId == _vm.userId
-                                    ? "background: #7ECB4B;left:5rpx;"
-                                    : ""
-                              },
-                              [
-                                item.smsType == "TEXT"
-                                  ? _c("text", { staticClass: "msg-text" }, [
-                                      _vm._v(_vm._s(item.content))
-                                    ])
-                                  : _vm._e(),
-                                item.smsType == "VOICE"
-                                  ? _c("audio", {
-                                      staticStyle: {
-                                        width: "100px",
-                                        height: "20px"
-                                      },
-                                      attrs: {
-                                        "data-id": "audio_" + index,
-                                        src: item.content,
-                                        eventid: "73b8c1b7-0-" + index
-                                      },
-                                      on: { tap: _vm.audioPlay }
-                                    })
-                                  : _vm._e()
-                              ],
-                              1
-                            )
-                          ])
-                        : _vm._e(),
-                      item.smsType == "IMAGE"
-                        ? _c("image", {
-                            staticClass: "picture",
-                            attrs: {
-                              src: item.content,
-                              mode: "widthFix",
-                              "data-src": item.content,
-                              eventid: "73b8c1b7-1-" + index
-                            },
-                            on: { tap: _vm.preview }
-                          })
-                        : _vm._e(),
-                      item.fromUserId == _vm.userId && item.smsStatus
-                        ? _c(
-                            "block",
-                            [
-                              item.smsStatus == 10
-                                ? _c("image", {
-                                    staticClass: "msg-img",
-                                    attrs: { src: "/static/images/loading.gif" }
-                                  })
-                                : _vm._e(),
-                              item.smsStatus == 20
-                                ? _c("icon", {
-                                    staticClass: "msg-icon",
-                                    attrs: {
-                                      "data-key": index,
-                                      type: "warn",
-                                      size: "22",
-                                      eventid: "73b8c1b7-2-" + index
-                                    },
-                                    on: { tap: _vm.retry }
-                                  })
-                                : _vm._e()
-                            ],
-                            1
-                          )
-                        : _vm._e()
-                    ],
-                    1
-                  ),
-                  item.fromUserId == _vm.userId && item.smsStatus
-                    ? _c("block", [
-                        item.smsStatus == 40
-                          ? _c("text", { staticClass: "msg-status" }, [
-                              _vm._v("已送达")
-                            ])
-                          : _vm._e(),
-                        item.smsStatus == 50
-                          ? _c("text", { staticClass: "msg-status msg-read" }, [
-                              _vm._v("已读")
-                            ])
-                          : _vm._e()
-                      ])
-                    : _vm._e()
-                ],
-                1
-              )
-            })
-          ),
-          _c(
-            "view",
-            _vm._l(_vm.EventData, function(item, index) {
+            _vm._l(_vm.msgList, function(row, index) {
               return _c(
                 "view",
                 {
                   key: index,
                   staticClass: "row",
-                  attrs: { id: "row_" + index }
+                  attrs: { id: "msg" + index }
                 },
                 [
-                  item.timeInterval && item.timeInterval != ""
-                    ? _c("view", { staticClass: "datetime" }, [
-                        _vm._v(_vm._s(item.timeInterval))
+                  row.timeInterval && row.timeInterval != ""
+                    ? _c("view", { staticClass: "time" }, [
+                        _vm._v(_vm._s(row.timeInterval))
                       ])
                     : _vm._e(),
-                  _c(
-                    "view",
-                    {
-                      staticClass: "body",
-                      style: {
-                        "flex-flow":
-                          item.fromUserId != _vm.userId ? "row" : "row-reverse"
-                      }
-                    },
-                    [
-                      _c("view", { staticClass: "avatar-container" }, [
-                        _c("image", {
-                          staticClass: "avatar",
-                          attrs: {
-                            src:
-                              item.fromUserId != _vm.userId
-                                ? _vm.fromUserPhoto
-                                : _vm.toUserPhoto
-                          }
-                        })
-                      ]),
-                      item.smsType == "TEXT"
-                        ? _c("block", [
-                            _c("view", {
-                              staticClass: "triangle",
-                              style:
-                                item.fromUserId == _vm.userId
-                                  ? "right: 110rpx; background: #7ECB4B"
-                                  : "left: 110rpx;"
-                            }),
-                            _c(
-                              "view",
-                              {
-                                staticClass: "msg-content",
-                                style:
-                                  item.fromUserId == _vm.userId
-                                    ? "background: #7ECB4B;left:5rpx;"
-                                    : ""
-                              },
-                              [
-                                item.smsType == "TEXT"
-                                  ? _c("text", { staticClass: "msg-text" }, [
-                                      _vm._v(_vm._s(item.content))
-                                    ])
-                                  : _vm._e(),
-                                item.smsType == "VOICE"
-                                  ? _c("audio", {
-                                      staticStyle: {
-                                        width: "100px",
-                                        height: "20px"
-                                      },
-                                      attrs: {
-                                        "data-id": "audio_" + index,
-                                        src: item.content,
-                                        eventid: "73b8c1b7-3-" + index
-                                      },
-                                      on: { tap: _vm.audioPlay }
-                                    })
-                                  : _vm._e()
-                              ],
-                              1
-                            )
-                          ])
-                        : _vm._e(),
-                      item.smsType == "IMAGE"
-                        ? _c("image", {
-                            staticClass: "picture",
-                            attrs: {
-                              src: item.content,
-                              mode: "widthFix",
-                              "data-src": item.content,
-                              eventid: "73b8c1b7-4-" + index
-                            },
-                            on: { tap: _vm.preview }
-                          })
-                        : _vm._e(),
-                      item.fromUserId == _vm.userId && item.smsStatus
-                        ? _c(
-                            "block",
-                            [
-                              item.smsStatus == 10
-                                ? _c("image", {
-                                    staticClass: "msg-img",
-                                    attrs: { src: "/static/images/loading.gif" }
-                                  })
-                                : _vm._e(),
-                              item.smsStatus == 20
-                                ? _c("icon", {
-                                    staticClass: "msg-icon",
+                  row.fromUserId == _vm.fromUserId
+                    ? _c("view", { staticClass: "my" }, [
+                        _c("view", { staticClass: "left" }, [
+                          row.smsType == "TEXT"
+                            ? _c(
+                                "view",
+                                { staticClass: "bubble" },
+                                [
+                                  _c("rich-text", {
                                     attrs: {
-                                      "data-key": index,
-                                      type: "warn",
-                                      size: "22",
-                                      eventid: "73b8c1b7-5-" + index
-                                    },
-                                    on: { tap: _vm.retry }
+                                      nodes: row.content,
+                                      mpcomid: "73b8c1b7-0-" + index
+                                    }
                                   })
-                                : _vm._e()
-                            ],
-                            1
-                          )
-                        : _vm._e()
-                    ],
-                    1
-                  ),
-                  item.fromUserId == _vm.userId && item.smsStatus
-                    ? _c("block", [
-                        item.smsStatus == 40
-                          ? _c("text", { staticClass: "msg-status" }, [
-                              _vm._v("已送达")
-                            ])
-                          : _vm._e(),
-                        item.smsStatus == 50
-                          ? _c("text", { staticClass: "msg-status msg-read" }, [
-                              _vm._v("已读")
-                            ])
-                          : _vm._e()
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          row.smsType == "VOICE"
+                            ? _c(
+                                "view",
+                                {
+                                  staticClass: "bubble voice",
+                                  class: _vm.playMsgid == row.id ? "play" : "",
+                                  attrs: { eventid: "73b8c1b7-0-" + index },
+                                  on: {
+                                    tap: function($event) {
+                                      _vm.playVoice(row)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("view", { staticClass: "length" }, [
+                                    _vm._v(_vm._s(row.length))
+                                  ]),
+                                  _c("view", { staticClass: "icon my-voice" })
+                                ]
+                              )
+                            : _vm._e(),
+                          row.smsType == "IMAGE"
+                            ? _c(
+                                "view",
+                                {
+                                  staticClass: "bubble img",
+                                  attrs: { eventid: "73b8c1b7-1-" + index },
+                                  on: {
+                                    tap: function($event) {
+                                      _vm.showPic(row)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("image", {
+                                    style: {
+                                      width: row.width + "px",
+                                      height: row.height + "px"
+                                    },
+                                    attrs: { src: row.content }
+                                  })
+                                ]
+                              )
+                            : _vm._e()
+                        ]),
+                        _c("view", { staticClass: "right" }, [
+                          _c("image", { attrs: { src: _vm.fromAvatarPath } })
+                        ])
+                      ])
+                    : _vm._e(),
+                  row.fromUserId != _vm.fromUserId
+                    ? _c("view", { staticClass: "other" }, [
+                        _c("view", { staticClass: "left" }, [
+                          _c("image", { attrs: { src: _vm.toAvatarPath } })
+                        ]),
+                        _c("view", { staticClass: "right" }, [
+                          row.smsType == "TEXT"
+                            ? _c(
+                                "view",
+                                { staticClass: "bubble" },
+                                [
+                                  _c("rich-text", {
+                                    attrs: {
+                                      nodes: row.content,
+                                      mpcomid: "73b8c1b7-1-" + index
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          row.smsType == "VOICE"
+                            ? _c(
+                                "view",
+                                {
+                                  staticClass: "bubble voice",
+                                  class: _vm.playMsgid == row.id ? "play" : "",
+                                  attrs: { eventid: "73b8c1b7-2-" + index },
+                                  on: {
+                                    tap: function($event) {
+                                      _vm.playVoice(row)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("view", {
+                                    staticClass: "icon other-voice"
+                                  }),
+                                  _c("view", { staticClass: "length" }, [
+                                    _vm._v(_vm._s(row.length))
+                                  ])
+                                ]
+                              )
+                            : _vm._e(),
+                          row.smsType == "IMAGE"
+                            ? _c(
+                                "view",
+                                {
+                                  staticClass: "bubble img",
+                                  attrs: { eventid: "73b8c1b7-3-" + index },
+                                  on: {
+                                    tap: function($event) {
+                                      _vm.showPic(row)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("image", {
+                                    style: {
+                                      width: row.width + "px",
+                                      height: row.height + "px"
+                                    },
+                                    attrs: { src: row.content }
+                                  })
+                                ]
+                              )
+                            : _vm._e()
+                        ])
                       ])
                     : _vm._e()
-                ],
-                1
+                ]
               )
             })
-          )
-        ]
-      ),
-      _vm.status != _vm.state.normal
-        ? _c("view", { staticClass: "hud-container" }, [
-            _c("view", { staticClass: "hud-background" }),
-            _c("view", { staticClass: "hud-body" }, [
-              _c("image", { attrs: { src: "./images/mic.png" } }),
-              _c(
-                "view",
-                {
-                  staticClass: "tip",
-                  class: _vm.status == _vm.state.cancel ? "warning" : ""
+          ],
+          2
+        )
+      ],
+      1
+    ),
+    _c(
+      "view",
+      {
+        staticClass: "input-box",
+        class: _vm.showEmji,
+        attrs: { eventid: "73b8c1b7-9" },
+        on: {
+          touchmove: function($event) {
+            $event.stopPropagation()
+            $event.preventDefault()
+            _vm.discard($event)
+          }
+        }
+      },
+      [
+        _c("view", { staticClass: "textbox" }, [
+          _c(
+            "view",
+            {
+              staticClass: "voice-mode",
+              class: [
+                _vm.isVoice ? "" : "hidden",
+                _vm.recording ? "recording" : ""
+              ],
+              attrs: { eventid: "73b8c1b7-6" },
+              on: {
+                touchstart: _vm.voiceBegin,
+                touchmove: function($event) {
+                  $event.stopPropagation()
+                  $event.preventDefault()
+                  _vm.voiceIng($event)
                 },
-                [_vm._v(_vm._s(_vm.tips[_vm.status]))]
-              )
-            ])
-          ])
-        : _vm._e(),
-      _c("view", { staticClass: "height100" }),
-      _c("view", { staticClass: "reply" }, [
-        _c("view", { staticClass: "opration-area ply" }, [
-          _vm.mode
-            ? _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.content,
-                    expression: "content"
-                  }
-                ],
-                attrs: {
-                  "confirm-hold": "true",
-                  type: "text",
-                  "confirm-type": "send",
-                  eventid: "73b8c1b7-7"
-                },
-                domProps: { value: _vm.content },
-                on: {
-                  focus: _vm.inputShowed,
-                  confirm: _vm.reply,
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                touchend: _vm.voiceEnd,
+                touchcancel: _vm.voiceCancel
+              }
+            },
+            [_vm._v(_vm._s(_vm.voiceTis))]
+          ),
+          _c(
+            "view",
+            { staticClass: "text-mode", class: _vm.isVoice ? "hidden" : "" },
+            [
+              _c("view", { staticClass: "box" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.textMsg,
+                      expression: "textMsg"
                     }
-                    _vm.content = $event.target.value
+                  ],
+                  attrs: {
+                    "confirm-type": "send",
+                    "confirm-hold": "true",
+                    "cursor-spacing": "15",
+                    id: "textMsg",
+                    eventid: "73b8c1b7-7"
+                  },
+                  domProps: { value: _vm.textMsg },
+                  on: {
+                    blur: _vm.sendBlur,
+                    confirm: _vm.sendText,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.textMsg = $event.target.value
+                    }
                   }
-                }
-              })
-            : _vm._e()
+                })
+              ])
+            ]
+          )
         ]),
-        _c("image", {
-          staticClass: "choose-image ply",
-          attrs: { src: "/static/images/image.png", eventid: "73b8c1b7-8" },
-          on: { tap: _vm.chooseImage }
-        })
-      ])
-    ],
-    1
-  )
+        _c(
+          "view",
+          {
+            staticClass: "more",
+            attrs: { eventid: "73b8c1b7-8" },
+            on: { tap: _vm.chooseImage }
+          },
+          [_c("view", { staticClass: "icon tupian" })]
+        )
+      ]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -1248,175 +871,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_vue_cli_plugin_uni_packages_webpack_preprocess_loader_index_js_ref_17_0_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_template_js_D_software_HBuilderX_plugins_uniapp_cli_node_modules_vue_loader_lib_index_js_vue_loader_options_D_software_HBuilderX_plugins_uniapp_cli_node_modules_dcloudio_webpack_uni_mp_loader_lib_style_js_chat_vue_vue_type_template_id_26a3dd72_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
-
-/***/ }),
-
-/***/ "E:\\uniapp\\find.yidapi.com.cn\\utils\\IMapi.js":
-/*!***************************************************!*\
-  !*** E:/uniapp/find.yidapi.com.cn/utils/IMapi.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-
-var _md5Min = _interopRequireDefault(__webpack_require__(/*! ./md5.min.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\md5.min.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var apiUrl = 'https://webapi.yidap.com'; // 测试
-//const apiUrl = 'https://apiv2.yidap.com';     // 正式
-//const apiUrl = 'http://localhost:9331';
-Promise.prototype.finally = function (callback) {var P = this.constructor;return this.then(
-  function (value) {return P.resolve(callback()).then(function () {return value;});},
-  function (reason) {return P.resolve(callback()).then(function () {throw reason;});});
-
-};
-/*
-    *  
-    * @param {*} params 
-    * @param {*} url String
-    * @param {*} data Object
-    * @param {*} success Function
-    * @param {*} fail Function
-    * @param {*} complete Function
-    */
-// id 类型或id   st 状态
-
-// sign签名拼接方法
-function MakeSign(url, Obj) {
-  var newKey = Object.keys(Obj).sort();
-  var newObj = {};
-  for (var i = 0; i < newKey.length; i++) {
-    newObj[newKey[i]] = Obj[newKey[i]];
-  }
-  var str = '';
-  for (var key in newObj) {
-    str += key + '=' + newObj[key] + '&';
-  }
-  var newUrl = '';
-  if (url.indexOf('https://webapi.yidap.com') > -1) {
-    newUrl = url.split('https://webapi.yidap.com')[1];
-  } else {
-    newUrl = url.split('https://apiv2.yidap.com')[1];
-  }
-  var newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian';
-  newStr = newStr.replace('sign=&', '');
-  return (0, _md5Min.default)(newStr);
-}
-
-var myRequest = function myRequest() {var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var url = arguments.length > 1 ? arguments[1] : undefined;var id = arguments.length > 2 ? arguments[2] : undefined;var st = arguments.length > 3 ? arguments[3] : undefined;var page = arguments.length > 4 ? arguments[4] : undefined;
-
-  return new Promise(function (resolve, reject) {
-    var timestamp = Date.parse(new Date());
-
-    var data = params.data || {};
-
-    data.timestamp = timestamp;
-    data.sign = MakeSign(url, data);
-    data.deviceId = "wx";
-    data.platformType = "2";
-    data.versionCode = '4.0';
-
-    var token = wx.getStorageSync('token') || '';
-    var token_type = wx.getStorageSync('token_type') || 'Bearer';
-    // data.member_token = token;
-    var header = { 'Accept': 'application/json', 'Authorization': token_type + ' ' + token };
-    var apiUrl = url;
-    if (id != undefined) {
-      apiUrl = url + '/' + id;
-    }
-    if (st != undefined) {
-      apiUrl = apiUrl + '/' + st;
-    }
-    if (page != undefined) {
-      apiUrl = apiUrl + '?page=' + page;
-    }
-    wx.request({
-      url: apiUrl,
-      method: params.method || 'GET',
-      data: data,
-      header: header,
-      success: function success(res) {
-        var res = res.data;
-        if (200 === res.code || 0 === res.code) {
-          resolve(res);
-        } else {
-
-          if (401 === res.code) {
-            wx.hideLoading();
-            console.log('401统一处理');
-            var fromCenter = wx.getStorageSync('fromCenter');
-            wx.setStorageSync('fromCenter', '0');
-            if (fromCenter != 1) {
-              wx.showModal({
-                title: '您尚未登录',
-                content: '是否前往登录页面',
-                confirmText: '前往',
-                // confirmColor: '#c81a29',
-                success: function success(res) {
-                  if (res.confirm) {
-                    wx.navigateTo({
-                      url: '../login/login' });
-
-                    return false;
-                  } else if (res.cancel) {
-                    console.log('用户点击取消');
-                  }
-                } });
-
-            }
-          }
-          if (201 === res.code) {
-            wx.showToast({
-              title: res.msg,
-              icon: 'none',
-              duration: 2000 });
-
-          }
-          reject(res);
-        }
-      },
-      fail: function fail(err) {
-        // 请求超时处理
-        if (err.errMsg || err.errMsg === "request:fail timeout") {
-          wx.showToast({
-            title: '网络请求超时',
-            image: '../../public/images/icon/error.png',
-            duration: 3000 });
-
-          wx.hideLoading();
-        }
-
-        //reject(err);
-
-      },
-      complete: function complete(res) {
-
-      } });
-
-  });
-};
-
-// 根据用户ID获取用户信息
-var getUserInfoformSocket = function getUserInfoformSocket(params) {return myRequest(params, "".concat(apiUrl, "/app/socket/getPhoto?userId=").concat(params.data.userId));};
-
-// 获取聊天记录
-var getMessageBySocket = function getMessageBySocket(params) {return myRequest(params, "".concat(apiUrl, "/app/socket/getMessage"));};
-
-
-// 未读消息
-var getCacheMessage = function getCacheMessage(params) {return myRequest(params, "".concat(apiUrl, "/app/socket/getCacheMessage"));};
-
-// 未读消息
-var getPhotoByIM = function getPhotoByIM(params) {return myRequest(params, "".concat(apiUrl, "/app/socket/getPhoto"));};
-
-
-
-
-module.exports = {
-  getPhotoByIM: getPhotoByIM,
-  getCacheMessage: getCacheMessage,
-  getMessageBySocket: getMessageBySocket,
-  getUserInfoformSocket: getUserInfoformSocket };
 
 /***/ }),
 

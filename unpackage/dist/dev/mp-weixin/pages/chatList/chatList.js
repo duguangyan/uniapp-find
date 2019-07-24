@@ -8,7 +8,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
 
 
@@ -41,103 +41,112 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _socketIo = _interopRequireDefault(__webpack_require__(/*! ../../utils/socket-io.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\socket-io.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
+  computed: {
+    Screen_width: function Screen_width() {
+      return uni.getSystemInfoSync().windowWidth;
+    } },
+
   data: function data() {
     return {
-      delBtnWidth: 180,
-      list: [{
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018-09-22",
-        txtStyle: "" },
-
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018",
-        txtStyle: "" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018",
-        txtStyle: "" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" }],
-
-
-      lists: [],
-      startX: "" };
+      img: '../../static/slide-list/qr_code.png',
+      visible: false,
+      start_slide_x: 0,
+      btnWidth: 0,
+      startX: 0,
+      LastX: 0,
+      startTime: 0,
+      screenName: '',
+      list: [],
+      btuBottom: '0',
+      secondHeight: '',
+      index: -1,
+      fromUserId: 0 };
 
   },
+  onLoad: function onLoad(option) {
+    this.globalData.initType = 1;
+    if (this.globalData.userId && this.globalData.userId != '') {
+      _socketIo.default.initSocket(this.globalData.userId, this.globalData.toUserId);
+    } else {
+      var fromUserId = uni.getStorageSync('userInfo').id;
+      if (fromUserId && fromUserId != '') {
+        _socketIo.default.initSocket(fromUserId, option.toUserId);
+      } else {
+        console.warn('用户id不存在，连接失败！！！');
+        return;
+      }
+      this.fromUserId = fromUserId;
+    }
 
-  onLoad: function onLoad(options) {
-    // 页面初始化 options为页面跳转所带来的参数
-    this.initEleWidth();
-    uni.setStorageSync('chatListIds', []);
-    this.onSend();
-  },
-  mounted: function mounted() {
+    uni.setStorageSync('token', option.token || uni.getStorageSync('token'));
 
+    if (this.globalData.connentSocket) {
+      this.onSend();
+    }
   },
   onShow: function onShow() {
     var that = this;
+    var res = uni.getSystemInfoSync();
+    // 计算主体部分高度,单位为px
+    this.secondHeight = res.windowHeight;
+    // 接收消息
     this.globalData.callback = function (res) {
-      console.log('lists页面收到数据啦');
-      var resLists = res;
-      if (resLists && resLists.length > 0) {
-        that.$data.lists = resLists;
+      console.log('接收数据:', res);
+      if (res && res.length > 0) {
+        for (var value in res) {
+          res[value].slide_x = 0;
+        }
+        that.list = res;
       } else {
-        if (resLists.fromUserId != 0) {
-          var _res = that.$data.lists.findIndex(function (value, index) {
-            return value.userInfoId = resLists.userInfoId;
+        if (res.fromUserId != 0) {
+          var key = that.list.findIndex(function (value, index) {
+            return value.userInfoId == res.userInfoId;
           });
-          if (_res != -1) {
-            that.$data.lists[_res].userMessage = resLists;
-            that.$data.lists[_res].unRead++;
-            that.$data.lists = that.$data.lists;
+          if (key != -1) {
+            that.list[key].userMessage = res;
+            that.list[key].unRead++;
           } else {
             that.onSend();
           }
         }
       }
     };
+    uni.$on('message', function (data) {
+      that.list[that.index].userMessage = data;
+    });
+    uni.$on('chatList', function (data) {
+      if (data) {
+        that.onSend();
+      }
+    });
+  },
+  onUnload: function onUnload() {
+    uni.$off();
   },
   methods: {
     onSend: function onSend() {
-      var userId = uni.getStorageSync('userId');
       var message = {
-        fromUserId: userId,
+        fromUserId: this.fromUserId || this.globalData.userId,
         toUserId: '',
         content: 'page',
         smsType: 'TEXT',
@@ -147,119 +156,112 @@
         currentPage: '',
         pageSize: '' };
 
-      this.sendSocketMessage(JSON.stringify(message));
-    },
+      this.globalData.localSocket.send({
+        data: JSON.stringify(message) });
 
-    touchS: function touchS(e) {
-      if (e.touches.length == 1) {
-        this.$data.startX = e.touches[0].clientX;
-      }
     },
-    touchM: function touchM(e) {
-      if (e.touches.length == 1) {
-        //手指移动时水平方向位置
-        var moveX = e.touches[0].clientX;
-        //手指起始点位置与移动期间的差值
-        var disX = this.$data.startX - moveX;
-        var delBtnWidth = this.$data.delBtnWidth;
-        var txtStyle = "";
-        if (disX == 0 || disX < 0) {//如果移动距离小于等于0，说明向右滑动，文本层位置不变
-          txtStyle = "left:0px";
-        } else if (disX > 0) {//移动距离大于0，文本层left值等于手指移动距离
-          txtStyle = "left:-" + disX + "px";
-          if (disX >= delBtnWidth) {
-            //控制手指移动距离最大值为删除按钮的宽度
-            txtStyle = "left:-" + delBtnWidth + "px";
-          }
+    cancelEvent: function cancelEvent() {
+      this.visible = false;
+    },
+    // 滑动开始
+    touchStart: function touchStart(e, index) {var _this = this;
+      //记录手指放上去的时间
+      this.startTime = e.timeStamp;
+      //记录滑块的初始位置
+      this.start_slide_x = this.list[index].slide_x;
+      // 按钮宽度
+      uni.createSelectorQuery().
+      selectAll('.group-btn').
+      boundingClientRect().
+      exec(function (res) {
+        if (res[0] != null) {
+          _this.btnWidth = res[0][index].width * -1;
         }
-
-        //获取手指触摸的是哪一项
-        var index = e.currentTarget.dataset.index;
-        var list = this.$data.list;
-        list[index].txtStyle = txtStyle;
-        //更新列表的状态
-        this.$data.list = list;
-      }
-    },
-    touchE: function touchE(e) {
-      if (e.changedTouches.length == 1) {
-        //手指移动结束后水平位置
-        var endX = e.changedTouches[0].clientX;
-        //触摸开始与结束，手指移动的距离
-        var disX = this.$data.startX - endX;
-        var delBtnWidth = this.$data.delBtnWidth;
-        //如果距离小于删除按钮的1/2，不显示删除按钮
-        var txtStyle = disX > delBtnWidth / 2 ? "left:-" + delBtnWidth + "px" : "left:0px";
-        //获取手指触摸的是哪一项
-        var index = e.currentTarget.dataset.index;
-        var list = this.$data.list;
-        list[index].txtStyle = txtStyle;
-        //更新列表的状态
-        this.$data.list = list;
-      }
-    },
-    //获取元素自适应后的实际宽度
-    getEleWidth: function getEleWidth(w) {
-      var real = 0;
-      try {
-        var res = uni.getSystemInfoSync().windowWidth;
-        var scale = 750 / 2 / (w / 2); //以宽度750px设计稿做宽度的自适应
-        real = Math.floor(res / scale);
-        return real;
-      } catch (e) {
-        return false;
-        // Do something when catch error
-      }
-    },
-    initEleWidth: function initEleWidth() {
-      var delBtnWidth = this.getEleWidth(this.$data.delBtnWidth);
-      this.$data.delBtnWidth = delBtnWidth;
-    },
-    //点击删除按钮事件
-    delItem: function delItem(e) {
-      //获取列表中要删除项的下标
-      var index = e.currentTarget.dataset.index;
-      var list = this.$data.list;
-      //移除列表中下标为index的项
-      list.splice(index, 1);
-      //更新列表的状态
-      this.$data.list = list;
-    },
-    getCacheMessage: function getCacheMessage() {var _this = this;
-      IMapi.getCacheMessage({
-        data: {
-          receiveUserId: 1,
-          sendUserId: 2 } }).
-
-      then(function (res) {
-        _this.$data.list = res.data;
+      });
+      // 记录上一次开始时手指所处位置
+      this.startX = e.touches[0].pageX;
+      // 记录上一次手指位置
+      this.lastX = this.startX;
+      //初始化非当前滑动消息列的位置
+      this.list.forEach(function (item, eq) {
+        if (eq !== index) {
+          item.slide_x = 0;
+        }
       });
     },
-    goChat: function goChat(e) {
-      var toUserId = e.currentTarget.dataset.id;
-      var chatListIndex = e.currentTarget.dataset.index;
-      var fromUserPhoto = e.currentTarget.dataset.photo;
-      var userName = e.currentTarget.dataset.name;
-      var key = e.currentTarget.dataset.key;
-
-      this.$data.lists[key].unRead = 0;
-      this.$data.lists = this.$data.lists;
-
-      var oldArr = uni.getStorageSync('chatListIds') || [];
-      if (oldArr.length > 0) {
-        oldArr.forEach(function (o, i) {
-          if (o != toUserId) {
-            oldArr.push(toUserId);
-          }
-        });
-      } else {
-        oldArr.push(toUserId);
+    // 滑动中
+    touchMove: function touchMove(e, index) {
+      var endX = e.touches[0].pageX;
+      var distance = endX - this.lastX;
+      // 预测滑块所处位置
+      var duang = this.list[index].slide_x + distance;
+      // 如果在可行区域内
+      if (duang <= 0 && duang >= this.btnWidth) {
+        this.list[index].slide_x = duang;
       }
+      // 此处手指所处位置将成为下次手指移动时的上一次位置
+      this.lastX = endX;
+    },
+    // 滑动结束
+    touchEnd: function touchEnd(e, index) {
+      var distance = 10;
+      var endTime = e.timeStamp;
+      var x_end_distance = this.startX - this.lastX;
+      if (Math.abs(endTime - this.startTime) > 200) {
+        distance = this.btnWidth / -2;
+      }
+      // 判断手指最终位置与手指开始位置的位置差距
+      if (x_end_distance > distance) {
+        this.list[index].slide_x = this.btnWidth;
+      } else if (x_end_distance < distance * -1) {
+        this.list[index].slide_x = 0;
+      } else {
+        this.list[index].slide_x = this.start_slide_x;
+      }
+    },
+    // 点击回复原状
+    recover: function recover(item, index) {
+      this.index = index;
+      if (item.slide_x && item.slide_x != 0) {
+        this.list[index].slide_x = 0;
+      } else {
+        this.list[index].unRead = 0;
+        uni.setStorageSync('toAvatarPath', item.toAvatarPath);
+        uni.setStorageSync('fromAvatarPath', item.fromAvatarPath);
+        uni.navigateTo({
+          url: "../chat/chat?name=".concat(item.nickName, "&fromUserId=").concat(this.fromUserId || this.globalData.userId, "&toUserId=").concat(item.toUserId) });
 
-      uni.setStorageSync('chatListIds', oldArr);
-      uni.navigateTo({
-        url: '/pages/chat/chat?toUserId=' + toUserId + '&fmUserName=' + userName + '&fromUserPhoto=' + fromUserPhoto +
-        '&index=' + key });
+      }
+    },
+    // 分享
+    top: function top(id) {
+      console.log('点击分享');
+      if (this.visible) {
+        this.visible = false;
+      } else {
+        this.visible = true;
+      }
+    },
+    // 删除
+    removeM: function removeM(index, id) {
+      var self = this;
+      uni.showModal({
+        title: '',
+        content: '确定要删除该信息吗？',
+        confirmText: '删除',
+        confirmColor: '#ff3b32',
+        success: function success(res) {
+          if (res.confirm) {
+            self.list.splice(index, 1);
+            uni.showToast({
+              icon: "success",
+              title: '操作成功!',
+              duration: 2000 });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
@@ -292,89 +294,163 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("view", [
-    _vm.lists.length <= 0
-      ? _c("view", { staticClass: "no-data" }, [_vm._v("暂无数据")])
-      : _vm._e(),
-    _c("view", { staticClass: "chat-list" }, [
+  return _c(
+    "view",
+    {
+      staticClass: "index",
+      style: [{ "min-height": _vm.secondHeight + "px" }]
+    },
+    [
       _c(
         "view",
-        { staticClass: "items" },
-        _vm._l(_vm.lists, function(item, index) {
-          return _c(
-            "view",
-            {
-              key: index,
-              staticClass: "item",
-              attrs: {
-                "data-key": index,
-                "data-name": item.nickName || item.userName,
-                "data-photo": item.avatarPath,
-                "data-id": item.toUserId,
-                eventid: "2c59a812-1-" + index
-              },
-              on: { tap: _vm.goChat }
-            },
-            [
-              _c(
-                "view",
-                {
-                  staticClass: "inner txt cf",
-                  style: item.txtStyle,
-                  attrs: { "data-index": index }
+        { staticClass: "list-box" },
+        _vm._l(_vm.list, function(item, index) {
+          return _c("view", { key: index, staticClass: "container_of_slide" }, [
+            _c(
+              "view",
+              {
+                staticClass: "slide_list",
+                style: {
+                  transform: "translate3d(" + item.slide_x + "px, 0, 0)"
                 },
-                [
-                  _c("view", { staticClass: "fll item-1" }, [
-                    _c("image", {
-                      attrs: {
-                        src:
-                          item.avatarPath ||
-                          "https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png"
-                      }
-                    }),
-                    item.unRead > 0
-                      ? _c("view", { staticClass: "spot" })
-                      : _vm._e()
-                  ]),
-                  _c("view", { staticClass: "fll item-2" }, [
-                    _c("view", { staticClass: "nickName" }, [
-                      _vm._v(_vm._s(item.nickName || item.userName))
-                    ]),
-                    _c("view", { staticClass: "ellipsis" }, [
-                      _vm._v(
-                        _vm._s(
-                          item.userMessage.smsType == "TEXT"
-                            ? item.userMessage.content
-                            : "[图片]"
-                        )
-                      )
-                    ])
-                  ]),
-                  _c("view", { staticClass: "flr item-3" }, [
-                    _vm._v(_vm._s(item.userMessage.dateTime))
-                  ])
-                ]
-              ),
-              _c(
-                "view",
-                {
-                  staticClass: "inner del",
-                  attrs: {
-                    "data-index": index,
-                    eventid: "2c59a812-0-" + index
+                attrs: { eventid: "2c59a812-2-" + index },
+                on: {
+                  touchstart: function($event) {
+                    _vm.touchStart($event, index)
                   },
-                  on: { tap: _vm.delItem }
-                },
-                [_vm._v("删除")]
-              )
+                  touchend: function($event) {
+                    _vm.touchEnd($event, index)
+                  },
+                  touchmove: function($event) {
+                    _vm.touchMove($event, index)
+                  },
+                  tap: function($event) {
+                    _vm.recover(item, index)
+                  }
+                }
+              },
+              [
+                _c(
+                  "view",
+                  {
+                    staticClass: "now-message-info",
+                    style: { width: _vm.Screen_width + "px" },
+                    attrs: { "hover-class": "uni-list-cell-hover" }
+                  },
+                  [
+                    _c("view", { staticClass: "icon-circle" }, [
+                      _c("image", { attrs: { src: item.toAvatarPath } })
+                    ]),
+                    _c("view", { staticClass: "list-right" }, [
+                      _c("view", { staticClass: "top" }, [
+                        _c("view", { staticClass: "username" }, [
+                          _vm._v(_vm._s(item.nickName || item.userName))
+                        ]),
+                        _c("view", { staticClass: "time" }, [
+                          _vm._v(_vm._s(item.userMessage.dateTime))
+                        ])
+                      ]),
+                      _c("view", { staticClass: "bottom" }, [
+                        _c("view", { staticClass: "msg" }, [
+                          _vm._v(
+                            _vm._s(
+                              item.userMessage.smsType == "TEXT"
+                                ? item.userMessage.content
+                                : "[图片]"
+                            )
+                          )
+                        ]),
+                        item.unRead > 0
+                          ? _c("view", { staticClass: "tis" }, [
+                              _vm._v(
+                                _vm._s(item.unRead > 99 ? "99.." : item.unRead)
+                              )
+                            ])
+                          : _vm._e()
+                      ])
+                    ])
+                  ]
+                ),
+                _c("view", { staticClass: "group-btn" }, [
+                  item.isShare
+                    ? _c(
+                        "view",
+                        {
+                          staticClass: "top btn-div",
+                          attrs: { eventid: "2c59a812-0-" + index },
+                          on: {
+                            tap: function($event) {
+                              _vm.top(item.id)
+                            }
+                          }
+                        },
+                        [_vm._v("分享")]
+                      )
+                    : _vm._e(),
+                  _c(
+                    "view",
+                    {
+                      staticClass: "removeM btn-div",
+                      attrs: { eventid: "2c59a812-1-" + index },
+                      on: {
+                        tap: function($event) {
+                          _vm.removeM(index, item.userInfoId)
+                        }
+                      }
+                    },
+                    [_vm._v("删除")]
+                  )
+                ]),
+                _c("view", { staticStyle: { clear: "both" } })
+              ]
+            )
+          ])
+        })
+      ),
+      _vm.visible
+        ? _c(
+            "view",
+            { staticClass: "scan-box", attrs: { mode: "top-right" } },
+            [
+              _c("view", { staticClass: "scan-item" }, [
+                _c("view", { staticClass: "scan-content" }, [
+                  _vm._m(0),
+                  _c("image", {
+                    staticClass: "scan-btn",
+                    attrs: {
+                      src: "../../static/slide-list/fork.png",
+                      eventid: "2c59a812-3"
+                    },
+                    on: { click: _vm.cancelEvent }
+                  }),
+                  _c("image", {
+                    staticClass: "scan-img",
+                    attrs: { src: _vm.img }
+                  }),
+                  _c("view", { staticClass: "scan-text" }, [
+                    _vm._v("扫一扫查看分享信息")
+                  ])
+                ])
+              ])
             ]
           )
-        })
-      )
-    ])
-  ])
+        : _vm._e()
+    ]
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("view", { staticClass: "scan-icon" }, [
+      _c("image", {
+        staticClass: "scan-icon-img",
+        attrs: { src: "../../static/slide-list/icon-scan.png" }
+      })
+    ])
+  }
+]
 render._withStripped = true
 
 

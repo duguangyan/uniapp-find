@@ -428,6 +428,9 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../utils/util.js *
 
 
 
+
+
+
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
@@ -481,6 +484,12 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
         title: "积分商城" }],
 
 
+
+
+
+
+
+
       avatar_path: "/static/footer_icon/2.1.png",
       balance: 0,
       marketing: 0,
@@ -511,6 +520,12 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
     } },
 
   methods: {
+    // 切换账户
+    goPage: function goPage(index) {
+      uni.reLaunch({
+        url: '../index/index?menuFrom=' + index });
+
+    },
     // 获取用户信息
     getUserInfo: function getUserInfo() {var _this2 = this;
       _api.default.getUserInfo({
@@ -548,6 +563,14 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
         // 去 web-view 积分商城
         uni.navigateTo({
           url: "../integralmall/integralmall" });
+
+      } else if (index == 4) {
+        uni.navigateTo({
+          url: '../start/start?menuFrom=' + 1 });
+
+      } else if (index == 5) {
+        uni.navigateTo({
+          url: '../start/start?menuFrom=' + 2 });
 
       }
 
@@ -660,7 +683,6 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
               url: '../family/family' });
 
           }
-
         }
       });
 
@@ -723,8 +745,16 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
 
 
+
+
+
+
+
+
+
+
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
-var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
 {
   data: function data() {
     return {
@@ -751,13 +781,13 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
       // 	title: "我的地址",
       // },
       {
-        title: "在线客服" }],
+        title: "在线客服" },
 
+      {
+        title: "我要找料" },
 
-
-
-
-
+      {
+        title: "切换找料员" }],
 
 
       balance: 0,
@@ -793,12 +823,51 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
   mounted: function mounted() {
 
   },
-  methods: {
-    // 取佣金页面
-    goRecordList: function goRecordList() {
+  methods: _defineProperty({
 
+    goPage: function goPage(index) {
+      if (index == 0) {
+
+      } else if (index == 1) {
+        uni.navigateTo({
+          url: '../start/start?menuFrom=' + 0 });
+
+      } else if (index == 2) {
+        uni.navigateTo({
+          url: '../start/start?menuFrom=' + 1 });
+
+      } else if (index == 4) {
+
+      } else if (index == 5) {
+
+      }
+    },
+
+    goIn: function goIn() {
+      _api.default.getInviteCode({}).then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          if (res.data.status == 0) {
+            uni.navigateTo({
+              url: '../familyExplain/familyExplain?familyStatus=' + res.data.status });
+
+          } else if (res.data.status == 1) {
+            uni.navigateTo({
+              url: '../familyCenter/familyCenter' });
+
+          } else {
+            uni.navigateTo({
+              url: '../family/family' });
+
+          }
+        }
+      });
+
+    },
+
+    // 取佣金页面
+    goRecordList: function goRecordList(index) {
       uni.navigateTo({
-        url: '../index/common/recordList/recordList?type=commission' });
+        url: '../index/common/recordList/recordList?index=' + index });
 
     },
     // 获取用户信息
@@ -941,28 +1010,28 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
         url: '../recharge/recharge?index=' + index });
 
 
-    },
-    goIn: function goIn() {
-      _api.default.getInviteCode({}).then(function (res) {
-        if (res.code == 200 || res.code == 0) {
-          if (res.data.status == 0) {
-            uni.navigateTo({
-              url: '../familyExplain/familyExplain?familyStatus=' + res.data.status });
+    } }, "goIn", function goIn()
+  {
+    _api.default.getInviteCode({}).then(function (res) {
+      if (res.code == 200 || res.code == 0) {
+        if (res.data.status == 0) {
+          uni.navigateTo({
+            url: '../familyExplain/familyExplain?familyStatus=' + res.data.status });
 
-          } else if (res.data.status == 1) {
-            uni.navigateTo({
-              url: '../familyCenter/familyCenter' });
+        } else if (res.data.status == 1) {
+          uni.navigateTo({
+            url: '../familyCenter/familyCenter' });
 
-          } else {
-            uni.navigateTo({
-              url: '../family/family' });
-
-          }
+        } else {
+          uni.navigateTo({
+            url: '../family/family' });
 
         }
-      });
 
-    } } };exports.default = _default;
+      }
+    });
+
+  }) };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
 /***/ }),
@@ -976,6 +1045,30 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1247,7 +1340,14 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
       isFullLoad: false,
       address: '',
       name: '',
-      navTexts: ['全部', '待接单', '派送中', '待收货', '待评价', '已完成'] };
+      navTexts: ['全部', '待接单', '派送中', '待收货', '待评价', '已完成'],
+      isLogistics: false,
+      express_name: '',
+      express_phone: '',
+      express_sn: '',
+      result_img: '',
+      isiP: false,
+      scrolLeft: 1 };
 
   },
 
@@ -1255,6 +1355,20 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
     uni.setNavigationBarTitle({
       title: "配送订单" });
+
+
+    switch (uni.getSystemInfoSync().platform) {
+      case 'android':
+        console.log('运行Android上');
+        break;
+      case 'ios':
+        console.log('运行iOS上');
+        this.$data.isiP = true;
+        break;
+      default:
+        console.log('运行在开发者工具上');
+        break;}
+
 
   },
   onShow: function onShow() {
@@ -1276,35 +1390,163 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
     this.getMyOrders();
   },
   methods: {
-    // 取聊天室
-    goChat: function goChat(item) {
 
-      uni.navigateTo({
-        url: '/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户' });
-
-    },
     // 搜索
     doSearch: function doSearch() {var _this2 = this;
-
-      this.$data.scrolLeft = 0;
       if (this.$data.searchValue == '') {
         _util.default.errorTips('搜索关键字不能为空');
         return false;
       }
-      this.$data.page = 1;
-      _api.default.staffShipSearch({
+      _api.default.apiStaffShipSearch({
         data: {
-          page: this.$data.page,
           keyword: this.$data.searchValue } }).
 
       then(function (res) {
         if (res.code == 200 || res.code == 0) {
-          _this2.$data.orderList = [];
-          _this2.$data.status = 0;
-          _this2.$data.orderList = _this2.$data.orderList.concat(res.data);
+          if (res.data.length > 0) {
+            _this2.$data.status = 0;
+            _this2.$data.scrolLeft = 0;
+            _this2.$data.orderList = [];
+            _this2.$data.orderList = res.data;
+          } else {
+            _util.default.errorTips('搜索不到相关数据');
+          }
+        } else {
+          _util.default.errorTips(res.msg);
         }
+      }).catch(function (e) {_util.default.errorTips(e.msg || e.message);});
+    },
+
+    logisticsSubmit: function logisticsSubmit() {var _this3 = this;
+      if (this.$data.express_name == "") {
+        _util.default.errorTips('请填写物流公司');
+        return false;
+      }
+      if (this.$data.express_phone == "") {
+        _util.default.errorTips('请填写物流电话');
+        return false;
+      }
+      if (!_util.default.vailPhone(this.$data.express_phone)) {
+        _util.default.errorTips('请填写正确的电话');
+        return false;
+      }
+
+      if (this.$data.express_sn == "") {
+        _util.default.errorTips('请填写物流单号');
+        return false;
+      }
+      _api.default.staffShipExpress({
+        method: 'POST',
+        data: {
+          id: this.$data.id,
+          express_name: this.$data.express_name,
+          express_phone: this.$data.express_phone,
+          express_sn: this.$data.express_sn,
+          express_img: this.$data.result_img } }).
+
+      then(function (res) {
+        if (res.code == 0 || res.code == 200) {
+          _this3.$data.isLogistics = false;
+          _this3.$data.orderList = [];
+          // 获取数据
+          _this3.getMyOrders();
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg || res.meessage);
       });
     },
+    hideLogistics: function hideLogistics() {
+      this.$data.isLogistics = false;
+    },
+    // 送达
+    serviceOrder: function serviceOrder(item) {
+      var _this = this;
+      var id = item.id;
+      var shipping_type = item.shipping_type;
+      this.$data.result_img = item.result_img[0];
+      this.$data.id = item.id;
+      uni.showModal({
+        title: '提示',
+        content: '确认送达?',
+        success: function success(res) {
+          if (res.confirm) {
+            console.log('用户点击确定');
+            if (shipping_type != 2) {// 送货上门
+              _api.default.staffShipConfirm({
+                method: 'POST',
+                data: {
+                  id: id } }).
+
+              then(function (res) {
+                if (res.code == 0 || res.code == 200) {
+                  _this.$data.orderList = [];
+                  // 获取数据
+                  _this.getMyOrders();
+                }
+              });
+            } else {// 物流
+              _this.$data.isLogistics = true;
+            }
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
+
+
+    },
+    // 联系客户
+    contact: function contact(item) {
+      var data = {
+        id: item.id,
+        type: 2 };
+
+      _api.default.apiPhoneStaff({
+        method: 'POST',
+        data: data }).
+      then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          uni.makePhoneCall({
+            phoneNumber: res.data });
+
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg);
+      });
+    },
+
+    // 取聊天室
+    goChat: function goChat(item) {
+
+      uni.navigateTo({
+        url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.user_id + '&name=客户' });
+
+    },
+    // 搜索
+    // doSearch(){
+    // 	
+    // 	this.$data.scrolLeft = 0;
+    // 	if(this.$data.searchValue == ''){
+    // 		util.errorTips('搜索关键字不能为空');
+    // 		return false;
+    // 	}
+    // 	this.$data.page = 1;
+    // 	api.staffShipSearch({
+    // 		data:{
+    // 			page:this.$data.page,
+    // 			keyword:this.$data.searchValue
+    // 		}
+    // 	}).then((res)=>{
+    // 		if(res.code == 200 || res.code == 0){
+    // 			this.$data.orderList = [];
+    // 			this.$data.status = 0;
+    // 			this.$data.orderList = this.$data.orderList.concat(res.data);
+    // 		}
+    // 	})
+    // },
 
     // 确认接单
     receiptOrder: function receiptOrder(id) {
@@ -1338,7 +1580,7 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
     },
     // 获取数据
-    getMyOrders: function getMyOrders() {var _this3 = this;
+    getMyOrders: function getMyOrders() {var _this4 = this;
       var s = 0;
       if (this.$data.status >= 1) {
         s = this.$data.status + 1;
@@ -1349,8 +1591,18 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
           status: s } }).
 
       then(function (res) {
-        if (res.data.length < 10) _this3.$data.isFullLoad = true;
-        _this3.$data.orderList = _this3.$data.orderList.concat(res.data);
+        if (res.code == 200 || res.code == 0) {
+          if (res.data.length < 10) _this4.$data.isFullLoad = true;
+          _this4.$data.orderList = _this4.$data.orderList.concat(res.data);
+        } else {
+          // if(res.msg == "您不是配送员"){
+          //  uni.navigateTo({
+          //  	url:'/pages/login/login?from='+ uni.getStorageSync('userType')
+          //  })
+          // }
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg || res.message);
       });
 
     },
@@ -1478,8 +1730,18 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
 
 
+
+
+
+
+
+
+
+
+
+
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
-var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var _default =
 {
   data: function data() {
     return {
@@ -1523,13 +1785,13 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
       // 	title: "我的地址",
       // },
       {
-        title: "在线客服" }],
+        title: "在线客服" },
 
+      {
+        title: "我要找料" },
 
-
-
-
-
+      {
+        title: "切换配送员" }],
 
 
       balance: 0, // 余额
@@ -1566,7 +1828,46 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
   mounted: function mounted() {
 
   },
-  methods: {
+  methods: _defineProperty({
+    goPage: function goPage(index) {
+      if (index == 0) {
+
+      } else if (index == 1) {
+        uni.navigateTo({
+          url: '../start/start?menuFrom=' + 0 });
+
+      } else if (index == 2) {
+        uni.navigateTo({
+          url: '../start/start?menuFrom=' + 2 });
+
+      } else if (index == 4) {
+
+      } else if (index == 5) {
+
+      }
+    },
+    goIn: function goIn() {
+      _api.default.getInviteCode({}).then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          if (res.data.status == 0) {
+            uni.navigateTo({
+              url: '../familyExplain/familyExplain?familyStatus=' + res.data.status });
+
+          } else if (res.data.status == 1) {
+            uni.navigateTo({
+              url: '../familyCenter/familyCenter' });
+
+          } else {
+            uni.navigateTo({
+              url: '../family/family' });
+
+          }
+
+        }
+      });
+
+    },
+
     // 取佣金页面
     goRecordList: function goRecordList(index) {
       uni.navigateTo({
@@ -1710,28 +2011,28 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
         url: '../recharge/recharge?index=' + index });
 
 
-    },
-    goIn: function goIn() {
-      _api.default.getInviteCode({}).then(function (res) {
-        if (res.code == 200 || res.code == 0) {
-          if (res.data.status == 0) {
-            uni.navigateTo({
-              url: '../familyExplain/familyExplain?familyStatus=' + res.data.status });
+    } }, "goIn", function goIn()
+  {
+    _api.default.getInviteCode({}).then(function (res) {
+      if (res.code == 200 || res.code == 0) {
+        if (res.data.status == 0) {
+          uni.navigateTo({
+            url: '../familyExplain/familyExplain?familyStatus=' + res.data.status });
 
-          } else if (res.data.status == 1) {
-            uni.navigateTo({
-              url: '../familyCenter/familyCenter' });
+        } else if (res.data.status == 1) {
+          uni.navigateTo({
+            url: '../familyCenter/familyCenter' });
 
-          } else {
-            uni.navigateTo({
-              url: '../family/family' });
-
-          }
+        } else {
+          uni.navigateTo({
+            url: '../family/family' });
 
         }
-      });
 
-    } } };exports.default = _default;
+      }
+    });
+
+  }) };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
 
 /***/ }),
@@ -2003,11 +2304,14 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
 
 
+
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
   data: function data() {
     return {
+      scrolLeft: 1,
+      searchValue: '',
       params: {
         task_type: 1,
         type: -1 },
@@ -2038,8 +2342,24 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
   onShow: function onShow() {
     this.$data.nav = wx.getStorageSync('nav') || 1;
     this.$data.status = wx.getStorageSync('status') || 0;
-    this.$data.navSecend = wx.getStorageSync('status') || 0;
+    // this.$data.navSecend = wx.getStorageSync('status') || 0;
 
+
+    if (this.$data.status == 0) {
+      this.$data.navSecend = 0;
+    } else if (this.$data.status == 1) {
+      this.$data.navSecend = 1;
+    } else if (this.$data.status == 2) {
+      this.$data.navSecend = 2;
+    } else if (this.$data.status == 3) {
+      this.$data.navSecend = 6;
+    } else if (this.$data.status == 4) {
+      this.$data.navSecend = 3;
+    } else if (this.$data.status == 5) {
+      this.$data.navSecend = 4;
+    } else if (this.$data.status == 6) {
+      this.$data.navSecend = 5;
+    }
 
     this.$data.orderList = [];
 
@@ -2059,10 +2379,59 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
     this.getMyOrders();
   },
   methods: {
+
+    // 搜索
+    doSearch: function doSearch() {var _this2 = this;
+      if (this.$data.searchValue == '') {
+        _util.default.errorTips('搜索关键字不能为空');
+        return false;
+      }
+      _api.default.apiStaffFetchSearch({
+        data: {
+          keyword: this.$data.searchValue } }).
+
+      then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          if (res.data.length > 0) {
+            _this2.$data.navSecend = 0;
+            _this2.$data.scrolLeft = 0;
+            _this2.$data.orderList = [];
+            _this2.$data.orderList = res.data;
+          } else {
+            _util.default.errorTips('搜索不到相关数据');
+          }
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (e) {_util.default.errorTips(e.msg || e.message);});
+    },
+
+    // 联系客户
+    contact: function contact(item) {
+      var data = {
+        id: item.id,
+        type: 1 };
+
+      _api.default.apiPhoneStaff({
+        method: 'POST',
+        data: data }).
+      then(function (res) {
+
+        if (res.code == 200 || res.code == 0) {
+          uni.makePhoneCall({
+            phoneNumber: res.data });
+
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg);
+      });
+    },
     // 取聊天室
     goChat: function goChat(item) {
       uni.navigateTo({
-        url: '/pages/chat/chat?id=' + item.user_id + '&fmUserName=客户' });
+        url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.user_id + '&name=客户' });
 
     },
     // 确认接单
@@ -2101,18 +2470,27 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
 
     },
     // 获取数据
-    getMyOrders: function getMyOrders() {var _this2 = this;
+    getMyOrders: function getMyOrders() {var _this3 = this;
       var status = this.$data.status;
       if (this.$data.nav == 1) {
-
         _api.default.myOrderFindList({
           data: {
             page: this.$data.page,
             status: status } }).
 
         then(function (res) {
-          if (res.data.length < 10) _this2.$data.isFullLoad = true;
-          _this2.$data.orderList = _this2.$data.orderList.concat(res.data);
+          if (res.code == 200 || res.code == 0) {
+            if (res.data.length < 10) _this3.$data.isFullLoad = true;
+            _this3.$data.orderList = _this3.$data.orderList.concat(res.data);
+          } else {
+            // if(res.msg == "您不是找料员1"){
+            //   uni.navigateTo({
+            // url:'/pages/login/login?from='+ uni.getStorageSync('userType')
+            //   })
+            // }
+          }
+        }).catch(function (res) {
+          _util.default.errorTips(res.msg || res.message);
         });
       } else if (this.$data.nav == 2) {
 
@@ -2122,8 +2500,12 @@ var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.j
             status: status } }).
 
         then(function (res) {
-          if (res.data.length < 10) _this2.$data.isFullLoad = true;
-          _this2.$data.orderList = _this2.$data.orderList.concat(res.data);
+          if (res.code == 200 || res.code == 0) {
+            if (res.data.length < 10) _this3.$data.isFullLoad = true;
+            _this3.$data.orderList = _this3.$data.orderList.concat(res.data);
+          }
+        }).catch(function (res) {
+          _util.default.errorTips(res.msg || res.message);
         });
       }
     },
@@ -2291,7 +2673,7 @@ var _wxTitle = _interopRequireDefault(__webpack_require__(/*! ../../../component
       'https://static.yidap.com/miniapp/o2o_find/index/index_banner_3.png',
       'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png'],
 
-      banner: [],
+      banner: ['static/images/image.png'],
       title: "小鹿快找",
       isArrow: false,
       navArr: [{
@@ -2456,7 +2838,7 @@ var _wxTitle = _interopRequireDefault(__webpack_require__(/*! ../../../component
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
 
 
@@ -2489,103 +2871,148 @@ var _wxTitle = _interopRequireDefault(__webpack_require__(/*! ../../../component
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var _socketIo = _interopRequireDefault(__webpack_require__(/*! ../../../utils/socket-io.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\socket-io.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
+  computed: {
+    Screen_width: function Screen_width() {
+      return uni.getSystemInfoSync().windowWidth;
+    } },
+
   data: function data() {
     return {
-      delBtnWidth: 180,
-      list: [{
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018-09-22",
-        txtStyle: "" },
-
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018",
-        txtStyle: "" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018",
-        txtStyle: "" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" },
-      {
-        img: 'https://static.yidap.com/miniapp/o2o_find/index/index_banner_2.png',
-        title: "小鹿小鹿",
-        text: "快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑快跑",
-        time: "2018" }],
-
-
-      lists: [],
-      startX: "" };
-
-  },
-
-  onLoad: function onLoad(options) {
-    // 页面初始化 options为页面跳转所带来的参数
-    this.initEleWidth();
-    uni.setStorageSync('chatListIds', []);
-    this.onSend();
-  },
-  onShow: function onShow() {
+      img: '../../static/slide-list/qr_code.png',
+      visible: false,
+      start_slide_x: 0,
+      btnWidth: 0,
+      startX: 0,
+      LastX: 0,
+      startTime: 0,
+      screenName: '',
+      list: [],
+      btuBottom: '0',
+      secondHeight: '',
+      index: -1,
+      fromUserId: 0 };
 
   },
   mounted: function mounted() {
     var that = this;
+    var res = uni.getSystemInfoSync();
+    // 计算主体部分高度,单位为px
+    this.secondHeight = res.windowHeight;
+    // 接收消息
     this.globalData.callback = function (res) {
-      console.log('lists页面收到数据啦');
-      var resLists = res;
-      if (resLists && resLists.length > 0) {
-        that.$data.lists = resLists;
+      console.log('接收数据:', res);
+      if (res && res.length > 0) {
+        for (var value in res) {
+          res[value].slide_x = 0;
+        }
+        that.list = res;
       } else {
-        if (resLists.fromUserId != 0) {
-          var _res = that.$data.lists.findIndex(function (value, index) {
-            return value.userInfoId = resLists.userInfoId;
+        if (res.fromUserId != 0) {
+          var key = that.list.findIndex(function (value, index) {
+            return value.userInfoId == res.userInfoId;
           });
-          if (_res != -1) {
-            that.$data.lists[_res].userMessage = resLists;
-            that.$data.lists[_res].unRead++;
-            that.$data.lists = that.$data.lists;
+          if (key != -1) {
+            that.list[key].userMessage = res;
+            that.list[key].unRead++;
           } else {
             that.onSend();
           }
         }
       }
     };
+    uni.$on('message', function (data) {
+      that.list[that.index].userMessage = data;
+    });
+    uni.$on('chatList', function (data) {
+      if (data) {
+        that.onSend();
+      }
+    });
+  },
+  onLoad: function onLoad(option) {
+    this.globalData.initType = 1;
+    if (this.globalData.userId && this.globalData.userId != '') {
+      _socketIo.default.initSocket(this.globalData.userId, this.globalData.toUserId);
+    } else {
+      var fromUserId = uni.getStorageSync('userInfo').id;
+      if (fromUserId && fromUserId != '') {
+        _socketIo.default.initSocket(fromUserId, option.toUserId);
+      } else {
+        console.warn('用户id不存在，连接失败！！！');
+        return;
+      }
+      this.fromUserId = fromUserId;
+    }
+
+    uni.setStorageSync('token', option.token || uni.getStorageSync('token'));
+
+    if (this.globalData.connentSocket) {
+      this.onSend();
+    }
+  },
+  onShow: function onShow() {
+    var that = this;
+    var res = uni.getSystemInfoSync();
+    // 计算主体部分高度,单位为px
+    this.secondHeight = res.windowHeight;
+    // 接收消息
+    this.globalData.callback = function (res) {
+      console.log('接收数据:', res);
+      if (res && res.length > 0) {
+        for (var value in res) {
+          res[value].slide_x = 0;
+        }
+        that.list = res;
+      } else {
+        if (res.fromUserId != 0) {
+          var key = that.list.findIndex(function (value, index) {
+            return value.userInfoId == res.userInfoId;
+          });
+          if (key != -1) {
+            that.list[key].userMessage = res;
+            that.list[key].unRead++;
+          } else {
+            that.onSend();
+          }
+        }
+      }
+    };
+    uni.$on('message', function (data) {
+      that.list[that.index].userMessage = data;
+    });
+    uni.$on('chatList', function (data) {
+      if (data) {
+        that.onSend();
+      }
+    });
+  },
+  onUnload: function onUnload() {
+    uni.$off();
   },
   methods: {
     onSend: function onSend() {
-      var userId = uni.getStorageSync('userId');
       var message = {
-        fromUserId: userId,
+        fromUserId: this.fromUserId || this.globalData.userId,
         toUserId: '',
         content: 'page',
         smsType: 'TEXT',
@@ -2595,119 +3022,112 @@ var _wxTitle = _interopRequireDefault(__webpack_require__(/*! ../../../component
         currentPage: '',
         pageSize: '' };
 
-      this.sendSocketMessage(JSON.stringify(message));
-    },
+      this.globalData.localSocket.send({
+        data: JSON.stringify(message) });
 
-    touchS: function touchS(e) {
-      if (e.touches.length == 1) {
-        this.$data.startX = e.touches[0].clientX;
-      }
     },
-    touchM: function touchM(e) {
-      if (e.touches.length == 1) {
-        //手指移动时水平方向位置
-        var moveX = e.touches[0].clientX;
-        //手指起始点位置与移动期间的差值
-        var disX = this.$data.startX - moveX;
-        var delBtnWidth = this.$data.delBtnWidth;
-        var txtStyle = "";
-        if (disX == 0 || disX < 0) {//如果移动距离小于等于0，说明向右滑动，文本层位置不变
-          txtStyle = "left:0px";
-        } else if (disX > 0) {//移动距离大于0，文本层left值等于手指移动距离
-          txtStyle = "left:-" + disX + "px";
-          if (disX >= delBtnWidth) {
-            //控制手指移动距离最大值为删除按钮的宽度
-            txtStyle = "left:-" + delBtnWidth + "px";
-          }
+    cancelEvent: function cancelEvent() {
+      this.visible = false;
+    },
+    // 滑动开始
+    touchStart: function touchStart(e, index) {var _this = this;
+      //记录手指放上去的时间
+      this.startTime = e.timeStamp;
+      //记录滑块的初始位置
+      this.start_slide_x = this.list[index].slide_x;
+      // 按钮宽度
+      uni.createSelectorQuery().
+      selectAll('.group-btn').
+      boundingClientRect().
+      exec(function (res) {
+        if (res[0] != null) {
+          _this.btnWidth = res[0][index].width * -1;
         }
-
-        //获取手指触摸的是哪一项
-        var index = e.currentTarget.dataset.index;
-        var list = this.$data.list;
-        list[index].txtStyle = txtStyle;
-        //更新列表的状态
-        this.$data.list = list;
-      }
-    },
-    touchE: function touchE(e) {
-      if (e.changedTouches.length == 1) {
-        //手指移动结束后水平位置
-        var endX = e.changedTouches[0].clientX;
-        //触摸开始与结束，手指移动的距离
-        var disX = this.$data.startX - endX;
-        var delBtnWidth = this.$data.delBtnWidth;
-        //如果距离小于删除按钮的1/2，不显示删除按钮
-        var txtStyle = disX > delBtnWidth / 2 ? "left:-" + delBtnWidth + "px" : "left:0px";
-        //获取手指触摸的是哪一项
-        var index = e.currentTarget.dataset.index;
-        var list = this.$data.list;
-        list[index].txtStyle = txtStyle;
-        //更新列表的状态
-        this.$data.list = list;
-      }
-    },
-    //获取元素自适应后的实际宽度
-    getEleWidth: function getEleWidth(w) {
-      var real = 0;
-      try {
-        var res = uni.getSystemInfoSync().windowWidth;
-        var scale = 750 / 2 / (w / 2); //以宽度750px设计稿做宽度的自适应
-        real = Math.floor(res / scale);
-        return real;
-      } catch (e) {
-        return false;
-        // Do something when catch error
-      }
-    },
-    initEleWidth: function initEleWidth() {
-      var delBtnWidth = this.getEleWidth(this.$data.delBtnWidth);
-      this.$data.delBtnWidth = delBtnWidth;
-    },
-    //点击删除按钮事件
-    delItem: function delItem(e) {
-      //获取列表中要删除项的下标
-      var index = e.currentTarget.dataset.index;
-      var list = this.$data.list;
-      //移除列表中下标为index的项
-      list.splice(index, 1);
-      //更新列表的状态
-      this.$data.list = list;
-    },
-    getCacheMessage: function getCacheMessage() {var _this = this;
-      IMapi.getCacheMessage({
-        data: {
-          receiveUserId: 1,
-          sendUserId: 2 } }).
-
-      then(function (res) {
-        _this.$data.list = res.data;
+      });
+      // 记录上一次开始时手指所处位置
+      this.startX = e.touches[0].pageX;
+      // 记录上一次手指位置
+      this.lastX = this.startX;
+      //初始化非当前滑动消息列的位置
+      this.list.forEach(function (item, eq) {
+        if (eq !== index) {
+          item.slide_x = 0;
+        }
       });
     },
-    goChat: function goChat(e) {
-      var toUserId = e.currentTarget.dataset.id;
-      var chatListIndex = e.currentTarget.dataset.index;
-      var fromUserPhoto = e.currentTarget.dataset.photo;
-      var userName = e.currentTarget.dataset.name;
-      var key = e.currentTarget.dataset.key;
-
-      this.$data.lists[key].unRead = 0;
-      this.$data.lists = this.$data.lists;
-
-      var oldArr = uni.getStorageSync('chatListIds') || [];
-      if (oldArr.length > 0) {
-        oldArr.forEach(function (o, i) {
-          if (o != toUserId) {
-            oldArr.push(toUserId);
-          }
-        });
-      } else {
-        oldArr.push(toUserId);
+    // 滑动中
+    touchMove: function touchMove(e, index) {
+      var endX = e.touches[0].pageX;
+      var distance = endX - this.lastX;
+      // 预测滑块所处位置
+      var duang = this.list[index].slide_x + distance;
+      // 如果在可行区域内
+      if (duang <= 0 && duang >= this.btnWidth) {
+        this.list[index].slide_x = duang;
       }
+      // 此处手指所处位置将成为下次手指移动时的上一次位置
+      this.lastX = endX;
+    },
+    // 滑动结束
+    touchEnd: function touchEnd(e, index) {
+      var distance = 10;
+      var endTime = e.timeStamp;
+      var x_end_distance = this.startX - this.lastX;
+      if (Math.abs(endTime - this.startTime) > 200) {
+        distance = this.btnWidth / -2;
+      }
+      // 判断手指最终位置与手指开始位置的位置差距
+      if (x_end_distance > distance) {
+        this.list[index].slide_x = this.btnWidth;
+      } else if (x_end_distance < distance * -1) {
+        this.list[index].slide_x = 0;
+      } else {
+        this.list[index].slide_x = this.start_slide_x;
+      }
+    },
+    // 点击回复原状
+    recover: function recover(item, index) {
+      this.index = index;
+      if (item.slide_x && item.slide_x != 0) {
+        this.list[index].slide_x = 0;
+      } else {
+        this.list[index].unRead = 0;
+        uni.setStorageSync('toAvatarPath', item.toAvatarPath);
+        uni.setStorageSync('fromAvatarPath', item.fromAvatarPath);
+        uni.navigateTo({
+          url: "../chat/chat?name=".concat(item.nickName, "&fromUserId=").concat(this.fromUserId || this.globalData.userId, "&toUserId=").concat(item.toUserId) });
 
-      uni.setStorageSync('chatListIds', oldArr);
-      uni.navigateTo({
-        url: '/pages/chat/chat?toUserId=' + toUserId + '&fmUserName=' + userName + '&fromUserPhoto=' + fromUserPhoto +
-        '&index=' + key });
+      }
+    },
+    // 分享
+    top: function top(id) {
+      console.log('点击分享');
+      if (this.visible) {
+        this.visible = false;
+      } else {
+        this.visible = true;
+      }
+    },
+    // 删除
+    removeM: function removeM(index, id) {
+      var self = this;
+      uni.showModal({
+        title: '',
+        content: '确定要删除该信息吗？',
+        confirmText: '删除',
+        confirmColor: '#ff3b32',
+        success: function success(res) {
+          if (res.confirm) {
+            self.list.splice(index, 1);
+            uni.showToast({
+              icon: "success",
+              title: '操作成功!',
+              duration: 2000 });
+
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        } });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ "./node_modules/@dcloudio/uni-mp-weixin/dist/index.js")["default"]))
@@ -2723,6 +3143,21 @@ var _wxTitle = _interopRequireDefault(__webpack_require__(/*! ../../../component
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3000,7 +3435,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
       shopLoading: true, // 载入动画
       orderList: [], // 页面数据
       page: 1, // 第几页
-      scrolLeft: 0 //滚动位置
+      scrolLeft: 1 //滚动位置
     };
   },
   onLoad: function onLoad(options) {
@@ -3028,27 +3463,41 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
     goChat: function goChat(item) {
       if (this.$data.orderNavNum == 0) {
         uni.navigateTo({
-          url: '/pages/chat/chat?id=' + item.findman_id + '&fmUserName=' + item.findman_name });
+          url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.findman_id + '&name=' + item.findman_name });
 
       } else {
         uni.navigateTo({
-          url: '/pages/chat/chat?id=' + item.distribution_id + '&fmUserName=' + item.distribution_name });
+          url: '/pages/chat/chat?fromUserId=' + uni.getStorageSync('userInfo').id + '&toUserId=' + item.distribution_id + '&name=' + item.distribution_name });
 
       }
 
     },
     //  联系我们电话
-    contact: function contact() {
-      wx.makePhoneCall({
-        phoneNumber: '400-8088-156' });
+    contact: function contact(item) {
+
+      var data = {
+        id: item.id,
+        type: item.type };
+
+      _api.default.apiPhoneUser({
+        method: 'POST',
+        data: data }).
+      then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          uni.makePhoneCall({
+            phoneNumber: res.data });
+
+        } else {
+          _util.default.errorTips(res.msg);
+        }
+      }).catch(function (res) {
+        _util.default.errorTips(res.msg);
+      });
 
     },
     // 搜索
     doSearch: function doSearch() {var _this2 = this;
-      this.$data.isSearch = true;
-      this.$data.orderChildNavNum = 0;
-      console.log(this.$data.searchValue);
-      this.$data.scrolLeft = 0;
+
       if (this.$data.searchValue == '') {
         _util.default.errorTips('搜索关键字不能为空');
         return false;
@@ -3062,24 +3511,40 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
 
       then(function (res) {
         if (res.code == 200 || res.code == 0) {
-          _this2.$data.orderList = [];
-          _this2.$data.orderList = _this2.$data.orderList.concat(res.data);
-          for (var i = 0; i < _this2.$data.orderList.length; i++) {
-            // 1按图找,2按样找3按描述
-            if (_this2.$data.orderList[i].type == 1) {
-              _this2.$data.orderList[i].type_name = '按图找料';
-            } else if (_this2.$data.orderList[i].type == 2) {
-              _this2.$data.orderList[i].type_name = '按样找料';
-            } else if (_this2.data.orderList[i].type == 3) {
-              _this2.$data.orderList[i].type_name = '按描述找料';
+          if (res.data.length > 0) {
+            _this2.$data.isSearch = true;
+            _this2.$data.orderChildNavNum = 0;
+            console.log(_this2.$data.searchValue);
+            _this2.$data.scrolLeft = 0;
+
+            _this2.$data.orderList = [];
+            _this2.$data.orderList = _this2.$data.orderList.concat(res.data);
+            if (_this2.$data.orderList.length > 0) {
+              _this2.$data.hasData = false;
+            } else {
+              _this2.$data.hasData = true;
             }
+            for (var i = 0; i < _this2.$data.orderList.length; i++) {
+              // 1按图找,2按样找3按描述
+              if (_this2.$data.orderList[i].type == 1) {
+                _this2.$data.orderList[i].type_name = '按图找料';
+              } else if (_this2.$data.orderList[i].type == 2) {
+                _this2.$data.orderList[i].type_name = '按样找料';
+              } else if (_this2.data.orderList[i].type == 3) {
+                _this2.$data.orderList[i].type_name = '按描述找料';
+              }
+            }
+            // 判断是否加载更多
+            _this2.$data.shopLoading = res.data.length < 10 ? false : true;
+            _this2.$data.noRequestData = res.data.length < 10 ? false : true;
+          } else {
+            _util.default.errorTips('暂无相关数据');
           }
-          // 判断是否加载更多
-          _this2.$data.shopLoading = res.data.length < 10 ? false : true;
-          _this2.$data.noRequestData = res.data.length < 10 ? false : true;
+        } else {
+          _util.default.errorTips(res.msg);
         }
 
-      });
+      }).catch(function (e) {_util.default.errorTips(e.msg || e.message);});
     },
     // 去找料详情
     goOrderDetail: function goOrderDetail(e) {
@@ -3275,7 +3740,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
       uni.setStorageSync('status', i);
       this.$data.orderList = [];
       this.$data.page = 1;
-      this.getList(this.$data.orderNavNum + 1, i, this.$data.page);
+      this.getList(parseInt(this.$data.orderNavNum) + 1, i, this.$data.page);
       uni.pageScrollTo({
         scrollTop: 0 });
 
@@ -3283,7 +3748,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
     // 一级nav切换
     checkNav: function checkNav(e) {
       this.$data.isSearch = false;
-      var i = e.currentTarget.dataset.index;
+      var i = parseInt(e.currentTarget.dataset.index);
       this.$data.orderNavNum = i;
 
       uni.setStorageSync('method', i);
@@ -3328,6 +3793,8 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
         }
         wx.hideLoading();
       }).catch(function (res) {
+
+        _util.default.errorTips(res.msg || res.message);
         wx.hideLoading();
       });
     },
@@ -3344,9 +3811,9 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
           * 页面上拉触底事件的处理函数
           */
   onReachBottom: function onReachBottom() {var _this6 = this;
-    if (!this.$data.noRequestData) {
-      return false;
-    }
+    // if(!this.$data.noRequestData){
+    // 	return false;
+    // }
 
     if (this.$data.isSearch) {
       this.$data.page++;
@@ -3668,6 +4135,13 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
     });
   },
   methods: {
+    previewImage: function previewImage(item) {
+      var current = item.desc_img[0];
+      uni.previewImage({
+        current: current, // 当前显示图片的http链接
+        urls: item.desc_img // 需要预览的图片http链接列表
+      });
+    },
     // 回到首页
     goIndex: function goIndex(index) {
       if (index == 1) {// 去找料订单
@@ -3703,6 +4177,8 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
           _this4.$data.hasFinds = finds.length <= 0 ? true : false;
           _this4.$data.hasFetchs = finds.length <= 0 ? true : false;
 
+
+
           finds.forEach(function (v, i) {
             v.isTouchMove = false;
             finds[i].address = finds[i].address ? finds[i].address : null;
@@ -3736,7 +4212,14 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
           // 计算价格
           _this4.doSumPrice();
           _this4.isHasData();
+        } else {
+          _this4.$data.hasFinds = true;
+          _this4.$data.hasFetchs = true;
         }
+      }).catch(function (res) {
+        _this4.$data.hasFinds = true;
+        _this4.$data.hasFetchs = true;
+        _util.default.errorTips(res.msg);
       });
     },
     // 判断是否还有数据
@@ -4690,7 +5173,7 @@ var render = function() {
       ],
       1
     ),
-    _c("text", { staticClass: "copyright" }, [
+    _c("view", { staticClass: "copyright" }, [
       _vm._v("Copyright @2019  众皮联 版权所有 版本 " + _vm._s(_vm.v))
     ])
   ])
@@ -4741,7 +5224,11 @@ var render = function() {
         {
           staticClass: "wallet-left",
           attrs: { eventid: "0d2ed9ef-2" },
-          on: { click: _vm.goRecordList }
+          on: {
+            click: function($event) {
+              _vm.goRecordList(1)
+            }
+          }
         },
         [
           _c("text", { staticClass: "wallet_up" }, [_vm._v("佣金(元)")]),
@@ -4750,12 +5237,24 @@ var render = function() {
           ])
         ]
       ),
-      _c("view", { staticClass: "wallet-right" }, [
-        _c("text", { staticClass: "wallet_up" }, [_vm._v("代采款(元)")]),
-        _c("text", { staticClass: "wallet_down" }, [
-          _vm._v(_vm._s(_vm.replace))
-        ])
-      ]),
+      _c(
+        "view",
+        {
+          staticClass: "wallet-right",
+          attrs: { eventid: "0d2ed9ef-3" },
+          on: {
+            click: function($event) {
+              _vm.goRecordList(2)
+            }
+          }
+        },
+        [
+          _c("text", { staticClass: "wallet_up" }, [_vm._v("代采款(元)")]),
+          _c("text", { staticClass: "wallet_down" }, [
+            _vm._v(_vm._s(_vm.replace))
+          ])
+        ]
+      ),
       _c("view", { staticClass: "wallet-separator" })
     ]),
     _c(
@@ -4767,7 +5266,7 @@ var render = function() {
           "text",
           {
             staticClass: "order_check",
-            attrs: { eventid: "0d2ed9ef-3" },
+            attrs: { eventid: "0d2ed9ef-4" },
             on: {
               click: function($event) {
                 _vm.goOrderPage(-1, 1)
@@ -4784,7 +5283,7 @@ var render = function() {
               "li",
               {
                 key: index,
-                attrs: { eventid: "0d2ed9ef-4-" + index },
+                attrs: { eventid: "0d2ed9ef-5-" + index },
                 on: {
                   click: function($event) {
                     _vm.goOrderPage(index, 1)
@@ -4809,34 +5308,70 @@ var render = function() {
     _c("view", { staticClass: "horizon_list" }, [
       _c(
         "view",
+        {
+          staticClass: "family",
+          attrs: { eventid: "0d2ed9ef-6" },
+          on: { click: _vm.goIn }
+        },
+        [
+          _c("text", { staticClass: "title" }, [_vm._v("小鹿家人")]),
+          _c("text", { staticClass: "subTitle" }, [
+            _vm._v("注册小鹿家人，增添更大收益")
+          ]),
+          _c("image", {
+            staticClass: "arrow",
+            attrs: { src: "/static/center/arrow.png" }
+          })
+        ]
+      ),
+      _c(
+        "view",
         { staticClass: "items" },
         _vm._l(_vm.contents, function(item, index) {
-          return _c(
-            "view",
-            { key: index, staticClass: "item" },
-            [
-              _c(
-                "button",
+          return index != 1
+            ? _c(
+                "view",
                 {
-                  staticClass: "navigator-text fs30 pdl-30",
-                  staticStyle: {
-                    "background-color": "#fff",
-                    border: "none",
-                    height: "115rpx",
-                    "line-height": "115rpx",
-                    "text-align": "left"
-                  },
-                  attrs: { "open-type": "contact" }
+                  key: index,
+                  staticClass: "item",
+                  attrs: { eventid: "0d2ed9ef-7-" + index },
+                  on: {
+                    click: function($event) {
+                      _vm.goPage(index)
+                    }
+                  }
                 },
-                [_vm._v("在线客服")]
-              ),
-              _c("image", {
-                staticClass: "arrow",
-                attrs: { src: "/static/center/arrow.png" }
-              })
-            ],
-            1
-          )
+                [
+                  index != 0
+                    ? _c("text", { staticClass: "title" }, [
+                        _vm._v(_vm._s(item.title))
+                      ])
+                    : _vm._e(),
+                  index == 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "navigator-text fs30 pdl-30",
+                          staticStyle: {
+                            "background-color": "#fff",
+                            border: "none",
+                            height: "115rpx",
+                            "line-height": "115rpx",
+                            "text-align": "left"
+                          },
+                          attrs: { "open-type": "contact" }
+                        },
+                        [_vm._v("客服")]
+                      )
+                    : _vm._e(),
+                  _c("image", {
+                    staticClass: "arrow",
+                    attrs: { src: "/static/center/arrow.png" }
+                  })
+                ],
+                1
+              )
+            : _vm._e()
         })
       )
     ]),
@@ -4915,7 +5450,7 @@ var render = function() {
               "scroll-view",
               {
                 staticClass: "status-section find-section",
-                attrs: { "scroll-x": true }
+                attrs: { "scroll-x": "true", "scroll-left": _vm.scrolLeft }
               },
               _vm._l(_vm.navTexts, function(item, index) {
                 return _c(
@@ -5019,19 +5554,19 @@ var render = function() {
                                       )
                                     ]),
                                     _c("view", { staticClass: "ellipsis" }, [
-                                      _vm._v("比较优选："),
-                                      item.reference_price
-                                        ? _c(
-                                            "text",
-                                            { staticClass: "fs24 text-666" },
-                                            [
-                                              _vm._v(
-                                                "参考价格:￥" +
-                                                  _vm._s(item.reference_price)
+                                      _vm._v("比价优选："),
+                                      _c(
+                                        "text",
+                                        { staticClass: "fs24 text-666" },
+                                        [
+                                          _vm._v(
+                                            "参考价格:￥" +
+                                              _vm._s(
+                                                item.reference_price || "0.00"
                                               )
-                                            ]
                                           )
-                                        : _vm._e()
+                                        ]
+                                      )
                                     ])
                                   ]),
                                   _c("view", { staticClass: "item-right" }, [
@@ -5112,28 +5647,25 @@ var render = function() {
                                           { staticClass: "fs26 c999 mgr30" },
                                           [
                                             _vm._v(
-                                              "收货人 " +
+                                              _vm._s(
+                                                item.shipping_address.consignee
+                                              ) +
+                                                " " +
                                                 _vm._s(
                                                   item.shipping_address.mobile
                                                 )
                                             ),
-                                            item.shipping_address.remark
-                                              ? _c(
-                                                  "text",
-                                                  {
-                                                    staticClass:
-                                                      "tag lh42 mgl-20"
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        item.shipping_address
-                                                          .remark
-                                                      )
-                                                    )
-                                                  ]
+                                            _c(
+                                              "text",
+                                              { staticClass: "mgl-20" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    item.shipping_address.stall
+                                                  )
                                                 )
-                                              : _vm._e()
+                                              ]
+                                            )
                                           ]
                                         )
                                       ]
@@ -5163,7 +5695,7 @@ var render = function() {
                         "view",
                         { staticClass: "flex flex-end order-handle" },
                         [
-                          _vm.status == 1
+                          item.distribution_status == 2
                             ? _c(
                                 "view",
                                 {
@@ -5178,7 +5710,7 @@ var render = function() {
                                 [_c("view", [_vm._v("确认接单")])]
                               )
                             : _vm._e(),
-                          item.user_id != ""
+                          item.distribution_status == 3
                             ? _c(
                                 "view",
                                 {
@@ -5186,12 +5718,40 @@ var render = function() {
                                   attrs: { eventid: "53b05e74-6-" + index },
                                   on: {
                                     click: function($event) {
-                                      _vm.goChat(item)
+                                      _vm.serviceOrder(item)
                                     }
                                   }
                                 },
-                                [_c("view", [_vm._v("联系客户")])]
+                                [_c("view", [_vm._v("确认送达")])]
                               )
+                            : _vm._e(),
+                          item.user_id != ""
+                            ? _c("view", { staticClass: "cancat flr" }, [
+                                _c("image", {
+                                  attrs: { src: "../../static/icon/concat.png" }
+                                }),
+                                _c("text", [_vm._v("联系客户")]),
+                                _c("view", {
+                                  staticClass: "btn-1",
+                                  attrs: { eventid: "53b05e74-7-" + index },
+                                  on: {
+                                    click: function($event) {
+                                      $event.stopPropagation()
+                                      _vm.goChat(item)
+                                    }
+                                  }
+                                }),
+                                _c("view", {
+                                  staticClass: "btn-2",
+                                  attrs: { eventid: "53b05e74-8-" + index },
+                                  on: {
+                                    click: function($event) {
+                                      $event.stopPropagation()
+                                      _vm.contact(item)
+                                    }
+                                  }
+                                })
+                              ])
                             : _vm._e()
                         ]
                       )
@@ -5219,7 +5779,7 @@ var render = function() {
           "view",
           {
             staticClass: "pop-window",
-            attrs: { eventid: "53b05e74-16" },
+            attrs: { eventid: "53b05e74-18" },
             on: { touchmove: _vm.preventD }
           },
           [
@@ -5230,13 +5790,13 @@ var render = function() {
                   [
                     _c("text", {
                       staticClass: "iconfont icon-guanbi close",
-                      attrs: { eventid: "53b05e74-7" },
+                      attrs: { eventid: "53b05e74-9" },
                       on: { click: _vm.close }
                     }),
                     _c(
                       "form",
                       {
-                        attrs: { "report-submit": "", eventid: "53b05e74-10" },
+                        attrs: { "report-submit": "", eventid: "53b05e74-12" },
                         on: { submit: _vm.formSubmit1 }
                       },
                       [
@@ -5303,7 +5863,7 @@ var render = function() {
                                 disabled: "true",
                                 "confirm-type": "next",
                                 placeholder: "请填写地址",
-                                eventid: "53b05e74-8"
+                                eventid: "53b05e74-10"
                               },
                               domProps: { value: _vm.address },
                               on: {
@@ -5338,7 +5898,7 @@ var render = function() {
                               "confirm-hold": "true",
                               "confirm-type": "next",
                               placeholder: "请填写街道",
-                              eventid: "53b05e74-9"
+                              eventid: "53b05e74-11"
                             },
                             domProps: { value: _vm.name },
                             on: {
@@ -5404,19 +5964,19 @@ var render = function() {
                   "view",
                   {
                     staticClass: "form-box-2",
-                    attrs: { eventid: "53b05e74-13" },
+                    attrs: { eventid: "53b05e74-15" },
                     on: { touchmove: _vm.preventD }
                   },
                   [
                     _c("text", {
                       staticClass: "iconfont icon-guanbi close",
-                      attrs: { eventid: "53b05e74-11" },
+                      attrs: { eventid: "53b05e74-13" },
                       on: { click: _vm.close }
                     }),
                     _c(
                       "form",
                       {
-                        attrs: { "report-submit": "", eventid: "53b05e74-12" },
+                        attrs: { "report-submit": "", eventid: "53b05e74-14" },
                         on: { submit: _vm.formSubmit2 }
                       },
                       [
@@ -5467,13 +6027,13 @@ var render = function() {
                   [
                     _c("text", {
                       staticClass: "iconfont icon-guanbi close pd20",
-                      attrs: { eventid: "53b05e74-14" },
+                      attrs: { eventid: "53b05e74-16" },
                       on: { click: _vm.close }
                     }),
                     _c(
                       "form",
                       {
-                        attrs: { "report-submit": "", eventid: "53b05e74-15" },
+                        attrs: { "report-submit": "", eventid: "53b05e74-17" },
                         on: { submit: _vm.formSubmit3 }
                       },
                       [
@@ -5531,12 +6091,152 @@ var render = function() {
           ]
         )
       : _vm._e(),
+    _vm.isLogistics
+      ? _c("view", { staticClass: "logistics-wap" }, [
+          _c("view", {
+            staticClass: "bg",
+            attrs: { eventid: "53b05e74-19" },
+            on: {
+              click: function($event) {
+                $event.stopPropagation()
+                _vm.hideLogistics($event)
+              }
+            }
+          }),
+          _c("view", { staticClass: "content" }, [
+            _c("view", { staticClass: "v1" }, [
+              _c("text", [_vm._v("物流公司:")]),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.express_name,
+                    expression: "express_name"
+                  }
+                ],
+                class: { isiP: _vm.isiP },
+                attrs: {
+                  type: "text",
+                  placeholder: "请输入物流公司名称",
+                  eventid: "53b05e74-20"
+                },
+                domProps: { value: _vm.express_name },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.express_name = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _c("view", { staticClass: "v2" }, [
+              _c("text", [_vm._v("联系电话:")]),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.express_phone,
+                    expression: "express_phone"
+                  }
+                ],
+                class: { isiP: _vm.isiP },
+                attrs: {
+                  type: "number",
+                  placeholder: "请输入物流公司电话",
+                  eventid: "53b05e74-21"
+                },
+                domProps: { value: _vm.express_phone },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.express_phone = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _c(
+              "view",
+              {
+                staticClass: "v3",
+                attrs: { eventid: "53b05e74-23" },
+                on: { click: _vm.logisticsSubmit }
+              },
+              [
+                _c("text", [_vm._v("物流单号:")]),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.express_sn,
+                      expression: "express_sn"
+                    }
+                  ],
+                  class: { isiP: _vm.isiP },
+                  attrs: {
+                    type: "number",
+                    placeholder: "请输入物流单号",
+                    eventid: "53b05e74-22"
+                  },
+                  domProps: { value: _vm.express_sn },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.express_sn = $event.target.value
+                    }
+                  }
+                })
+              ]
+            ),
+            _c(
+              "view",
+              {
+                staticClass: "btn",
+                attrs: { eventid: "53b05e74-24" },
+                on: {
+                  click: function($event) {
+                    $event.stopPropagation()
+                    _vm.logisticsSubmit($event)
+                  }
+                }
+              },
+              [_vm._v("提交")]
+            ),
+            _c(
+              "view",
+              {
+                staticClass: "closeBtn",
+                attrs: { eventid: "53b05e74-25" },
+                on: {
+                  click: function($event) {
+                    $event.stopPropagation()
+                    _vm.hideLogistics($event)
+                  }
+                }
+              },
+              [
+                _c("image", {
+                  attrs: { src: "/static/icon/closed_btn.png", mode: "" }
+                })
+              ]
+            )
+          ])
+        ])
+      : _vm._e(),
     _vm.showCon
       ? _c(
           "view",
           {
             staticClass: "modal-mask",
-            attrs: { eventid: "53b05e74-19" },
+            attrs: { eventid: "53b05e74-28" },
             on: { click: _vm.changeModalCancel }
           },
           [
@@ -5553,7 +6253,7 @@ var render = function() {
                     "view",
                     {
                       staticClass: "btn-cancel",
-                      attrs: { eventid: "53b05e74-17" },
+                      attrs: { eventid: "53b05e74-26" },
                       on: {
                         click: function($event) {
                           $event.stopPropagation()
@@ -5570,7 +6270,7 @@ var render = function() {
                       staticStyle: { padding: "0rpx" },
                       attrs: {
                         "open-type": "openSetting",
-                        eventid: "53b05e74-18"
+                        eventid: "53b05e74-27"
                       },
                       on: {
                         click: function($event) {
@@ -5777,34 +6477,70 @@ var render = function() {
     _c("view", { staticClass: "horizon_list" }, [
       _c(
         "view",
+        {
+          staticClass: "family",
+          attrs: { eventid: "2c72692e-8" },
+          on: { click: _vm.goIn }
+        },
+        [
+          _c("text", { staticClass: "title" }, [_vm._v("小鹿家人")]),
+          _c("text", { staticClass: "subTitle" }, [
+            _vm._v("注册小鹿家人，增添更大收益")
+          ]),
+          _c("image", {
+            staticClass: "arrow",
+            attrs: { src: "/static/center/arrow.png" }
+          })
+        ]
+      ),
+      _c(
+        "view",
         { staticClass: "items" },
         _vm._l(_vm.contents, function(item, index) {
-          return _c(
-            "view",
-            { key: index, staticClass: "item" },
-            [
-              _c(
-                "button",
+          return index != 1
+            ? _c(
+                "view",
                 {
-                  staticClass: "navigator-text fs30 pdl-30",
-                  staticStyle: {
-                    "background-color": "#fff",
-                    border: "none",
-                    height: "115rpx",
-                    "line-height": "115rpx",
-                    "text-align": "left"
-                  },
-                  attrs: { "open-type": "contact" }
+                  key: index,
+                  staticClass: "item",
+                  attrs: { eventid: "2c72692e-9-" + index },
+                  on: {
+                    click: function($event) {
+                      _vm.goPage(index)
+                    }
+                  }
                 },
-                [_vm._v("客服")]
-              ),
-              _c("image", {
-                staticClass: "arrow",
-                attrs: { src: "/static/center/arrow.png" }
-              })
-            ],
-            1
-          )
+                [
+                  index != 0
+                    ? _c("text", { staticClass: "title" }, [
+                        _vm._v(_vm._s(item.title))
+                      ])
+                    : _vm._e(),
+                  index == 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "navigator-text fs30 pdl-30",
+                          staticStyle: {
+                            "background-color": "#fff",
+                            border: "none",
+                            height: "115rpx",
+                            "line-height": "115rpx",
+                            "text-align": "left"
+                          },
+                          attrs: { "open-type": "contact" }
+                        },
+                        [_vm._v("客服")]
+                      )
+                    : _vm._e(),
+                  _c("image", {
+                    staticClass: "arrow",
+                    attrs: { src: "/static/center/arrow.png" }
+                  })
+                ],
+                1
+              )
+            : _vm._e()
         })
       )
     ]),
@@ -5905,7 +6641,7 @@ var render = function() {
               "scroll-view",
               {
                 staticClass: "status-section find-section",
-                attrs: { "scroll-x": true }
+                attrs: { "scroll-x": "true", "scroll-left": _vm.scrolLeft }
               },
               [
                 _vm._l(_vm.navTexts.find, function(item, index) {
@@ -6053,27 +6789,11 @@ var render = function() {
                                   ]),
                                   _c("view", { staticClass: "item-right" }, [
                                     _c("view", [
-                                      item.find_status == 1
-                                        ? _c(
-                                            "text",
-                                            { staticClass: "fs24 text-yellow" },
-                                            [_vm._v("按图找料")]
-                                          )
-                                        : _vm._e(),
-                                      item.find_status == 2
-                                        ? _c(
-                                            "text",
-                                            { staticClass: "fs24 text-yellow" },
-                                            [_vm._v("上门取样")]
-                                          )
-                                        : _vm._e(),
-                                      item.find_status == 3
-                                        ? _c(
-                                            "text",
-                                            { staticClass: "fs24 text-yellow" },
-                                            [_vm._v("寄送样品")]
-                                          )
-                                        : _vm._e()
+                                      _c(
+                                        "text",
+                                        { staticClass: "fs24 text-yellow" },
+                                        [_vm._v(_vm._s(item.find_type_label))]
+                                      )
                                     ]),
                                     _c("view", [
                                       _c(
@@ -6115,7 +6835,11 @@ var render = function() {
                               item.get_address
                                 ? _c("view", { staticClass: "address-space" }, [
                                     _c("view", { staticClass: "mgb-20" }, [
-                                      _vm._v("送料地址")
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.nav == 1 ? "取样地址" : "取料地址"
+                                        )
+                                      )
                                     ]),
                                     _c(
                                       "view",
@@ -6129,25 +6853,21 @@ var render = function() {
                                           { staticClass: "fs26 c999 mgr30" },
                                           [
                                             _vm._v(
-                                              "收货人 " +
+                                              _vm._s(
+                                                item.get_address.consignee
+                                              ) +
+                                                " " +
                                                 _vm._s(item.get_address.mobile)
                                             ),
-                                            item.get_address.remark
-                                              ? _c(
-                                                  "text",
-                                                  {
-                                                    staticClass:
-                                                      "tag lh42 mgl-20"
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        item.get_address.remark
-                                                      )
-                                                    )
-                                                  ]
+                                            _c(
+                                              "text",
+                                              { staticClass: "mgl-20" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(item.get_address.stall)
                                                 )
-                                              : _vm._e()
+                                              ]
+                                            )
                                           ]
                                         )
                                       ]
@@ -6173,7 +6893,7 @@ var render = function() {
                         "view",
                         { staticClass: "flex flex-end order-handle" },
                         [
-                          _vm.status == 1
+                          item.find_status == 1
                             ? _c(
                                 "view",
                                 {
@@ -6189,19 +6909,32 @@ var render = function() {
                               )
                             : _vm._e(),
                           item.user_id != ""
-                            ? _c(
-                                "view",
-                                {
-                                  staticClass: "flex find-status mgr-20",
+                            ? _c("view", { staticClass: "cancat flr" }, [
+                                _c("image", {
+                                  attrs: { src: "../../static/icon/concat.png" }
+                                }),
+                                _c("text", [_vm._v("联系客户")]),
+                                _c("view", {
+                                  staticClass: "btn-1",
                                   attrs: { eventid: "442e6b55-9-" + index },
                                   on: {
                                     click: function($event) {
+                                      $event.stopPropagation()
                                       _vm.goChat(item)
                                     }
                                   }
-                                },
-                                [_c("view", [_vm._v("联系客户")])]
-                              )
+                                }),
+                                _c("view", {
+                                  staticClass: "btn-2",
+                                  attrs: { eventid: "442e6b55-10-" + index },
+                                  on: {
+                                    click: function($event) {
+                                      $event.stopPropagation()
+                                      _vm.contact(item)
+                                    }
+                                  }
+                                })
+                              ])
                             : _vm._e()
                         ]
                       )
@@ -6229,7 +6962,7 @@ var render = function() {
           "view",
           {
             staticClass: "pop-window",
-            attrs: { eventid: "442e6b55-19" },
+            attrs: { eventid: "442e6b55-20" },
             on: { touchmove: _vm.preventD }
           },
           [
@@ -6240,13 +6973,13 @@ var render = function() {
                   [
                     _c("text", {
                       staticClass: "iconfont icon-guanbi close",
-                      attrs: { eventid: "442e6b55-10" },
+                      attrs: { eventid: "442e6b55-11" },
                       on: { click: _vm.close }
                     }),
                     _c(
                       "form",
                       {
-                        attrs: { "report-submit": "", eventid: "442e6b55-13" },
+                        attrs: { "report-submit": "", eventid: "442e6b55-14" },
                         on: { submit: _vm.formSubmit1 }
                       },
                       [
@@ -6313,7 +7046,7 @@ var render = function() {
                                 disabled: "true",
                                 "confirm-type": "next",
                                 placeholder: "请填写地址",
-                                eventid: "442e6b55-11"
+                                eventid: "442e6b55-12"
                               },
                               domProps: { value: _vm.address },
                               on: {
@@ -6348,7 +7081,7 @@ var render = function() {
                               "confirm-hold": "true",
                               "confirm-type": "next",
                               placeholder: "请填写街道",
-                              eventid: "442e6b55-12"
+                              eventid: "442e6b55-13"
                             },
                             domProps: { value: _vm.name },
                             on: {
@@ -6414,19 +7147,19 @@ var render = function() {
                   "view",
                   {
                     staticClass: "form-box-2",
-                    attrs: { eventid: "442e6b55-16" },
+                    attrs: { eventid: "442e6b55-17" },
                     on: { touchmove: _vm.preventD }
                   },
                   [
                     _c("text", {
                       staticClass: "iconfont icon-guanbi close",
-                      attrs: { eventid: "442e6b55-14" },
+                      attrs: { eventid: "442e6b55-15" },
                       on: { click: _vm.close }
                     }),
                     _c(
                       "form",
                       {
-                        attrs: { "report-submit": "", eventid: "442e6b55-15" },
+                        attrs: { "report-submit": "", eventid: "442e6b55-16" },
                         on: { submit: _vm.formSubmit2 }
                       },
                       [
@@ -6477,13 +7210,13 @@ var render = function() {
                   [
                     _c("text", {
                       staticClass: "iconfont icon-guanbi close pd20",
-                      attrs: { eventid: "442e6b55-17" },
+                      attrs: { eventid: "442e6b55-18" },
                       on: { click: _vm.close }
                     }),
                     _c(
                       "form",
                       {
-                        attrs: { "report-submit": "", eventid: "442e6b55-18" },
+                        attrs: { "report-submit": "", eventid: "442e6b55-19" },
                         on: { submit: _vm.formSubmit3 }
                       },
                       [
@@ -6546,7 +7279,7 @@ var render = function() {
           "view",
           {
             staticClass: "modal-mask",
-            attrs: { eventid: "442e6b55-22" },
+            attrs: { eventid: "442e6b55-23" },
             on: { click: _vm.changeModalCancel }
           },
           [
@@ -6563,7 +7296,7 @@ var render = function() {
                     "view",
                     {
                       staticClass: "btn-cancel",
-                      attrs: { eventid: "442e6b55-20" },
+                      attrs: { eventid: "442e6b55-21" },
                       on: {
                         click: function($event) {
                           $event.stopPropagation()
@@ -6580,7 +7313,7 @@ var render = function() {
                       staticStyle: { padding: "0rpx" },
                       attrs: {
                         "open-type": "openSetting",
-                        eventid: "442e6b55-21"
+                        eventid: "442e6b55-22"
                       },
                       on: {
                         click: function($event) {
@@ -6826,89 +7559,163 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("view", [
-    _vm.lists.length <= 0
-      ? _c("view", { staticClass: "no-data" }, [_vm._v("暂无数据")])
-      : _vm._e(),
-    _c("view", { staticClass: "chat-list" }, [
+  return _c(
+    "view",
+    {
+      staticClass: "index",
+      style: [{ "min-height": _vm.secondHeight + "px" }]
+    },
+    [
       _c(
         "view",
-        { staticClass: "items" },
-        _vm._l(_vm.lists, function(item, index) {
-          return _c(
-            "view",
-            {
-              key: index,
-              staticClass: "item",
-              attrs: {
-                "data-key": index,
-                "data-name": item.nickName || item.userName,
-                "data-photo": item.avatarPath,
-                "data-id": item.toUserId,
-                eventid: "66f375c1-1-" + index
-              },
-              on: { tap: _vm.goChat }
-            },
-            [
-              _c(
-                "view",
-                {
-                  staticClass: "inner txt cf",
-                  style: item.txtStyle,
-                  attrs: { "data-index": index }
+        { staticClass: "list-box" },
+        _vm._l(_vm.list, function(item, index) {
+          return _c("view", { key: index, staticClass: "container_of_slide" }, [
+            _c(
+              "view",
+              {
+                staticClass: "slide_list",
+                style: {
+                  transform: "translate3d(" + item.slide_x + "px, 0, 0)"
                 },
-                [
-                  _c("view", { staticClass: "fll item-1" }, [
-                    _c("image", {
-                      attrs: {
-                        src:
-                          item.avatarPath ||
-                          "https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png"
-                      }
-                    }),
-                    item.unRead > 0
-                      ? _c("view", { staticClass: "spot" })
-                      : _vm._e()
-                  ]),
-                  _c("view", { staticClass: "fll item-2" }, [
-                    _c("view", { staticClass: "nickName" }, [
-                      _vm._v(_vm._s(item.nickName || item.userName))
-                    ]),
-                    _c("view", { staticClass: "ellipsis" }, [
-                      _vm._v(
-                        _vm._s(
-                          item.userMessage.smsType == "TEXT"
-                            ? item.userMessage.content
-                            : "[图片]"
-                        )
-                      )
-                    ])
-                  ]),
-                  _c("view", { staticClass: "flr item-3" }, [
-                    _vm._v(_vm._s(item.userMessage.dateTime))
-                  ])
-                ]
-              ),
-              _c(
-                "view",
-                {
-                  staticClass: "inner del",
-                  attrs: {
-                    "data-index": index,
-                    eventid: "66f375c1-0-" + index
+                attrs: { eventid: "66f375c1-2-" + index },
+                on: {
+                  touchstart: function($event) {
+                    _vm.touchStart($event, index)
                   },
-                  on: { tap: _vm.delItem }
-                },
-                [_vm._v("删除")]
-              )
+                  touchend: function($event) {
+                    _vm.touchEnd($event, index)
+                  },
+                  touchmove: function($event) {
+                    _vm.touchMove($event, index)
+                  },
+                  tap: function($event) {
+                    _vm.recover(item, index)
+                  }
+                }
+              },
+              [
+                _c(
+                  "view",
+                  {
+                    staticClass: "now-message-info",
+                    style: { width: _vm.Screen_width + "px" },
+                    attrs: { "hover-class": "uni-list-cell-hover" }
+                  },
+                  [
+                    _c("view", { staticClass: "icon-circle" }, [
+                      _c("image", { attrs: { src: item.toAvatarPath } })
+                    ]),
+                    _c("view", { staticClass: "list-right" }, [
+                      _c("view", { staticClass: "top" }, [
+                        _c("view", { staticClass: "username" }, [
+                          _vm._v(_vm._s(item.nickName || item.userName))
+                        ]),
+                        _c("view", { staticClass: "time" }, [
+                          _vm._v(_vm._s(item.userMessage.dateTime))
+                        ])
+                      ]),
+                      _c("view", { staticClass: "bottom" }, [
+                        _c("view", { staticClass: "msg" }, [
+                          _vm._v(
+                            _vm._s(
+                              item.userMessage.smsType == "TEXT"
+                                ? item.userMessage.content
+                                : "[图片]"
+                            )
+                          )
+                        ]),
+                        item.unRead > 0
+                          ? _c("view", { staticClass: "tis" }, [
+                              _vm._v(
+                                _vm._s(item.unRead > 99 ? "99.." : item.unRead)
+                              )
+                            ])
+                          : _vm._e()
+                      ])
+                    ])
+                  ]
+                ),
+                _c("view", { staticClass: "group-btn" }, [
+                  item.isShare
+                    ? _c(
+                        "view",
+                        {
+                          staticClass: "top btn-div",
+                          attrs: { eventid: "66f375c1-0-" + index },
+                          on: {
+                            tap: function($event) {
+                              _vm.top(item.id)
+                            }
+                          }
+                        },
+                        [_vm._v("分享")]
+                      )
+                    : _vm._e(),
+                  _c(
+                    "view",
+                    {
+                      staticClass: "removeM btn-div",
+                      attrs: { eventid: "66f375c1-1-" + index },
+                      on: {
+                        tap: function($event) {
+                          _vm.removeM(index, item.userInfoId)
+                        }
+                      }
+                    },
+                    [_vm._v("删除")]
+                  )
+                ]),
+                _c("view", { staticStyle: { clear: "both" } })
+              ]
+            )
+          ])
+        })
+      ),
+      _vm.visible
+        ? _c(
+            "view",
+            { staticClass: "scan-box", attrs: { mode: "top-right" } },
+            [
+              _c("view", { staticClass: "scan-item" }, [
+                _c("view", { staticClass: "scan-content" }, [
+                  _vm._m(0),
+                  _c("image", {
+                    staticClass: "scan-btn",
+                    attrs: {
+                      src: "../../static/slide-list/fork.png",
+                      eventid: "66f375c1-3"
+                    },
+                    on: { click: _vm.cancelEvent }
+                  }),
+                  _c("image", {
+                    staticClass: "scan-img",
+                    attrs: { src: _vm.img }
+                  }),
+                  _c("view", { staticClass: "scan-text" }, [
+                    _vm._v("扫一扫查看分享信息")
+                  ])
+                ])
+              ])
             ]
           )
-        })
-      )
-    ])
-  ])
+        : _vm._e()
+    ]
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("view", { staticClass: "scan-icon" }, [
+      _c("image", {
+        staticClass: "scan-icon-img",
+        attrs: { src: "../../static/slide-list/icon-scan.png" }
+      })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -6997,7 +7804,7 @@ var render = function() {
             "scroll-view",
             {
               staticClass: "order-nav order-nav-1 order-child-nav fs30 lh90",
-              attrs: { "scroll-x": "true", "scroll-left": "scrolLeft" }
+              attrs: { "scroll-x": "true", "scroll-left": _vm.scrolLeft }
             },
             [
               _c(
@@ -7082,7 +7889,7 @@ var render = function() {
                   attrs: {
                     "data-id": item.id,
                     "data-index": index,
-                    eventid: "7808c58e-14-" + index
+                    eventid: "7808c58e-13-" + index
                   },
                   on: { click: _vm.goOrderDetail }
                 },
@@ -7174,14 +7981,24 @@ var render = function() {
                               _c("view", [
                                 _c("text", { staticClass: "fs24" }, [
                                   _vm._v(
-                                    "收货人 " +
+                                    _vm._s(item.get_address.consignee) +
+                                      " " +
                                       _vm._s(item.get_address.mobile || "")
                                   )
                                 ]),
+                                _c("text", { staticClass: "mgl-20" }, [
+                                  _vm._v(_vm._s(item.get_address.stall || ""))
+                                ]),
                                 item.get_address.remark
-                                  ? _c("text", { staticClass: "remark" }, [
-                                      _vm._v(_vm._s(item.get_address.remark))
-                                    ])
+                                  ? _c(
+                                      "text",
+                                      { staticClass: "remark mgl-20" },
+                                      [
+                                        _vm._v(
+                                          _vm._s(item.get_address.remark || "")
+                                        )
+                                      ]
+                                    )
                                   : _vm._e()
                               ]),
                               _c("view", [
@@ -7204,20 +8021,31 @@ var render = function() {
                               _c("view", { staticClass: "fs30" }, [
                                 _vm._v("送料地址:")
                               ]),
-                              _c(
-                                "view",
-                                { staticStyle: { display: "inline-block" } },
-                                [
-                                  item.shipping_address.remark != "" &&
-                                  item.shipping_address.remark != null
-                                    ? _c("view", { staticClass: "remark" }, [
+                              _c("view", [
+                                _c("text", { staticClass: "fs24" }, [
+                                  _vm._v(
+                                    _vm._s(item.shipping_address.consignee) +
+                                      " " +
+                                      _vm._s(item.shipping_address.mobile || "")
+                                  )
+                                ]),
+                                _c("text", { staticClass: "mgl-20" }, [
+                                  _vm._v(_vm._s(item.shipping_address.stall))
+                                ]),
+                                item.shipping_address.remark
+                                  ? _c(
+                                      "text",
+                                      { staticClass: "remark mgl-20" },
+                                      [
                                         _vm._v(
-                                          _vm._s(
-                                            item.shipping_address.remark || ""
-                                          )
+                                          _vm._s(item.shipping_address.remark)
                                         )
-                                      ])
-                                    : _vm._e(),
+                                      ]
+                                    )
+                                  : _vm._e()
+                              ]),
+                              _c("view", [
+                                _c("text", { staticClass: "fs24 text-999" }, [
                                   _vm._v(
                                     _vm._s(
                                       item.shipping_address.address || ""
@@ -7225,33 +8053,8 @@ var render = function() {
                                       " " +
                                       _vm._s(item.shipping_address.room || "")
                                   )
-                                ]
-                              ),
-                              _c(
-                                "view",
-                                { staticStyle: { "word-break": "break-all" } },
-                                [
-                                  _vm._v(
-                                    _vm._s(
-                                      item.shipping_address.consignee || ""
-                                    ) +
-                                      " / " +
-                                      _vm._s(item.shipping_address.mobile || "")
-                                  )
-                                ]
-                              ),
-                              _c(
-                                "view",
-                                {
-                                  staticClass: "text-999",
-                                  staticStyle: { "word-break": "break-all" }
-                                },
-                                [
-                                  _vm._v(
-                                    _vm._s(item.shipping_address.stall || "")
-                                  )
-                                ]
-                              )
+                                ])
+                              ])
                             ])
                           : _vm._e(),
                         item.find_type == 3 && _vm.orderChildNavNum == 1
@@ -7378,31 +8181,38 @@ var render = function() {
                                   [_vm._v("删除")]
                                 )
                               : _vm._e(),
-                            _vm.orderNavNum == 0 &&
-                            _vm.orderChildNavNum > 0 &&
-                            _vm.orderChildNavNum != 3 &&
-                            _vm.orderChildNavNum != 4 &&
-                            item.findman_id != ""
-                              ? _c(
-                                  "button",
-                                  {
-                                    attrs: { eventid: "7808c58e-10-" + index },
-                                    on: {
-                                      click: function($event) {
-                                        $event.stopPropagation()
-                                        _vm.goChat(item)
-                                      }
+                            item.findman_id != "" || item.distribution_id != ""
+                              ? _c("view", { staticClass: "cancat flr" }, [
+                                  _c("image", {
+                                    attrs: {
+                                      src: "../../static/icon/concat.png"
                                     }
-                                  },
-                                  [_vm._v("联系找料员")]
-                                )
-                              : _vm._e(),
-                            _vm.orderNavNum == 0 &&
-                            _vm.orderChildNavNum == 3 &&
-                            item.distribution_id != ""
-                              ? _c(
-                                  "button",
-                                  {
+                                  }),
+                                  _c(
+                                    "text",
+                                    {
+                                      attrs: {
+                                        eventid: "7808c58e-10-" + index
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          $event.stopPropagation()
+                                          _vm.goChat(item)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        _vm._s(
+                                          item.distribution_id != ""
+                                            ? "联系配送员"
+                                            : "联系找料员"
+                                        )
+                                      )
+                                    ]
+                                  ),
+                                  _c("view", {
+                                    staticClass: "btn-1",
                                     attrs: { eventid: "7808c58e-11-" + index },
                                     on: {
                                       click: function($event) {
@@ -7410,45 +8220,18 @@ var render = function() {
                                         _vm.goChat(item)
                                       }
                                     }
-                                  },
-                                  [_vm._v("联系配送员")]
-                                )
-                              : _vm._e(),
-                            _vm.orderNavNum == 1 &&
-                            (_vm.orderChildNavNum == 1 ||
-                              _vm.orderChildNavNum == 2) &&
-                            item.findman_id != ""
-                              ? _c(
-                                  "button",
-                                  {
+                                  }),
+                                  _c("view", {
+                                    staticClass: "btn-2",
                                     attrs: { eventid: "7808c58e-12-" + index },
                                     on: {
                                       click: function($event) {
                                         $event.stopPropagation()
-                                        _vm.goChat(item)
+                                        _vm.contact(item)
                                       }
                                     }
-                                  },
-                                  [_vm._v("联系找料员")]
-                                )
-                              : _vm._e(),
-                            _vm.orderNavNum == 1 &&
-                            _vm.orderChildNavNum > 2 &&
-                            _vm.orderChildNavNum != 4 &&
-                            item.distribution_id != ""
-                              ? _c(
-                                  "button",
-                                  {
-                                    attrs: { eventid: "7808c58e-13-" + index },
-                                    on: {
-                                      click: function($event) {
-                                        $event.stopPropagation()
-                                        _vm.goChat(item)
-                                      }
-                                    }
-                                  },
-                                  [_vm._v("联系配送员")]
-                                )
+                                  })
+                                ])
                               : _vm._e()
                           ],
                           1
@@ -7486,7 +8269,7 @@ var render = function() {
                       class: _vm.starIndex_1 >= index ? "text-yellow" : "",
                       attrs: {
                         "data-idx": index,
-                        eventid: "7808c58e-15-" + index
+                        eventid: "7808c58e-14-" + index
                       },
                       on: { click: _vm.satisfact }
                     })
@@ -7505,7 +8288,7 @@ var render = function() {
                       class: _vm.starIndex_2 >= index ? "text-yellow" : "",
                       attrs: {
                         "data-idx": index,
-                        eventid: "7808c58e-16-" + index
+                        eventid: "7808c58e-15-" + index
                       },
                       on: { click: _vm.timely }
                     })
@@ -7520,7 +8303,7 @@ var render = function() {
                   attrs: {
                     type: "text",
                     placeholder: "请输入评语",
-                    eventid: "7808c58e-17"
+                    eventid: "7808c58e-16"
                   },
                   on: { input: _vm.commentModelInput }
                 })
@@ -7530,7 +8313,7 @@ var render = function() {
                 "view",
                 {
                   staticClass: "cancel flex-1",
-                  attrs: { eventid: "7808c58e-18" },
+                  attrs: { eventid: "7808c58e-17" },
                   on: { click: _vm.commentCancel }
                 },
                 [_vm._v("取消")]
@@ -7539,7 +8322,7 @@ var render = function() {
                 "view",
                 {
                   staticClass: "confirm flex-1",
-                  attrs: { eventid: "7808c58e-19" },
+                  attrs: { eventid: "7808c58e-18" },
                   on: { click: _vm.commentConfirm }
                 },
                 [_vm._v("确定")]
@@ -7619,7 +8402,7 @@ var render = function() {
                   attrs: {
                     "data-nav": 1,
                     "data-index": index,
-                    eventid: "777e2f45-4-" + index
+                    eventid: "777e2f45-5-" + index
                   },
                   on: { touchstart: _vm.touchstart, touchmove: _vm.touchmove }
                 },
@@ -7712,14 +8495,6 @@ var render = function() {
                           [_vm._v("金额: ￥" + _vm._s(item.fee))]
                         )
                       ]),
-                      _c("view", {}, [
-                        _c("text", { staticClass: "fs28" }, [
-                          _vm._v("限时找料:")
-                        ]),
-                        _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
-                          _vm._v(_vm._s(item.is_limit == 1 ? "三小时" : " "))
-                        ])
-                      ]),
                       _c("view", [
                         _c("text", { staticClass: "fs28" }, [
                           _vm._v("比价优选:")
@@ -7735,7 +8510,16 @@ var render = function() {
                               return _c("image", {
                                 key: imgIndex,
                                 staticClass: "item-img",
-                                attrs: { src: imgItem }
+                                attrs: {
+                                  src: imgItem,
+                                  eventid:
+                                    "777e2f45-3-" + index + "-" + imgIndex
+                                },
+                                on: {
+                                  click: function($event) {
+                                    _vm.previewImage(item)
+                                  }
+                                }
                               })
                             })
                           )
@@ -7748,7 +8532,7 @@ var render = function() {
                                   _c(
                                     "view",
                                     {
-                                      staticClass: "fs24 pdr-20 text-999",
+                                      staticClass: "fs24 pdr-20 text-999 w500",
                                       staticStyle: { "word-break": "break-all" }
                                     },
                                     [
@@ -7780,7 +8564,7 @@ var render = function() {
                               : _vm._e()
                           ])
                         : _vm._e(),
-                      item.find_type == 3
+                      item.find_type == 3 && _vm.companyaddress != ""
                         ? _c("view", [
                             _c("view", { staticClass: "pdr-20" }, [
                               _vm._v("寄样地址:")
@@ -7797,7 +8581,9 @@ var render = function() {
                                     ? _c("text", { staticClass: "remark" }, [
                                         _vm._v(
                                           _vm._s(
-                                            _vm.companyaddress[0].tag || ""
+                                            _vm.companyaddress[0].tag
+                                              ? _vm.companyaddress[0].tag
+                                              : ""
                                           )
                                         )
                                       ])
@@ -7840,7 +8626,7 @@ var render = function() {
                         "data-nav": 1,
                         "data-id": item.id,
                         "data-index": index,
-                        eventid: "777e2f45-3-" + index
+                        eventid: "777e2f45-4-" + index
                       },
                       on: { click: _vm.del }
                     },
@@ -7870,7 +8656,7 @@ var render = function() {
               "view",
               {
                 staticClass: " bb-2 lh90 text-left",
-                attrs: { "data-nav": 2, eventid: "777e2f45-5" },
+                attrs: { "data-nav": 2, eventid: "777e2f45-6" },
                 on: { click: _vm.parentCheck }
               },
               [
@@ -7897,7 +8683,7 @@ var render = function() {
                   attrs: {
                     "data-nav": 2,
                     "data-index": index,
-                    eventid: "777e2f45-9-" + index
+                    eventid: "777e2f45-11-" + index
                   },
                   on: { touchstart: _vm.touchstart, touchmove: _vm.touchmove }
                 },
@@ -7910,7 +8696,7 @@ var render = function() {
                         attrs: {
                           "data-nav": 2,
                           "data-index": index,
-                          eventid: "777e2f45-6-" + index
+                          eventid: "777e2f45-7-" + index
                         },
                         on: { click: _vm.childCheck }
                       },
@@ -7937,7 +8723,7 @@ var render = function() {
                           "data-index": index,
                           "data-item": item,
                           "data-nav": "2",
-                          eventid: "777e2f45-7-" + index
+                          eventid: "777e2f45-8-" + index
                         },
                         on: { click: _vm.edit }
                       },
@@ -7975,14 +8761,6 @@ var render = function() {
                             )
                           ]
                         )
-                      ]),
-                      _c("view", [
-                        _c("text", { staticClass: "fs28" }, [
-                          _vm._v("限时找料:")
-                        ]),
-                        _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
-                          _vm._v(_vm._s(item.is_limit == 1 ? "三小时" : " "))
-                        ])
                       ]),
                       item.address
                         ? _c("view", [
@@ -8023,7 +8801,16 @@ var render = function() {
                               return _c("image", {
                                 key: imgIndex,
                                 staticClass: "item-img",
-                                attrs: { src: imgItem }
+                                attrs: {
+                                  src: imgItem,
+                                  eventid:
+                                    "777e2f45-9-" + index + "-" + imgIndex
+                                },
+                                on: {
+                                  click: function($event) {
+                                    _vm.previewImage(item)
+                                  }
+                                }
                               })
                             })
                           )
@@ -8038,7 +8825,7 @@ var render = function() {
                         "data-nav": 2,
                         "data-id": item.id,
                         "data-index": index,
-                        eventid: "777e2f45-8-" + index
+                        eventid: "777e2f45-10-" + index
                       },
                       on: { click: _vm.del }
                     },
@@ -8069,14 +8856,14 @@ var render = function() {
               _vm.isCheckAll
                 ? _c("text", {
                     staticClass: "iconfont icon-dui fs40 pdr-20 text-yellow",
-                    attrs: { eventid: "777e2f45-10" },
+                    attrs: { eventid: "777e2f45-12" },
                     on: { click: _vm.doCheckAll }
                   })
                 : _vm._e(),
               !_vm.isCheckAll
                 ? _c("text", {
                     staticClass: "iconfont icon-dui fs40 pdr-20 text-eb",
-                    attrs: { eventid: "777e2f45-11" },
+                    attrs: { eventid: "777e2f45-13" },
                     on: { click: _vm.doCheckAll }
                   })
                 : _vm._e(),
@@ -8084,7 +8871,7 @@ var render = function() {
                 "text",
                 {
                   staticClass: "text-underline mgr-50",
-                  attrs: { eventid: "777e2f45-12" },
+                  attrs: { eventid: "777e2f45-14" },
                   on: { click: _vm.doCheckAll }
                 },
                 [_vm._v("全选")]
@@ -8100,7 +8887,7 @@ var render = function() {
                     "form",
                     {
                       staticClass: "task-pay-btn",
-                      attrs: { eventid: "777e2f45-13" },
+                      attrs: { eventid: "777e2f45-15" },
                       on: { click: _vm.saveTask }
                     },
                     [
@@ -8133,7 +8920,7 @@ var render = function() {
             "view",
             {
               staticClass: "no-data-btn",
-              attrs: { eventid: "777e2f45-14" },
+              attrs: { eventid: "777e2f45-16" },
               on: {
                 click: function($event) {
                   _vm.goIndex(1)
@@ -8146,7 +8933,7 @@ var render = function() {
             "view",
             {
               staticClass: "no-data-btn",
-              attrs: { eventid: "777e2f45-15" },
+              attrs: { eventid: "777e2f45-17" },
               on: {
                 click: function($event) {
                   _vm.goIndex(2)

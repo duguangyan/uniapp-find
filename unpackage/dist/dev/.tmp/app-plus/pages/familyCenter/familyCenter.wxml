@@ -1,2 +1,0 @@
-<import src="./familyCenter.vue.wxml" />
-    <template is="18d02457" data="{{ ...$root['0'], $root }}"/>

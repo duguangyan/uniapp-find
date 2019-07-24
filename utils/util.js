@@ -281,7 +281,9 @@ function makeSign(url, Obj) {
 	let newUrl = '';
 	if (url.indexOf('https://devv2.yidap.com') > -1) {
 		newUrl = url.split('https://devv2.yidap.com')[1];
-	} else {
+	} else if(url.indexOf('https://apiv2.yidap.com') > -1) { 
+		newUrl = url.split('https://apiv2.yidap.com')[1];
+	}else{
 		newUrl = url.split('https://apibeta.yidap.com')[1];
 	}
     let newStr = newUrl + '?' + str.substring(0, str.length - 1) + 'zhong_pi_lian'

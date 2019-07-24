@@ -192,6 +192,8 @@
 
 
 
+
+
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
@@ -758,6 +760,13 @@ var render = function() {
                           ]),
                           _c("text", { staticClass: "fs24 text-999 mgl-20" }, [
                             _vm._v(_vm._s(item.desc))
+                          ])
+                        ]),
+                        _c("view", [
+                          _c("text", { staticClass: "fs28" }, [
+                            _c("text", { staticClass: "fs24 text-999" }, [
+                              _vm._v(_vm._s(item.distance_text))
+                            ])
                           ]),
                           _c("text", { staticClass: "flr text-yellow fs24" }, [
                             _vm._v("超范围服务费:￥" + _vm._s(item.extra_fee))
@@ -825,8 +834,11 @@ var render = function() {
             _vm.address != ""
               ? _c("view", { staticClass: "flex-1 address-info fs30 pdt-30" }, [
                   _c("view", { staticClass: "fs2" }, [
-                    _c("text", [_vm._v("收货人")]),
+                    _c("text", [_vm._v(_vm._s(_vm.address.consignee))]),
                     _vm._v(_vm._s(_vm.address.mobile || "")),
+                    _c("text", { staticClass: "mgl-20" }, [
+                      _vm._v(_vm._s(_vm.address.stall))
+                    ]),
                     _vm.address.remark != ""
                       ? _c("text", { staticClass: "remark" }, [
                           _vm._v(_vm._s(_vm.address.remark || ""))

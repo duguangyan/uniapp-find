@@ -1,7 +1,7 @@
 <template>
 	<view class="wx_content">
 		<view class="authentication">
-			<view class="nav flex" v-if="(userType == 0 || userType == 3) && (userStatus == 0 || userStatus == 3)">
+			<view class="nav flex" v-if="userType == 0 || userType == 3">
 				<view class="flex-1" v-for="(item,index) in navArr" :key="index" @click="navCheck(index)">
 					<image :src="navIndex==index?item.activeImg:item.imgUrl"></image>
 					<view>{{item.name}}</view>
@@ -9,13 +9,26 @@
 				<view class="line"></view>
 			</view>
 			<view class="input">
+				<view class="li cf" v-if="navIndex == 1">
+					<view class="name fll">
+						企业名称
+					</view>
+					<view class="value fll cf">
+						<input type="text" v-model="companyName" placeholder="请输入企业名称">
+					</view>
+				</view>
+				
 				<view class="li cf" v-for="(item,index) in arr" :key="index">
 					<view class="name fll">
 						{{item.name}}
 					</view>
 					<view class="value fll cf">
-						<input type="text" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
-						<view v-if="(userType == 1 || userType == 2) && index == 2" class="VerificationCode flr" @click.stop="getVerificationCode">{{VerificationCodeText}}</view>
+						<input :disabled=" userStatus==2" v-if="(userType == 1 || userType == 2) && index != 5" type="text" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
+						<input :disabled=" userStatus==2" v-if="(userType == 0 || userType == 3) && index != 4" type="text" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
+						<input :disabled=" userStatus==2" v-if="(userType == 1 || userType == 2) && index == 5" type="idcard" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
+						<input :disabled=" userStatus==2" v-if="(userType == 0 || userType == 3) && index == 4 && navIndex == 0" type="idcard" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
+						<input :disabled=" userStatus==2" v-if="(userType == 0 || userType == 3) && index == 4 && navIndex == 1" type="text" v-model="item.value" :placeholder="item.placeholder" @tap.stop="onFocus(index)">
+						<view v-if="(userType == 1 || userType == 2) && index == 2 && userStatus !=1" class="VerificationCode flr" @click.stop="getVerificationCode">{{VerificationCodeText}}</view>
 					</view>
 				</view>
 			</view>
@@ -28,13 +41,18 @@
 				</view>
 			</view>
 			<!-- 状态0:未认证 1审核通过，2待审核 ，3审核不通过' -->
-			<view class="info text-red" v-if="userStatus !=0">
-				{{status_label}}
+			<view class="info text-red cf" v-if="userStatus !=0">
+				<view class="fll">
+					{{status_label || ''}}
+				</view>
+				<view class="flr mgr-20">
+					{{remark || ''}}
+				</view>
 			</view>
 			<view class="btn-warp" v-if="userStatus == 0">
 				<view class="btn" @click="save">提交</view>
 			</view>
-			<view class="btn-warp" v-if="userStatus == 3">
+			<view class="btn-warp" v-if="userStatus == 3 || userStatus == 1">
 				<view class="btn" @click="save">重新提交</view>
 			</view>
 		</view>
@@ -65,9 +83,12 @@
 				title: "用户认证",
 				VerificationCodeText:'获取验证码',
 				code_id:'',
+				id:'',
+				companyName:'',
 				userType:0,
 				userStatus:0,
 				status_label:'',
+				remark:'',
 				showCon:false,
 				navArr:[
 					{name:"个人用户",imgUrl:"https://static.yidap.com/miniapp/o2o/imgs/ic_certification_personl_no_select.png",activeImg:"https://static.yidap.com/miniapp/o2o/imgs/ic_certification_personl_select.png"},
@@ -93,35 +114,73 @@
 		onLoad(options) {
 			this.$data.userType = uni.getStorageSync('userType');
 			if(this.$data.userType == 1 || this.$data.userType == 2){
-				this.$data.arr=[
-					{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
-					{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
-					{name:"验证码:",value:"",placeholder:"请输入验证码"},
-					{name:"详细地址:",value:"",placeholder:"请选择地区"},
-					{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
-					{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
-				]
-			}else{
-				this.$data.arr=[
-					{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
-					{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
-					{name:"详细地址:",value:"",placeholder:"请选择地区"},
-					{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
-					{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
-				]
+				return false;
 			}
 			
 			api.auditApply({}).then((res)=>{
 				if(res.code == 200 || res.code == 0){
 					this.$data.userStatus      = res.data.status;
+					let  obj = res.data;
+					
+					if(this.$data.userType == 1 || this.$data.userType == 2){
+						if(this.$data.userStatus ==1){
+							this.$data.arr=[
+								{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
+								{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
+								{name:"详细地址:",value:"",placeholder:"请选择地区"},
+								{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
+								{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
+							]
+						}else{
+							this.$data.arr=[
+								{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
+								{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
+								{name:"验证码:",value:"",placeholder:"请输入验证码"},
+								{name:"详细地址:",value:"",placeholder:"请选择地区"},
+								{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
+								{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
+							]
+						}
+						
+					}else{
+						if(obj.type == 1){
+							this.$data.arr=[
+								{name:"姓名:",value:"",placeholder:"请输入您的姓名"},
+								{name:"联系电话:",value:"",placeholder:"请输入您的手机"},
+								{name:"详细地址:",value:"",placeholder:"请选择地区"},
+								{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
+								{name:"身份证号码:",value:"",placeholder:"请输入您的身份证号码"},
+							]
+						}else{
+							this.$data.arr=[
+								{name:"企业法人:",value:"",placeholder:"请输入企业法人"},
+								{name:"法人电话:",value:"",placeholder:"请输入您的企业法人电话"},
+								{name:"详细地址:",value:"",placeholder:"请选择地区"},
+								{name:"门牌号:",value:"",placeholder:"街道、楼牌等"},
+								{name:"营业执照编号:",value:"",placeholder:"请输入您的营业执照编号"},
+							]
+							
+						}
+						
+					}
+					
+					
 					if(res.data.status>0){
 						this.$data.userAuthentication = res.data;
 						let userAuthentication = res.data;
-
+						if(userAuthentication.id){
+							this.$data.id = userAuthentication.id
+						}
 						this.$data.status_label = userAuthentication.status_label;
+						this.$data.remark = userAuthentication.remark;
+						this.$data.navIndex = userAuthentication.type - 1;
+						if(this.$data.navIndex == 1){
+							this.$data.companyName = userAuthentication.company
+						}
 						this.$data.arr[0].value = userAuthentication.consignee;
 						this.$data.arr[1].value = userAuthentication.mobile;
-						this.$data.arr[3].value = userAuthentication.address;
+						this.$data.arr[2].value = userAuthentication.address.split(',')[0] || '';
+						this.$data.arr[3].value = userAuthentication.address.split(',')[1] || '';
 						
 						if(this.$data.userType == 2 || this.$data.userType == 3){
 							this.$data.arr[4].value = '';
@@ -139,8 +198,8 @@
 								this.$data.bgImg[0] = userAuthentication.id_card_front;
 								this.$data.bgImg[1] = userAuthentication.id_card_back;
 							}else{
-								this.$data.ngImgTextArr[3].img = userAuthentication.id_card_front;
-								this.$data.bgImg[3] = userAuthentication.id_card_front;
+								this.$data.ngImgTextArr[2].img = userAuthentication.id_card_front;
+								this.$data.bgImg[2] = userAuthentication.id_card_front;
 							}
 						}
 					}
@@ -192,6 +251,9 @@
 				this.$data.showCon = false;
 			},
 			onFocus(index){
+				if(this.$data.userStatus == 2){
+					return false;
+				}
 				console.log(index);
 				let _this = this;
 				let userType = uni.getStorageSync('userType');
@@ -265,6 +327,9 @@
 				
 			},
 			navCheck(index){
+				if(this.$data.userStatus == 2){
+					return false
+				}
 				this.$data.navIndex = index;
 				if(index == 0){
 					this.$data.arr[0].name = "姓名:";
@@ -275,16 +340,19 @@
 					this.$data.arr[1].placeholder = "请输入您的联系电话";
 					this.$data.arr[4].placeholder = "请输入您的身份证号码";
 				}else{
-					this.$data.arr[0].name = "企业名称:";
-					this.$data.arr[1].name = "企业法人:";
+					this.$data.arr[0].name = "企业法人:";
+					this.$data.arr[1].name = "法人电话:";
 					this.$data.arr[4].name = "营业执照编号:";
 					
-					this.$data.arr[0].placeholder = "请输入您的企业名称";
-					this.$data.arr[1].placeholder = "请输入您的企业法人";
+					this.$data.arr[0].placeholder = "请输入您的企业法人";
+					this.$data.arr[1].placeholder = "请输入您的企业法人电话";
 					this.$data.arr[4].placeholder = "请输入您的营业执照编号";
 				}
 			},
 			checkImg(index){
+				if(this.$data.userStatus == 2){
+					return false;
+				}
 				let _this = this;
 				uni.chooseImage({
 					count: 1,
@@ -346,6 +414,11 @@
 				// 	 city     = this.$data.arr[2].value.split("省")[1].split("市")[0] + "市";
 				// 	 county   = this.$data.arr[2].value.split("省")[1].split("市")[1].split("区")[0] + "区";
 				// }
+				
+				if(!util.vailPhone(this.$data.arr[1].value)){
+					util.errorTips("请输入正确的手机号")
+					return false;
+				}
 				if(this.$data.navIndex == 0){
 					if(this.$data.bgImg[0]=="" || this.$data.bgImg[1]==""){
 						if(this.$data.bgImg[0]==""){
@@ -365,18 +438,19 @@
 					}
 				}
 				
-				if(this.$data.code_id == ""){
-					util.errorTips("请输入验证码");
-					return false;
-				}
+				
 				let data ='';
 				if(this.$data.userType == 1 || this.$data.userType == 2 ){
+					if(this.$data.code_id == ""){
+						util.errorTips("请输入验证码");
+						return false;
+					}
 					data = {
 							from:1,
 							type:this.$data.navIndex + 1,
 							consignee:this.$data.arr[0].value,
 							mobile:this.$data.arr[1].value,
-							address:_this.$data.arr[3].value + _this.$data.arr[4].value,
+							address:_this.$data.arr[3].value + ',' +_this.$data.arr[4].value,
 							id_card_no:this.$data.arr[5].value,
 							id_card_back:this.$data.bgImg[1],
 							id_card_front:this.$data.bgImg[0]
@@ -387,15 +461,23 @@
 							type:this.$data.navIndex + 1,
 							consignee:this.$data.arr[0].value,
 							mobile:this.$data.arr[1].value,
-							address:_this.$data.arr[2].value + _this.$data.arr[3].value,
+							address:_this.$data.arr[2].value + ',' + _this.$data.arr[3].value,
 							id_card_no:this.$data.arr[4].value,
 							id_card_back:this.$data.bgImg[1],
 							id_card_front:this.$data.bgImg[0]
+						}
+						if(this.$data.navIndex == 1){
+							data.company = this.$data.companyName;
+							data.id_card_front = this.$data.bgImg[2];
 						}
 				}
 				
 				if(_this.$data.navIndex == 1){
 					data.id_card_front = this.$data.bgImg[2]
+				}
+				
+				if(this.$data.id!=''){
+					data.id = this.$data.id
 				}
 				if(this.$data.userType == 0 || this.$data.userType == 3){  // 用户认证
 					api.auditApply({
@@ -427,8 +509,16 @@
 						if(res.code == 200 || res.code == 0){
 							util.successTips("提交审核成功");
 							setTimeout(()=>{
-								uni.navigateBack({
-									delta:1
+								uni.reLaunch({
+									url:'../../index/index'
+								})
+							},1000)
+						}else if(res.code == 1){
+							util.successTips(res.msg);
+							uni.setStorageSync('isExamine1',1);
+							setTimeout(()=>{
+								uni.reLaunch({
+									url:'../../index/index'
 								})
 							},1000)
 						}else{
@@ -437,7 +527,17 @@
 						
 						
 					}).catch((res)=>{
-						util.errorTips(res.msg || res.message)
+						
+						util.errorTips(res.msg || res.message);
+						if(res.code == 1){
+							uni.setStorageSync('isExamine1',1);
+							setTimeout(()=>{
+								uni.reLaunch({
+									url:'../../index/index'
+								})
+							},1000)
+						}
+						
 					})					
 				}else if(this.$data.userType == 2){   // 配送员认证
 					data.code=this.$data.arr[2].value,
@@ -450,8 +550,15 @@
 						if(res.code == 200 || res.code == 0){
 							util.successTips("提交审核成功");
 							setTimeout(()=>{
-								uni.navigateBack({
-									delta:1
+								uni.reLaunch({
+									url:'../../index/index'
+								})
+							},1000)
+						}else if(res.code == 1){
+							uni.setStorageSync('isExamine1',1);
+							setTimeout(()=>{
+								uni.reLaunch({
+									url:'../../index/index'
 								})
 							},1000)
 						}else{
@@ -461,6 +568,12 @@
 						
 					}).catch((res)=>{
 						util.errorTips(res.msg || res.message)
+						uni.setStorageSync('isExamine2',1);
+						setTimeout(()=>{
+							uni.reLaunch({
+								url:'../../index/index'
+							})
+						},1000)
 					})	
 					
 				}
@@ -503,7 +616,7 @@
 		background: #fff;
 		margin-bottom: 240upx;
 		.btn-warp{
-			background: #f4f4f4;
+			background: #fff;
 			padding-bottom: 100upx;
 			.btn{
 				height: 80upx;

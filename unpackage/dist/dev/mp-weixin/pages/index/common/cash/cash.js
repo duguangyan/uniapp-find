@@ -326,6 +326,18 @@ var _uniBadge = _interopRequireDefault(__webpack_require__(/*! ../uni-badge/uni-
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 var _uniListItem = _interopRequireDefault(__webpack_require__(/*! @/components/uni-list-item/uni-list-item.vue */ "E:\\uniapp\\find.yidapi.com.cn\\components\\uni-list-item\\uni-list-item.vue"));
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
@@ -341,14 +353,14 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
       bott: '',
       txts: {
         j: '提现记录',
-        m: '提取金额',
+        m: '提现金额',
         t: '提现方式',
         n: '普通转账',
         s: '预计确认提现后，24小时内到账',
         z: '绑定微信信息',
         g: '绑定支付宝信息' },
 
-      navs: ['转出到微信', '转出到支付宝'],
+      navs: ['转出到微信', '转出到支付宝', '转出到银行卡'],
       navIndex: 0,
       moreMoney: 5000, // 最多提取金额
       amount: '', // 提取金额
@@ -364,7 +376,8 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
       code_msg: '',
       now_amount: '',
       pageIndex: 0,
-      wxNickName: '' };
+      wxNickName: '',
+      bankCardInfo: '' };
 
   },
   onLoad: function onLoad(options) {
@@ -378,17 +391,36 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
       uni.setNavigationBarTitle({
         title: "代采提现" });
 
+    } else if (this.$data.pageIndex == 3) {
+      uni.setNavigationBarTitle({
+        title: "小鹿家人提现" });
+
     }
   },
   onShow: function onShow() {
-    this.apiMemberWxBind();
+
+    var navIndex = this.$data.navIndex;
+    if (navIndex == 0) {
+      this.apiMemberWxBind(navIndex);
+    } else if (navIndex == 1) {
+      this.memberAliBind(navIndex);
+    } else if (navIndex == 2) {
+      this.memberBankCardBind(navIndex);
+    }
+
   },
   methods: {
+    // 修改银行卡绑定信息
+    editBankCardInfo: function editBankCardInfo() {
+      uni.navigateTo({
+        url: '../bindBankCard/bindBankCard?edit=1' });
 
+    },
     // 获取微信绑定信息
-    apiMemberWxBind: function apiMemberWxBind() {var _this2 = this;
+    apiMemberWxBind: function apiMemberWxBind(index) {var _this2 = this;
       _api.default.apiMemberWxBind({}).then(function (res) {
         if (res.code == 200 || res.code == 0) {
+          _this2.$data.navIndex = index;
           _this2.$data.wxIsBind = true;
           _this2.$data.userInfo = res.data;
           _this2.$data.wxNickName = res.data.nickName;
@@ -487,14 +519,21 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
           "type": "wx",
           "amount": this.$data.amount };
 
-
+        if (this.$data.navIndex == 0) {
+          data.type = "wx";
+        }
         if (this.$data.navIndex == 1) {
           data.type = "ali";
+        }
+        if (this.$data.navIndex == 2) {
+          data.type = "bank";
         }
         if (this.$data.pageIndex == 1) {
           data.asset_type = 'commission';
         } else if (this.$data.pageIndex == 2) {
           data.asset_type = 'replace';
+        } else if (this.$data.pageIndex == 3) {
+          data.asset_type = 'marketing';
         }
         _api.default.apiAssetTake({
           method: 'POST',
@@ -513,6 +552,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
           _this.$data.array = '';
           _util.default.errorTips(res.msg || res.message);
         });
+
       }
     },
     reset: function reset() {
@@ -525,18 +565,28 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
     },
     masks: function masks() {
       var _this = this;
-      if (!this.$data.wxIsBind) {
-        if (_this.$data.encryptedData == "" || _this.$data.iv == "" || _this.$data.session_key == "" || _this.$data.open_id == "") {
-          _this.$data.showCon = true;
-          _util.default.errorTips('请绑定用户微信信息');
-          return false;
+
+      if (this.$data.navIndex == 0) {
+        if (!this.$data.wxIsBind) {
+          if (_this.$data.encryptedData == "" || _this.$data.iv == "" || _this.$data.session_key == "" || _this.$data.open_id == "") {
+            _this.$data.showCon = true;
+            _util.default.errorTips('请绑定用户微信信息');
+            return false;
+          }
         }
       }
+
 
       if (_this.$data.amount == "") {
         _util.default.errorTips('请填写提现金额');
         return false;
       }
+
+      if (_this.$data.amount > parseFloat(_this.$data.now_amount)) {
+        _util.default.errorTips('转出金额不能大于提现金额');
+        return false;
+      }
+
 
 
       _api.default.regSMS({
@@ -567,7 +617,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
     },
     goCashRecord: function goCashRecord() {
       uni.navigateTo({
-        url: '../cashRecord/cashRecord' });
+        url: '../cashRecord/cashRecord?pageIndex=' + this.$data.pageIndex });
 
     },
     bindWxInfo: function bindWxInfo() {
@@ -586,6 +636,7 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
       } else {
         this.$data.amount = this.$data.now_amount;
       }
+
     },
     checkTransfer: function checkTransfer() {
       this.$data.isTransfer = !this.$data.isTransfer;
@@ -632,12 +683,59 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../../utils/api.
 
       });
     },
+    // 获取支付宝绑定信息
+    memberBankCardBind: function memberBankCardBind(index) {var _this4 = this;
+
+      _api.default.memberBankCardBind({}).then(function (res) {
+        if (res.code == 200 || res.code == 0) {
+          _this4.$data.bankCardInfo = res.data;
+          _this4.$data.navIndex = index;
+        } else {
+          uni.showModal({
+            title: '提示',
+            content: '绑定银行卡?',
+            confirmText: '立即绑定',
+            cancelColor: '#000000',
+            success: function success(res) {
+              if (res.confirm) {
+                uni.navigateTo({
+                  url: '../bindBankCard/bindBankCard' });
+
+              } else if (res.cancel) {
+                console.log('用户点击取消');
+              }
+            } });
+
+        }
+      }).catch(function (res) {
+
+        uni.showModal({
+          title: '提示',
+          content: '绑定银行卡?',
+          confirmText: '立即绑定',
+          cancelColor: '#000000',
+          success: function success(res) {
+            if (res.confirm) {
+              uni.navigateTo({
+                url: '../bindBankCard/bindBankCard' });
+
+            } else if (res.cancel) {
+              console.log('用户点击取消');
+            }
+          } });
+
+      });
+
+
+
+    },
     checkNav: function checkNav(index) {
       if (index == 1) {
         this.memberAliBind(index);
-      } else {
-        this.$data.navIndex = index;
-        this.$data.userInfo.nickName = this.$data.wxNickName;
+      } else if (index == 2) {
+        this.memberBankCardBind(index);
+      } else if (index == 0) {
+        this.apiMemberWxBind(index);
       }
 
     } } };exports.default = _default;
@@ -931,34 +1029,66 @@ var render = function() {
           )
         })
       ),
-      _c("view", { staticClass: "zfb" }, [
-        _c("view", { staticClass: "t1" }, [
-          _vm._v(_vm._s(_vm.navIndex == 0 ? _vm.txts.z : _vm.txts.g))
-        ]),
-        _c("view", { staticClass: "t2 cf" }, [
-          _c("image", {
-            staticClass: "fll",
-            attrs: { src: _vm.userInfo.avatarUrl, mode: "" }
-          }),
-          _c("view", { staticClass: "v1 fll" }, [
-            _c("view", [_vm._v(_vm._s(_vm.userInfo.nickName))])
-          ]),
-          !_vm.wxIsBind
-            ? _c(
+      _vm.navIndex == 0 || _vm.navIndex == 1
+        ? _c("view", { staticClass: "zfb" }, [
+            _c("view", { staticClass: "t1" }, [
+              _vm._v(_vm._s(_vm.navIndex == 0 ? _vm.txts.z : _vm.txts.g))
+            ]),
+            _c("view", { staticClass: "t2 cf" }, [
+              _c("image", {
+                staticClass: "fll",
+                attrs: { src: _vm.userInfo.avatarUrl, mode: "" }
+              }),
+              _c("view", { staticClass: "v1 fll" }, [
+                _c("view", [_vm._v(_vm._s(_vm.userInfo.nickName))])
+              ]),
+              !_vm.wxIsBind
+                ? _c(
+                    "view",
+                    {
+                      staticClass: "v2",
+                      attrs: { eventid: "00a7a800-1" },
+                      on: { click: _vm.bindWxInfo }
+                    },
+                    [
+                      _vm._v("点击绑定微信信息"),
+                      _c("text", { staticClass: "arrow-right" })
+                    ]
+                  )
+                : _vm._e()
+            ])
+          ])
+        : _vm._e(),
+      _vm.navIndex == 2
+        ? _c("view", { staticClass: "bankCard pd-20" }, [
+            _c("view", { staticClass: "bb-1 cf item-1" }, [
+              _c("view", { staticClass: "fll" }, [
+                _vm._v("持卡人:" + _vm._s(_vm.bankCardInfo.real_name))
+              ]),
+              _c("view", { staticClass: "flr" }, [
+                _vm._v(_vm._s(_vm.bankCardInfo.bank_name))
+              ])
+            ]),
+            _c("view", { staticClass: "item-2 fs30" }, [
+              _c("view", [_vm._v("储蓄卡卡号")]),
+              _c("view", { staticClass: "ellipsis-line2" }, [
+                _vm._v(_vm._s(_vm.bankCardInfo.bank_card_number))
+              ]),
+              _c(
                 "view",
                 {
-                  staticClass: "v2",
-                  attrs: { eventid: "00a7a800-1" },
-                  on: { click: _vm.bindWxInfo }
+                  staticClass: "ar text-yellow",
+                  attrs: { eventid: "00a7a800-2" },
+                  on: { click: _vm.editBankCardInfo }
                 },
                 [
-                  _vm._v("点击绑定微信信息"),
-                  _c("text", { staticClass: "arrow-right" })
+                  _vm._v("更换"),
+                  _c("text", { staticClass: "arrow-right text-yellow" })
                 ]
               )
-            : _vm._e()
-        ])
-      ]),
+            ])
+          ])
+        : _vm._e(),
       _c("view", { staticClass: "get" }, [_vm._v(_vm._s(_vm.txts.m))]),
       _c("view", { staticClass: "input" }, [
         _c("text", { staticClass: "t1" }, [_vm._v("￥")]),
@@ -973,9 +1103,9 @@ var render = function() {
           ],
           staticClass: "t2",
           attrs: {
-            type: "number",
+            type: "digit",
             placeholder: "本次最多可转出" + _vm.moreMoney + "元",
-            eventid: "00a7a800-2"
+            eventid: "00a7a800-3"
           },
           domProps: { value: _vm.amount },
           on: {
@@ -991,7 +1121,7 @@ var render = function() {
           "text",
           {
             staticClass: "t3",
-            attrs: { eventid: "00a7a800-3" },
+            attrs: { eventid: "00a7a800-4" },
             on: { click: _vm.getMoreMoney }
           },
           [_vm._v("全部")]
@@ -1005,7 +1135,7 @@ var render = function() {
             _c("uni-list-item", {
               attrs: {
                 title: _vm.txts.j,
-                eventid: "00a7a800-4",
+                eventid: "00a7a800-5",
                 mpcomid: "00a7a800-0"
               },
               on: { click: _vm.goCashRecord }
@@ -1019,7 +1149,7 @@ var render = function() {
           "view",
           {
             staticClass: "btn",
-            attrs: { eventid: "00a7a800-5" },
+            attrs: { eventid: "00a7a800-6" },
             on: {
               tap: function($event) {
                 _vm.masks()
@@ -1054,7 +1184,7 @@ var render = function() {
                         "font-size": "60rpx",
                         margin: "-10rpx 0 0 0"
                       },
-                      attrs: { eventid: "00a7a800-6" },
+                      attrs: { eventid: "00a7a800-7" },
                       on: {
                         tap: function($event) {
                           _vm.maskss()
@@ -1276,7 +1406,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-7" },
+                        attrs: { eventid: "00a7a800-8" },
                         on: {
                           tap: function($event) {
                             _vm.password(1)
@@ -1289,7 +1419,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-8" },
+                        attrs: { eventid: "00a7a800-9" },
                         on: {
                           tap: function($event) {
                             _vm.password(2)
@@ -1302,7 +1432,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-9" },
+                        attrs: { eventid: "00a7a800-10" },
                         on: {
                           tap: function($event) {
                             _vm.password(3)
@@ -1315,7 +1445,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-10" },
+                        attrs: { eventid: "00a7a800-11" },
                         on: {
                           tap: function($event) {
                             _vm.password(4)
@@ -1328,7 +1458,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-11" },
+                        attrs: { eventid: "00a7a800-12" },
                         on: {
                           tap: function($event) {
                             _vm.password(5)
@@ -1341,7 +1471,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-12" },
+                        attrs: { eventid: "00a7a800-13" },
                         on: {
                           tap: function($event) {
                             _vm.password(6)
@@ -1354,7 +1484,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-13" },
+                        attrs: { eventid: "00a7a800-14" },
                         on: {
                           tap: function($event) {
                             _vm.password(7)
@@ -1367,7 +1497,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-14" },
+                        attrs: { eventid: "00a7a800-15" },
                         on: {
                           tap: function($event) {
                             _vm.password(8)
@@ -1380,7 +1510,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-15" },
+                        attrs: { eventid: "00a7a800-16" },
                         on: {
                           tap: function($event) {
                             _vm.password(9)
@@ -1394,7 +1524,7 @@ var render = function() {
                       {
                         staticClass: "password",
                         staticStyle: { background: "#F29800", color: "#fff" },
-                        attrs: { eventid: "00a7a800-16" },
+                        attrs: { eventid: "00a7a800-17" },
                         on: {
                           tap: function($event) {
                             _vm.reset()
@@ -1407,7 +1537,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "password",
-                        attrs: { eventid: "00a7a800-17" },
+                        attrs: { eventid: "00a7a800-18" },
                         on: {
                           tap: function($event) {
                             _vm.password(0)
@@ -1421,7 +1551,7 @@ var render = function() {
                       {
                         staticClass: "password",
                         staticStyle: { background: "#F29800", color: "#fff" },
-                        attrs: { eventid: "00a7a800-18" },
+                        attrs: { eventid: "00a7a800-19" },
                         on: {
                           tap: function($event) {
                             _vm.backspace()
@@ -1451,7 +1581,7 @@ var render = function() {
                     "view",
                     {
                       staticClass: "btn-cancel",
-                      attrs: { eventid: "00a7a800-19" },
+                      attrs: { eventid: "00a7a800-20" },
                       on: { click: _vm.changeModalCancel }
                     },
                     [_vm._v("取消")]
@@ -1463,7 +1593,7 @@ var render = function() {
                       staticStyle: { padding: "0rpx" },
                       attrs: {
                         "open-type": "getUserInfo",
-                        eventid: "00a7a800-20"
+                        eventid: "00a7a800-21"
                       },
                       on: { click: _vm.changeModalCancel }
                     },

@@ -136,7 +136,9 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ 
     this.$data.index = options.index;
   },
   onShow: function onShow() {
-
+    if (uni.getStorageSync('open_id') == '') {
+      this.getOpenId();
+    }
   },
   methods: {
     checkPayIndex: function checkPayIndex(i) {
@@ -168,8 +170,34 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../utils/api.js */ 
     doInput: function doInput(e) {
       this.$data.price = e.detail.value;
     },
+    getOpenId: function getOpenId() {
+
+      uni.login({
+        success: function success(res) {
+          console.log(res);
+          if (res.code) {
+            var data = {
+              code: res.code,
+              from: 3 };
+
+            _api.default.getOpenId({
+              data: data }).
+            then(function (res) {
+              if (res.code == 200 || res.code == 0) {
+                uni.setStorageSync('open_id', res.data.openid);
+              } else {
+                _util.default.errorTips(res.msg);
+              }
+            }).catch(function (res) {
+              // util.errorTips(res.msg)
+            });
+          }
+        } });
+
+    },
     // 去支付
     doPay: function doPay(e) {var _this2 = this;
+
       if (!_util.default.verificationAmount(this.$data.price)) {
         _util.default.errorTips("请输入正确的金额");
         return false;
@@ -302,7 +330,7 @@ var render = function() {
             ],
             staticClass: "fll",
             attrs: {
-              type: "text",
+              type: "digit",
               placeholder: _vm.index == 1 ? "请输入充值金额" : "请输入购买数量",
               eventid: "21a47f17-0"
             },
@@ -386,7 +414,7 @@ var render = function() {
                 },
                 [
                   _vm._m(1),
-                  _c("view", { staticClass: "fll" }, [_vm._v("鹿币支付")]),
+                  _c("view", { staticClass: "fll" }, [_vm._v("余额支付")]),
                   _c("view", { staticClass: "flr lb" }, [
                     _vm.payIndex == 1
                       ? _c("text", {

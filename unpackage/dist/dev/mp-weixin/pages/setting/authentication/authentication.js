@@ -67,6 +67,24 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var _util = _interopRequireDefault(__webpack_require__(/*! ../../../utils/util.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\util.js"));
 var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js */ "E:\\uniapp\\find.yidapi.com.cn\\utils\\api.js"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 {
@@ -75,9 +93,12 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
       title: "用户认证",
       VerificationCodeText: '获取验证码',
       code_id: '',
+      id: '',
+      companyName: '',
       userType: 0,
       userStatus: 0,
       status_label: '',
+      remark: '',
       showCon: false,
       navArr: [
       { name: "个人用户", imgUrl: "https://static.yidap.com/miniapp/o2o/imgs/ic_certification_personl_no_select.png", activeImg: "https://static.yidap.com/miniapp/o2o/imgs/ic_certification_personl_select.png" },
@@ -103,35 +124,73 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
   onLoad: function onLoad(options) {var _this2 = this;
     this.$data.userType = uni.getStorageSync('userType');
     if (this.$data.userType == 1 || this.$data.userType == 2) {
-      this.$data.arr = [
-      { name: "姓名:", value: "", placeholder: "请输入您的姓名" },
-      { name: "联系电话:", value: "", placeholder: "请输入您的手机" },
-      { name: "验证码:", value: "", placeholder: "请输入验证码" },
-      { name: "详细地址:", value: "", placeholder: "请选择地区" },
-      { name: "门牌号:", value: "", placeholder: "街道、楼牌等" },
-      { name: "身份证号码:", value: "", placeholder: "请输入您的身份证号码" }];
-
-    } else {
-      this.$data.arr = [
-      { name: "姓名:", value: "", placeholder: "请输入您的姓名" },
-      { name: "联系电话:", value: "", placeholder: "请输入您的手机" },
-      { name: "详细地址:", value: "", placeholder: "请选择地区" },
-      { name: "门牌号:", value: "", placeholder: "街道、楼牌等" },
-      { name: "身份证号码:", value: "", placeholder: "请输入您的身份证号码" }];
-
+      return false;
     }
 
     _api.default.auditApply({}).then(function (res) {
       if (res.code == 200 || res.code == 0) {
         _this2.$data.userStatus = res.data.status;
+        var obj = res.data;
+
+        if (_this2.$data.userType == 1 || _this2.$data.userType == 2) {
+          if (_this2.$data.userStatus == 1) {
+            _this2.$data.arr = [
+            { name: "姓名:", value: "", placeholder: "请输入您的姓名" },
+            { name: "联系电话:", value: "", placeholder: "请输入您的手机" },
+            { name: "详细地址:", value: "", placeholder: "请选择地区" },
+            { name: "门牌号:", value: "", placeholder: "街道、楼牌等" },
+            { name: "身份证号码:", value: "", placeholder: "请输入您的身份证号码" }];
+
+          } else {
+            _this2.$data.arr = [
+            { name: "姓名:", value: "", placeholder: "请输入您的姓名" },
+            { name: "联系电话:", value: "", placeholder: "请输入您的手机" },
+            { name: "验证码:", value: "", placeholder: "请输入验证码" },
+            { name: "详细地址:", value: "", placeholder: "请选择地区" },
+            { name: "门牌号:", value: "", placeholder: "街道、楼牌等" },
+            { name: "身份证号码:", value: "", placeholder: "请输入您的身份证号码" }];
+
+          }
+
+        } else {
+          if (obj.type == 1) {
+            _this2.$data.arr = [
+            { name: "姓名:", value: "", placeholder: "请输入您的姓名" },
+            { name: "联系电话:", value: "", placeholder: "请输入您的手机" },
+            { name: "详细地址:", value: "", placeholder: "请选择地区" },
+            { name: "门牌号:", value: "", placeholder: "街道、楼牌等" },
+            { name: "身份证号码:", value: "", placeholder: "请输入您的身份证号码" }];
+
+          } else {
+            _this2.$data.arr = [
+            { name: "企业法人:", value: "", placeholder: "请输入企业法人" },
+            { name: "法人电话:", value: "", placeholder: "请输入您的企业法人电话" },
+            { name: "详细地址:", value: "", placeholder: "请选择地区" },
+            { name: "门牌号:", value: "", placeholder: "街道、楼牌等" },
+            { name: "营业执照编号:", value: "", placeholder: "请输入您的营业执照编号" }];
+
+
+          }
+
+        }
+
+
         if (res.data.status > 0) {
           _this2.$data.userAuthentication = res.data;
           var userAuthentication = res.data;
-
+          if (userAuthentication.id) {
+            _this2.$data.id = userAuthentication.id;
+          }
           _this2.$data.status_label = userAuthentication.status_label;
+          _this2.$data.remark = userAuthentication.remark;
+          _this2.$data.navIndex = userAuthentication.type - 1;
+          if (_this2.$data.navIndex == 1) {
+            _this2.$data.companyName = userAuthentication.company;
+          }
           _this2.$data.arr[0].value = userAuthentication.consignee;
           _this2.$data.arr[1].value = userAuthentication.mobile;
-          _this2.$data.arr[3].value = userAuthentication.address;
+          _this2.$data.arr[2].value = userAuthentication.address.split(',')[0] || '';
+          _this2.$data.arr[3].value = userAuthentication.address.split(',')[1] || '';
 
           if (_this2.$data.userType == 2 || _this2.$data.userType == 3) {
             _this2.$data.arr[4].value = '';
@@ -149,8 +208,8 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
               _this2.$data.bgImg[0] = userAuthentication.id_card_front;
               _this2.$data.bgImg[1] = userAuthentication.id_card_back;
             } else {
-              _this2.$data.ngImgTextArr[3].img = userAuthentication.id_card_front;
-              _this2.$data.bgImg[3] = userAuthentication.id_card_front;
+              _this2.$data.ngImgTextArr[2].img = userAuthentication.id_card_front;
+              _this2.$data.bgImg[2] = userAuthentication.id_card_front;
             }
           }
         }
@@ -202,6 +261,9 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
       this.$data.showCon = false;
     },
     onFocus: function onFocus(index) {
+      if (this.$data.userStatus == 2) {
+        return false;
+      }
       console.log(index);
       var _this = this;
       var userType = uni.getStorageSync('userType');
@@ -275,6 +337,9 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
 
     },
     navCheck: function navCheck(index) {
+      if (this.$data.userStatus == 2) {
+        return false;
+      }
       this.$data.navIndex = index;
       if (index == 0) {
         this.$data.arr[0].name = "姓名:";
@@ -285,16 +350,19 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
         this.$data.arr[1].placeholder = "请输入您的联系电话";
         this.$data.arr[4].placeholder = "请输入您的身份证号码";
       } else {
-        this.$data.arr[0].name = "企业名称:";
-        this.$data.arr[1].name = "企业法人:";
+        this.$data.arr[0].name = "企业法人:";
+        this.$data.arr[1].name = "法人电话:";
         this.$data.arr[4].name = "营业执照编号:";
 
-        this.$data.arr[0].placeholder = "请输入您的企业名称";
-        this.$data.arr[1].placeholder = "请输入您的企业法人";
+        this.$data.arr[0].placeholder = "请输入您的企业法人";
+        this.$data.arr[1].placeholder = "请输入您的企业法人电话";
         this.$data.arr[4].placeholder = "请输入您的营业执照编号";
       }
     },
     checkImg: function checkImg(index) {
+      if (this.$data.userStatus == 2) {
+        return false;
+      }
       var _this = this;
       uni.chooseImage({
         count: 1,
@@ -356,6 +424,11 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
       // 	 city     = this.$data.arr[2].value.split("省")[1].split("市")[0] + "市";
       // 	 county   = this.$data.arr[2].value.split("省")[1].split("市")[1].split("区")[0] + "区";
       // }
+
+      if (!_util.default.vailPhone(this.$data.arr[1].value)) {
+        _util.default.errorTips("请输入正确的手机号");
+        return false;
+      }
       if (this.$data.navIndex == 0) {
         if (this.$data.bgImg[0] == "" || this.$data.bgImg[1] == "") {
           if (this.$data.bgImg[0] == "") {
@@ -375,18 +448,19 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
         }
       }
 
-      if (this.$data.code_id == "") {
-        _util.default.errorTips("请输入验证码");
-        return false;
-      }
+
       var data = '';
       if (this.$data.userType == 1 || this.$data.userType == 2) {
+        if (this.$data.code_id == "") {
+          _util.default.errorTips("请输入验证码");
+          return false;
+        }
         data = {
           from: 1,
           type: this.$data.navIndex + 1,
           consignee: this.$data.arr[0].value,
           mobile: this.$data.arr[1].value,
-          address: _this.$data.arr[3].value + _this.$data.arr[4].value,
+          address: _this.$data.arr[3].value + ',' + _this.$data.arr[4].value,
           id_card_no: this.$data.arr[5].value,
           id_card_back: this.$data.bgImg[1],
           id_card_front: this.$data.bgImg[0] };
@@ -397,15 +471,23 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
           type: this.$data.navIndex + 1,
           consignee: this.$data.arr[0].value,
           mobile: this.$data.arr[1].value,
-          address: _this.$data.arr[2].value + _this.$data.arr[3].value,
+          address: _this.$data.arr[2].value + ',' + _this.$data.arr[3].value,
           id_card_no: this.$data.arr[4].value,
           id_card_back: this.$data.bgImg[1],
           id_card_front: this.$data.bgImg[0] };
 
+        if (this.$data.navIndex == 1) {
+          data.company = this.$data.companyName;
+          data.id_card_front = this.$data.bgImg[2];
+        }
       }
 
       if (_this.$data.navIndex == 1) {
         data.id_card_front = this.$data.bgImg[2];
+      }
+
+      if (this.$data.id != '') {
+        data.id = this.$data.id;
       }
       if (this.$data.userType == 0 || this.$data.userType == 3) {// 用户认证
         _api.default.auditApply({
@@ -437,8 +519,16 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
           if (res.code == 200 || res.code == 0) {
             _util.default.successTips("提交审核成功");
             setTimeout(function () {
-              uni.navigateBack({
-                delta: 1 });
+              uni.reLaunch({
+                url: '../../index/index' });
+
+            }, 1000);
+          } else if (res.code == 1) {
+            _util.default.successTips(res.msg);
+            uni.setStorageSync('isExamine1', 1);
+            setTimeout(function () {
+              uni.reLaunch({
+                url: '../../index/index' });
 
             }, 1000);
           } else {
@@ -447,7 +537,17 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
 
 
         }).catch(function (res) {
+
           _util.default.errorTips(res.msg || res.message);
+          if (res.code == 1) {
+            uni.setStorageSync('isExamine1', 1);
+            setTimeout(function () {
+              uni.reLaunch({
+                url: '../../index/index' });
+
+            }, 1000);
+          }
+
         });
       } else if (this.$data.userType == 2) {// 配送员认证
         data.code = this.$data.arr[2].value,
@@ -460,8 +560,15 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
           if (res.code == 200 || res.code == 0) {
             _util.default.successTips("提交审核成功");
             setTimeout(function () {
-              uni.navigateBack({
-                delta: 1 });
+              uni.reLaunch({
+                url: '../../index/index' });
+
+            }, 1000);
+          } else if (res.code == 1) {
+            uni.setStorageSync('isExamine1', 1);
+            setTimeout(function () {
+              uni.reLaunch({
+                url: '../../index/index' });
 
             }, 1000);
           } else {
@@ -471,6 +578,12 @@ var _api = _interopRequireDefault(__webpack_require__(/*! ../../../utils/api.js 
 
         }).catch(function (res) {
           _util.default.errorTips(res.msg || res.message);
+          uni.setStorageSync('isExamine2', 1);
+          setTimeout(function () {
+            uni.reLaunch({
+              url: '../../index/index' });
+
+          }, 1000);
         });
 
       }
@@ -508,8 +621,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("view", { staticClass: "wx_content" }, [
     _c("view", { staticClass: "authentication" }, [
-      (_vm.userType == 0 || _vm.userType == 3) &&
-      (_vm.userStatus == 0 || _vm.userStatus == 3)
+      _vm.userType == 0 || _vm.userType == 3
         ? _c(
             "view",
             { staticClass: "nav flex" },
@@ -546,59 +658,226 @@ var render = function() {
       _c(
         "view",
         { staticClass: "input" },
-        _vm._l(_vm.arr, function(item, index) {
-          return _c("view", { key: index, staticClass: "li cf" }, [
-            _c("view", { staticClass: "name fll" }, [
-              _vm._v(_vm._s(item.name))
-            ]),
-            _c("view", { staticClass: "value fll cf" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: item.value,
-                    expression: "item.value"
-                  }
-                ],
-                attrs: {
-                  type: "text",
-                  placeholder: item.placeholder,
-                  eventid: "7fb52578-1-" + index
-                },
-                domProps: { value: item.value },
-                on: {
-                  tap: function($event) {
-                    $event.stopPropagation()
-                    _vm.onFocus(index)
-                  },
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+        [
+          _vm.navIndex == 1
+            ? _c("view", { staticClass: "li cf" }, [
+                _c("view", { staticClass: "name fll" }, [_vm._v("企业名称")]),
+                _c("view", { staticClass: "value fll cf" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.companyName,
+                        expression: "companyName"
+                      }
+                    ],
+                    attrs: {
+                      type: "text",
+                      placeholder: "请输入企业名称",
+                      eventid: "7fb52578-1"
+                    },
+                    domProps: { value: _vm.companyName },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.companyName = $event.target.value
+                      }
                     }
-                    item.value = $event.target.value
-                  }
-                }
-              }),
-              (_vm.userType == 1 || _vm.userType == 2) && index == 2
-                ? _c(
-                    "view",
-                    {
-                      staticClass: "VerificationCode flr",
-                      attrs: { eventid: "7fb52578-2-" + index },
+                  })
+                ])
+              ])
+            : _vm._e(),
+          _vm._l(_vm.arr, function(item, index) {
+            return _c("view", { key: index, staticClass: "li cf" }, [
+              _c("view", { staticClass: "name fll" }, [
+                _vm._v(_vm._s(item.name))
+              ]),
+              _c("view", { staticClass: "value fll cf" }, [
+                (_vm.userType == 1 || _vm.userType == 2) && index != 5
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: item.value,
+                          expression: "item.value"
+                        }
+                      ],
+                      attrs: {
+                        disabled: _vm.userStatus == 2,
+                        type: "text",
+                        placeholder: item.placeholder,
+                        eventid: "7fb52578-2-" + index
+                      },
+                      domProps: { value: item.value },
                       on: {
-                        click: function($event) {
+                        tap: function($event) {
                           $event.stopPropagation()
-                          _vm.getVerificationCode($event)
+                          _vm.onFocus(index)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          item.value = $event.target.value
                         }
                       }
-                    },
-                    [_vm._v(_vm._s(_vm.VerificationCodeText))]
-                  )
-                : _vm._e()
+                    })
+                  : _vm._e(),
+                (_vm.userType == 0 || _vm.userType == 3) && index != 4
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: item.value,
+                          expression: "item.value"
+                        }
+                      ],
+                      attrs: {
+                        disabled: _vm.userStatus == 2,
+                        type: "text",
+                        placeholder: item.placeholder,
+                        eventid: "7fb52578-3-" + index
+                      },
+                      domProps: { value: item.value },
+                      on: {
+                        tap: function($event) {
+                          $event.stopPropagation()
+                          _vm.onFocus(index)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          item.value = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                (_vm.userType == 1 || _vm.userType == 2) && index == 5
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: item.value,
+                          expression: "item.value"
+                        }
+                      ],
+                      attrs: {
+                        disabled: _vm.userStatus == 2,
+                        type: "idcard",
+                        placeholder: item.placeholder,
+                        eventid: "7fb52578-4-" + index
+                      },
+                      domProps: { value: item.value },
+                      on: {
+                        tap: function($event) {
+                          $event.stopPropagation()
+                          _vm.onFocus(index)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          item.value = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                (_vm.userType == 0 || _vm.userType == 3) &&
+                index == 4 &&
+                _vm.navIndex == 0
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: item.value,
+                          expression: "item.value"
+                        }
+                      ],
+                      attrs: {
+                        disabled: _vm.userStatus == 2,
+                        type: "idcard",
+                        placeholder: item.placeholder,
+                        eventid: "7fb52578-5-" + index
+                      },
+                      domProps: { value: item.value },
+                      on: {
+                        tap: function($event) {
+                          $event.stopPropagation()
+                          _vm.onFocus(index)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          item.value = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                (_vm.userType == 0 || _vm.userType == 3) &&
+                index == 4 &&
+                _vm.navIndex == 1
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: item.value,
+                          expression: "item.value"
+                        }
+                      ],
+                      attrs: {
+                        disabled: _vm.userStatus == 2,
+                        type: "text",
+                        placeholder: item.placeholder,
+                        eventid: "7fb52578-6-" + index
+                      },
+                      domProps: { value: item.value },
+                      on: {
+                        tap: function($event) {
+                          $event.stopPropagation()
+                          _vm.onFocus(index)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          item.value = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                (_vm.userType == 1 || _vm.userType == 2) &&
+                index == 2 &&
+                _vm.userStatus != 1
+                  ? _c(
+                      "view",
+                      {
+                        staticClass: "VerificationCode flr",
+                        attrs: { eventid: "7fb52578-7-" + index },
+                        on: {
+                          click: function($event) {
+                            $event.stopPropagation()
+                            _vm.getVerificationCode($event)
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.VerificationCodeText))]
+                    )
+                  : _vm._e()
+              ])
             ])
-          ])
-        })
+          })
+        ],
+        2
       ),
       _c(
         "view",
@@ -608,7 +887,7 @@ var render = function() {
           : index >= 2)
             ? _c("view", { key: index, staticClass: "image" }, [
                 _c("image", {
-                  attrs: { src: item.img, eventid: "7fb52578-3-" + index },
+                  attrs: { src: item.img, eventid: "7fb52578-8-" + index },
                   on: {
                     click: function($event) {
                       _vm.checkImg(index)
@@ -620,7 +899,7 @@ var render = function() {
                       "view",
                       {
                         staticClass: "bgszie",
-                        attrs: { eventid: "7fb52578-4-" + index },
+                        attrs: { eventid: "7fb52578-9-" + index },
                         on: {
                           click: function($event) {
                             _vm.checkImg(index)
@@ -636,8 +915,13 @@ var render = function() {
         })
       ),
       _vm.userStatus != 0
-        ? _c("view", { staticClass: "info text-red" }, [
-            _vm._v(_vm._s(_vm.status_label))
+        ? _c("view", { staticClass: "info text-red cf" }, [
+            _c("view", { staticClass: "fll" }, [
+              _vm._v(_vm._s(_vm.status_label || ""))
+            ]),
+            _c("view", { staticClass: "flr mgr-20" }, [
+              _vm._v(_vm._s(_vm.remark || ""))
+            ])
           ])
         : _vm._e(),
       _vm.userStatus == 0
@@ -646,20 +930,20 @@ var render = function() {
               "view",
               {
                 staticClass: "btn",
-                attrs: { eventid: "7fb52578-5" },
+                attrs: { eventid: "7fb52578-10" },
                 on: { click: _vm.save }
               },
               [_vm._v("提交")]
             )
           ])
         : _vm._e(),
-      _vm.userStatus == 3
+      _vm.userStatus == 3 || _vm.userStatus == 1
         ? _c("view", { staticClass: "btn-warp" }, [
             _c(
               "view",
               {
                 staticClass: "btn",
-                attrs: { eventid: "7fb52578-6" },
+                attrs: { eventid: "7fb52578-11" },
                 on: { click: _vm.save }
               },
               [_vm._v("重新提交")]
@@ -672,7 +956,7 @@ var render = function() {
           "view",
           {
             staticClass: "modal-mask",
-            attrs: { eventid: "7fb52578-9" },
+            attrs: { eventid: "7fb52578-14" },
             on: { click: _vm.changeModalCancel }
           },
           [
@@ -689,7 +973,7 @@ var render = function() {
                     "view",
                     {
                       staticClass: "btn-cancel",
-                      attrs: { eventid: "7fb52578-7" },
+                      attrs: { eventid: "7fb52578-12" },
                       on: { click: _vm.changeModalCancel }
                     },
                     [_vm._v("取消")]
@@ -701,7 +985,7 @@ var render = function() {
                       staticStyle: { padding: "0rpx" },
                       attrs: {
                         "open-type": "openSetting",
-                        eventid: "7fb52578-8"
+                        eventid: "7fb52578-13"
                       },
                       on: { click: _vm.changeModalCancel }
                     },

@@ -37,7 +37,8 @@
     "pages/activity/promo/promo",
     "pages/activity/spell/spell",
     "pages/rechargeSuccess/rechargeSuccess",
-    "pages/protocol/protocol"
+    "pages/protocol/protocol",
+    "pages/index/common/bindBankCard/bindBankCard"
   ],
   "subPackages": [],
   "window": {
@@ -53,5 +54,5 @@
     "autoclose": false
   },
   "appname": "一鹿找",
-  "compilerVersion": "2.1.0"
+  "compilerVersion": "2.1.1"
 }
