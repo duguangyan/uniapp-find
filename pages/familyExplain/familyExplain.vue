@@ -108,7 +108,7 @@
 	}
 
 	.family image {
-		width: 750rpx;
+		width: 100%;
 		height: 1900rpx;
 	}
 

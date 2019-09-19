@@ -1,0 +1,406 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+page.data-v-c775096e {
+  background: #f4f4f4;
+}
+.height200.data-v-c775096e {
+  height: 200rpx;
+  background: #f4f4f4;
+}
+.cancat.data-v-c775096e {
+  margin-right: 10rpx;
+  width: 360rpx;
+  height: 100rpx;
+  position: relative;
+  top: 0rpx;
+}
+.cancat text.data-v-c775096e {
+    position: absolute;
+    top: 34rpx;
+    left: 60rpx;
+    font-size: 28rpx;
+    color: #F29800;
+}
+.cancat image.data-v-c775096e {
+    width: 360rpx;
+    height: 100rpx;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.cancat .btn-1.data-v-c775096e, .cancat .btn-2.data-v-c775096e {
+    width: 80rpx;
+    height: 100rpx;
+    position: absolute;
+    top: 0;
+}
+.cancat .btn-1.data-v-c775096e {
+    right: 28rpx;
+}
+.cancat .btn-2.data-v-c775096e {
+    right: 120rpx;
+}
+.empty image.data-v-c775096e {
+  width: 180rpx;
+  height: 240rpx;
+}
+.align-item-start.data-v-c775096e {
+  position: relative;
+}
+.align-item-start .item-right.data-v-c775096e {
+    position: absolute;
+    right: 30rpx;
+    top: 0rpx;
+}
+.align-item-start .item-right view.data-v-c775096e {
+      text-align: right;
+      margin-bottom: 20rpx;
+}
+.find-order.data-v-c775096e {
+  background: #f4f4f4;
+  height: 100%;
+}
+.isFullLoad.data-v-c775096e {
+  text-align: center;
+  line-height: 80rpx;
+  background: #f4f4f4;
+}
+.empty.data-v-c775096e {
+  text-align: center;
+  margin-top: 100rpx;
+}
+.fixed-block.data-v-c775096e {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: #f0eff5;
+}
+.form-box-1 .mgr20.data-v-c775096e {
+  width: 150rpx;
+  text-align: right;
+}
+.select-section.data-v-c775096e {
+  background: #fff;
+  color: #333;
+  line-height: 82rpx;
+  border-bottom: 1rpx #ddd solid;
+}
+.select-order view.data-v-c775096e {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  text-align: center;
+  border-bottom: 4rpx #ddd solid;
+}
+.select-order view.data-v-c775096e:nth-of-type(1) {
+  border-right: 2rpx #ddd solid;
+}
+.status-section.data-v-c775096e {
+  padding-bottom: 2rpx;
+  white-space: nowrap;
+}
+.status-section view.data-v-c775096e {
+  display: inline-block;
+  height: 82rpx;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 0 20rpx;
+  width: 25%;
+  text-align: center;
+}
+/*增加数量,减少边距  */
+/* .status-section.find-section {
+    padding: 0 10px;
+} */
+.status-section.find-section view.data-v-c775096e {
+  padding: 0 10rpx;
+}
+.status-section view .selected.data-v-c775096e, .select-order view .selected.data-v-c775096e {
+  color: #F29800;
+  border-bottom: 4rpx #F29800 solid;
+  padding-bottom: 16rpx;
+}
+.item-container.data-v-c775096e {
+  padding: 200rpx 0 30rpx;
+  text-align: left;
+}
+/*订单块 S */
+.order-item.data-v-c775096e {
+  background: #fff;
+  border-top: 1rpx solid #eee;
+  border-bottom: 20rpx solid #f4f4f4;
+}
+.order-status.data-v-c775096e {
+  padding: 28rpx 45rpx 28rpx 40rpx;
+}
+/*new 标志  */
+.new.data-v-c775096e {
+  position: absolute;
+  right: 0rpx;
+  top: -2rpx;
+  z-index: 10;
+}
+.new image.data-v-c775096e {
+  width: 50rpx;
+  height: 50rpx;
+}
+.order-info.data-v-c775096e {
+  padding: 24rpx 20rpx 10rpx 40rpx;
+  border-top: 1rpx #eee solid;
+  border-bottom: 1rpx #eee solid;
+}
+.order-info-left.data-v-c775096e {
+  /* width: 430upx; */
+}
+.order-pics-list.data-v-c775096e {
+  padding-top: 20rpx;
+  width: 100%;
+  position: relative;
+  left: -40rpx;
+}
+.order-pics-list image.data-v-c775096e {
+  width: 140rpx;
+  height: 140rpx;
+  margin-left: 40rpx;
+  margin-top: 20rpx;
+  background: #ccc;
+  border-radius: 4rpx;
+}
+/*地址边框,边距  */
+.address-space.data-v-c775096e {
+  padding: 10rpx 0;
+  border-top: 1rpx #eee solid;
+  margin-top: 30rpx;
+}
+/*标签tag  */
+.tag.data-v-c775096e {
+  color: #F29800;
+  padding: 2rpx 4rpx;
+  border: 1px #F29800 solid;
+  border-radius: 6rpx;
+}
+.order-info-right.data-v-c775096e {
+  padding: 0 28rpx;
+}
+.order-info-right image.data-v-c775096e {
+  width: 126rpx;
+  height: 126rpx;
+}
+.order-handle.data-v-c775096e {
+  height: 120rpx;
+}
+.find-status view.data-v-c775096e {
+  line-height: 60rpx;
+  min-width: 180rpx;
+  border-radius: 30rpx;
+  border: 1rpx #f29800 solid;
+  margin-left: 30rpx;
+  font-size: 28rpx;
+  color: #f29800;
+  text-align: center;
+}
+.find-status view.warm-border.data-v-c775096e {
+  border: 1rpx #c91a29 solid;
+}
+/*订单块 E  */
+.modal-mask.data-v-c775096e {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 9999;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.modal-dialog.data-v-c775096e {
+  width: 540rpx;
+  overflow: hidden;
+  z-index: 9999;
+  background: #f9f9f9;
+  border-radius: 5rpx;
+}
+.modal-title.data-v-c775096e {
+  padding-top: 30rpx;
+  font-size: 32rpx;
+  color: #030303;
+  text-align: center;
+}
+.modal-content.data-v-c775096e {
+  padding: 20rpx 32rpx;
+  font-size: 28rpx;
+}
+.modal-footer.data-v-c775096e {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  height: 86rpx;
+  border-top: 1px solid #dedede;
+  font-size: 34rpx;
+  line-height: 86rpx;
+}
+.btn-cancel.data-v-c775096e {
+  width: 50%;
+  color: #abb4bd;
+  text-align: center;
+  border-right: 1px solid #dedede;
+}
+.btn-confirm.data-v-c775096e {
+  width: 50%;
+  color: #6fb64b;
+  text-align: center;
+  font-weight: 500;
+}
+.search.data-v-c775096e {
+  height: 100rpx;
+  border-bottom: 1rpx solid #f4f4f4;
+}
+.search .warp.data-v-c775096e {
+    position: relative;
+}
+.search .warp image.data-v-c775096e {
+      width: 100%;
+      height: 100rpx;
+      position: absolute;
+      top: 0;
+      left: 0;
+}
+.search .warp input.data-v-c775096e {
+      width: 500rpx;
+      position: absolute;
+      top: 20rpx;
+      left: 100rpx;
+      height: 60rpx;
+      text-align: left;
+      line-height: 66rpx;
+      z-index: 999;
+}
+.search .warp text.data-v-c775096e {
+      position: absolute;
+      display: block;
+      width: 200rpx;
+      height: 100rpx;
+      right: 0;
+      top: 0;
+      z-index: 99999;
+}
+.logistics-wap.data-v-c775096e {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.logistics-wap .content.data-v-c775096e {
+    width: 450rpx;
+    height: 450rpx;
+    position: absolute;
+    left: 130rpx;
+    top: 200rpx;
+    background: #fff;
+    z-index: 99999;
+    border-radius: 10rpx;
+    padding: 50rpx;
+    margin-top: 20rpx;
+}
+.logistics-wap .content .closeBtn.data-v-c775096e {
+      position: absolute;
+      top: 0rpx;
+      right: 20rpx;
+      width: 40rpx;
+      height: 40rpx;
+      z-index: 999999;
+}
+.logistics-wap .content .closeBtn image.data-v-c775096e {
+        width: 40rpx;
+        height: 40rpx;
+}
+.logistics-wap .content .btn.data-v-c775096e {
+      width: 436rpx;
+      height: 64rpx;
+      line-height: 64rpx;
+      text-align: center;
+      background: #f29800;
+      border-radius: 8rpx;
+      font-size: 32rpx;
+      margin: 0 auto;
+      color: #fff;
+      position: relative;
+      top: 60rpx;
+}
+.logistics-wap .content view.data-v-c775096e {
+      line-height: 100rpx;
+}
+.logistics-wap .content view text.data-v-c775096e {
+        display: inline-block;
+        font-size: 32rpx;
+}
+.logistics-wap .content view input.data-v-c775096e {
+        display: inline-block;
+        border: 1rpx solid #f4f4f4;
+        padding-left: 20rpx;
+        margin-left: 30rpx;
+        position: relative;
+        top: 20rpx;
+        width: 250rpx;
+        background: #f4f4f4;
+        color: #333;
+        border-radius: 10rpx;
+        position: relative;
+        top: 20rpx;
+        text-align: left;
+}
+.logistics-wap .content view .isiP.data-v-c775096e {
+        top: -4rpx;
+}
+.logistics-wap .bg.data-v-c775096e {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: .6;
+}
+

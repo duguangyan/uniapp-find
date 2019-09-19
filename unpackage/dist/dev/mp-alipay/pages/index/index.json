@@ -1,0 +1,15 @@
+{
+  "defaultTitle": "一鹿找",
+  "usingComponents": {
+    "home": "/pages/index/pages/home",
+    "task": "/pages/index/pages/task",
+    "order": "/pages/index/pages/order",
+    "center": "/pages/index/pages/center",
+    "footer-nav": "/components/footer/footer_nav",
+    "find-order": "/pages/index/pages/findOrder",
+    "find-center": "/pages/index/pages/findCenter",
+    "message": "/pages/index/pages/msg",
+    "fetch-center": "/pages/index/pages/fetchCenter",
+    "fetch-order": "/pages/index/pages/fetchOrder"
+  }
+}

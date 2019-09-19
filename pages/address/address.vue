@@ -108,7 +108,7 @@
 			</view> -->
 
 		</view>
-		<view class="height100"></view>
+		<!-- <view class="height100"></view> -->
 		<view @click="goNewAddress" class="bottom-fixed text-center text-white h100 lh100 fs32 bg-yellow">
 			+ 新建收货地址
 		</view>
@@ -316,17 +316,16 @@
 <style lang="scss" scoped>
 	.address{
 		background: #f4f4f4;
-		height: 100%;
+		width: 100%;
+		padding-bottom: 100upx;
 	}
 	.consignee-address{
 		.items{
 			.item{
-				width:670upx;
 				border-bottom: 20upx solid #f4f4f4; 
 				background:rgba(255,255,255,1);
 				border-radius:8upx;
 				position: relative;
-				left: 20upx;
 				padding: 20upx;
 				.stall{
 					width: 240upx;

@@ -235,12 +235,23 @@
         }
         ,{
             "path" : "pages/listCustomer/listCustomer",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "客户列表"
+			}
         }
         ,{
             "path" : "pages/listOrder/listOrder",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "订单列表"
+			}
         }
+		,{
+		    "path" : "pages/index/pages/order",
+		    "style" : {
+				"navigationBarTitleText": "订单"//设置页面标题文字
+				
+			}
+		}
     ],
 	"permission": {
 		"scope.userLocation": {
@@ -251,6 +262,8 @@
         "navigationBarTextStyle" : "black",
         "navigationBarTitleText" : "小鹿快找",
         "navigationBarBackgroundColor" : "#F8F8F8",
-        "backgroundColor" : "#F8F8F8"
+        "backgroundColor" : "#F8F8F8",
+		// "enablePullDownRefresh": true,
+		"onReachBottomDistance":151
     }
 }

@@ -18,11 +18,14 @@
 				<view class='bz' v-if="index == 1">
 					注：余额可用于购买鹿币,支付代采物料费用。
 				</view>
-				<view class='bz' v-if="index == 2">
+				<view class='bz' v-if="index == 2 && first_recharge">
 					注:
-					<text>1、一次性鹿币购买须大于等于100</text>
+					<text>1、第一次鹿币购买须大于等于15</text>
 					<view class='mgl-30'>2、鹿币可用于支付找料及取料订单</view>
-
+				</view>
+				<view class='bz' v-if="index == 2 && !first_recharge">
+					注:
+					<text>1、鹿币可用于支付找料及取料订单</text>
 				</view>
 				<view class='item-3'>支付方式 </view>
 				<view class='item-4'>
@@ -33,7 +36,7 @@
 						<view class='fll'>
 							微信支付
 						</view>
-						<view class='flr' v-if="index == 2">
+						<view class='flr item-4-wx' v-if="index == 2">
 						<text v-if='payIndex == 0' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
 						<text v-if='payIndex != 0' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
 						</view>
@@ -45,7 +48,7 @@
 						<view class='fll'>
 							余额支付
 						</view>
-						<view class='flr lb'>
+						<view class='flr'>
 						<text v-if='payIndex == 1' class="iconfont icon-dui icon-dui-1 fs40 pdl-10 text-yellow"></text>
 						<text v-if='payIndex != 1' class="iconfont icon-dui icon-yuan-1 fs40 pdl-10 text-eb"></text>
 						</view>
@@ -118,12 +121,20 @@
 					}
 				],
 				payIndex:0,
+				first_recharge:false
 			};
 		},
 		onLoad(options) {
+			this.$data.index = options.index;
 			// 获取充值列表
 			this.getRechargeList();
-			this.$data.index = options.index;
+			// 判断是否第一次充值
+			if(this.$data.index == 2){  // 1 余额充值  2鹿币充值
+				this.apiFirstRecharge();
+			}
+			
+			
+			
 		},
 		onShow() {
 			if(uni.getStorageSync('open_id') == ''){
@@ -131,6 +142,21 @@
 			}
 		},
 		methods: {
+			// 判断是否第一次充值
+			apiFirstRecharge(){
+				let  asset_type =  this.$data.payIndex == 1?'balance':'virtual'
+				api.apiFirstRecharge({
+					data:{asset_type}
+				}).then((res)=>{
+					if(res.code == 200 || res.code == 0){
+						if(res.data == 1){
+							this.$data.first_recharge = true;
+							this.$data.price = 15;
+						}
+						
+					}
+				})
+			},
 			checkPayIndex(i){
 				this.$data.payIndex = i;
 			},
@@ -187,7 +213,10 @@
 			},
 			// 去支付
 			doPay(e) {
-				
+				if(this.$data.first_recharge && this.$data.price<15){
+					util.errorTips("首次充值鹿币必须大于或等于15");
+					return false;
+				}
 				if (!util.verificationAmount(this.$data.price)) {
 					util.errorTips("请输入正确的金额");
 					return false;
@@ -276,9 +305,13 @@
 </script>
 
 <style lang="scss" scoped>
+	.item-4-wx{
+		position: relative;
+		left: -38upx;
+	}
 	.lb{
 		position: relative;
-		left: 38upx;
+		// left: 38upx;
 	}
 	.navActive {
 		color: #000;
@@ -394,7 +427,7 @@
 
 	.recharge-content .item-4 .cf {
 		height: 108rpx;
-		line-height: 108rpx;
+		line-height: 106rpx;
 
 	}
 

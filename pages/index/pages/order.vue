@@ -629,6 +629,7 @@
 					}
 				}).then((res) => {
 					if (res.code == 200 || res.code == 0) {
+						
 						this.$data.orderList = this.$data.orderList.concat(res.data);
 						
 						this.$data.hasData = this.$data.orderList.length<=0? true: false;
@@ -644,12 +645,16 @@
 							}
 						}
 						// 判断是否加载更多
-						this.$data.shopLoading = res.data.length < 10 ? false : true;
-						this.$data.noRequestData = res.data.length < 10? false:true;
+						if(res.data.length<10){
+							this.$data.shopLoading   = false;
+							this.$data.noRequestData = false;
+						}else{
+							this.$data.shopLoading   = true;
+							this.$data.noRequestData = true;
+						}
 					}
 					wx.hideLoading();
 				}).catch((res) => {
-					
 					util.errorTips(res.msg || res.message);
 					wx.hideLoading();
 				})
@@ -670,7 +675,8 @@
 			// if(!this.$data.noRequestData){
 			// 	return false;
 			// }
-			
+	
+			console.log(this.$data.page);
 			if(this.$data.isSearch){
 				this.$data.page++;
 				api.orderSearch({
@@ -708,6 +714,9 @@
 </script>
 
 <style lang="scss" scoped="true">
+	.order{
+		// height: 100%;
+	}
 	.cancat{
 		margin-right: 10upx;
 		width: 360upx;
@@ -746,7 +755,7 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 750upx;
+		width:100%;
 		height: 100%;
 		z-index: 999999999;
 
@@ -754,7 +763,7 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			width: 750upx;
+			width: 100%;
 			height: 100%;
 			background: #000;
 			opacity: .8;
@@ -912,7 +921,7 @@
 	.order-header {
 		position: fixed;
 		top: 0;
-		width: 750upx;
+		width: 100%;
 		z-index: 999;
 		background-color: #fff;
 		border-bottom: 1upx solid #f4f4f4; 
@@ -923,7 +932,7 @@
 				position: relative;
 				
 				image{
-					width: 750upx;
+					width: 100%;
 					height: 100upx;
 					position: absolute;
 					top: 0;
@@ -953,7 +962,7 @@
 	}
 	.order-content {
 		margin-top: 280upx;
-		position: relative;
+		// position: relative;
 		border-top: 1upx solid #f4f4f4;
 	}
 	/* #ifdef H5*/  
@@ -984,7 +993,7 @@
 
 	.task-find-item {
 		text-align: left;
-		width: 750upx;
+		width: 100%;
 		padding-left: 30upx;
 		border-bottom: 1upx solid #eee;
 		padding-bottom: 10upx;
@@ -1009,7 +1018,7 @@
 		display: block;
 		height: 50upx;
 		line-height: 50upx;
-		width: 750upx;
+		width: 100%;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		position: relative;
@@ -1086,7 +1095,7 @@
 		text-align: center;
 		color: #666;
 		line-height: 100upx;
-		margin-bottom: 100upx;
+	
 	}
 
 	.star {

@@ -7,8 +7,8 @@
   "id": "__UNI__6F097C0",
   "name": "一鹿找",
   "version": {
-    "name": "2.1.1",
-    "code": 20101
+    "name": "2.1.3",
+    "code": 20103
   },
   "description": "皮箱行业一站式找料取送业务",
   "launch_path": "__uniappservice.html",
@@ -17,7 +17,10 @@
     "email": "",
     "url": ""
   },
-  "permissions": {},
+  "permissions": {
+    "OAuth": {},
+    "Speech": {}
+  },
   "plus": {
     "useragent": {
       "value": "uni-app appservice",
@@ -78,28 +81,48 @@
         "permissions": [
           "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
           "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+          "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+          "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
           "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
           "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
           "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>",
           "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
           "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
           "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
           "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+          "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+          "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
           "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
           "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
         ]
       },
       "apple": {
         "plistcmds": [
-          "Set :NSPhotoLibraryUsageDescription 一鹿找需要打开您的手机相册获取照片",
-          "Set :NSCameraUsageDescription 一鹿找需要打开您的手机相机获取照片",
-          "Set :NSLocationAlwaysUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息",
-          "Set :NSLocationWhenInUseUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息",
-          "Set :NSLocationAlwaysAndWhenInUseUsageDescription 一鹿找需要打开您的地理位置获取地址定位信息"
-        ]
+          "Set :NSContactsUsageDescription 说明读取用户通讯录的原因",
+          "Set :NSMicrophoneUsageDescription 说明使用麦克风的原因",
+          "Set :NSPhotoLibraryUsageDescription 说明读取用户相册的原因",
+          "Set :NSCameraUsageDescription 说明使用用户相机的原因",
+          "Set :NSPhotoLibraryAddUsageDescription 说明向用户相册添加图片的原因",
+          "Set :NSLocationAlwaysUsageDescription 说明持续获取用户地理位置的原因",
+          "Set :NSLocationWhenInUseUsageDescription 说明使用用户地理位置的原因",
+          "Set :NSLocationAlwaysAndWhenInUseUsageDescription 说明使用用户地理位置的原因"
+        ],
+        "privacyDescription": {
+          "NSPhotoLibraryUsageDescription": "一鹿找需要打开您的手机相册获取照片",
+          "NSPhotoLibraryAddUsageDescription": "一鹿找需要打开您的手机相册保存照片",
+          "NSCameraUsageDescription": "一鹿找需要打开您的手机摄像头获取照片",
+          "NSLocationWhenInUseUsageDescription": "一鹿找需要打开您的地理位置获取地址定位信息",
+          "NSLocationAlwaysUsageDescription": "一鹿找需要打开您的地理位置获取地址定位信息",
+          "NSLocationAlwaysAndWhenInUseUsageDescription": "一鹿找需要打开您的地理位置获取地址定位信息"
+        }
       },
       "plugins": {
         "push": {},
+        "speech": {
+          "ifly": {}
+        },
         "audio": {
           "mp3": {
             "description": "Android平台录音支持MP3格式文件"
@@ -109,7 +132,7 @@
     },
     "allowsInlineMediaPlayback": true,
     "uni-app": {
-      "compilerVersion": "2.1.1",
+      "compilerVersion": "2.1.3",
       "control": "webview",
       "nvueCompiler": "weex"
     }

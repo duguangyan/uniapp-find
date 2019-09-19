@@ -1,0 +1,7 @@
+{
+  "defaultTitle": "个人信息",
+  "usingComponents": {
+    "list-item": "/components/list/list-item",
+    "list-icon": "/components/list/list-icon"
+  }
+}

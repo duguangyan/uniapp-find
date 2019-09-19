@@ -155,7 +155,7 @@
 			}
 		}
 		.cf{
-			width: 750upx;
+			width: 100%;
 			height: 194upx;
 			line-height: 96upx;
 			position: relative;

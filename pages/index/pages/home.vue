@@ -112,6 +112,17 @@
 			
 		},
 		mounted() {
+			uni.getSystemInfoSync({
+				success(res){
+					console.log('--------------')
+					debugger
+					that.WinHeight = res.windowHeight;
+				},
+				fail(res) {
+					debugger
+				}
+			})
+			
 			// 设置服务人数
 			this.getServiceData();
 			// 获取小鹿家人状态
@@ -233,6 +244,7 @@
 
 <style lang="scss" scoped>
 	.index {
+		width: 100%;
 		.service {
 			line-height: 140upx;
 			text-align: center;
@@ -281,7 +293,7 @@
 
 		.index-top-warp {
 			height: 500upx;
-			width: 710upx;
+			// width: 710upx;
 			margin: 20upx;
 			border-radius: 20upx;
 			overflow: hidden;

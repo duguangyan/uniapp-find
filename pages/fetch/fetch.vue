@@ -303,10 +303,10 @@
 			initArea(){
 				api.findArea({}).then((res)=>{
 					if(res.code == 200 || res.code == 0){
-						this.$data.areaText = res.data[0].name;
-						this.$data.area_id  = res.data[0].id;
-						this.$data.fetchs[0].areaText = res.data[0].name;
-						this.$data.fetchs[0].area_id  = res.data[0].id;
+						// this.$data.areaText = res.data[0].name;
+						// this.$data.area_id  = res.data[0].id;
+						// this.$data.fetchs[0].areaText = res.data[0].name;
+						// this.$data.fetchs[0].area_id  = res.data[0].id;
 						if(this.$data.taskEditItem==''){
 							this.$data.areaText = res.data[0].name;
 							this.$data.area_id  = res.data[0].id;

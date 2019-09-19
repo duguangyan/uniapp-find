@@ -794,7 +794,7 @@
 
 .order-pics-list {
     padding-top: 20upx;
-	width: 750upx;
+	width: 100%;
 	position: relative;
 	left: -40upx;
 }
@@ -912,7 +912,7 @@
 				position: relative;
 				
 				image{
-					width: 750upx;
+					width: 100%;
 					height: 100upx;
 					position: absolute;
 					top: 0;

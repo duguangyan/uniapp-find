@@ -204,7 +204,7 @@
 	margin: 30upx 0;
 }
 .lately-search{
-	width: 750upx;
+	width: 100%;
 	.title{
 		height: 60upx;
 		line-height: 60upx;
@@ -286,7 +286,7 @@
 	
 	.search_content .title{
 		height: 140upx;
-		width: 750upx;
+		width: 100%;
 		position: relative;
 		top: 0;
 		background: #fff;
@@ -295,7 +295,7 @@
 	.search_content{
 		position: relative;
 		z-index: 999999;
-		width: 750upx;
+		width: 100%;
 		height: 120upx;
 	
 	}

@@ -1,0 +1,6 @@
+{
+  "defaultTitle": "取送任务",
+  "usingComponents": {
+    "upload": "/components/upload"
+  }
+}

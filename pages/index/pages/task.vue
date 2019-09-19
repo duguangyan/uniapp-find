@@ -142,7 +142,7 @@
 						<view v-if="item.address">
 							
 							<!-- <view class='pdr-20'>取料地址:</view> -->
-							<view class='fs24 pdr-20 ellipsis address-fetch' style='word-break:break-all;' v-if="item.address">
+							<view class='fs24 pdr-20 address-fetch' style='word-break:break-all;' v-if="item.address">
 								<!-- <text class='remark' v-if='item.address.remark'>{{item.address.remark||''}}</text> -->
 								<text class="fs28">取料地址:</text>
 								<text class="fs24 text-999 mgl-20">{{item.address.city_str||''}} {{item.address.address||''}} {{item.address.room||''}}</text>
@@ -171,7 +171,7 @@
 		<view style='height:135upx;'></view>
 
 		<view class='task-pay box-shadow lh90 fs30 mgb-30' v-if='finds.length>0 || fetchs.length>0'>
-			<view class='mgl-30'>
+			<view class='mgl-30 mgr-40'>
 				<text @click='doCheckAll' v-if='isCheckAll' class="iconfont icon-dui fs40 pdr-20 text-yellow"></text>
 				<text @click='doCheckAll' v-if='!isCheckAll' class="iconfont icon-dui fs40 pdr-20 text-eb"></text>
 				<text class='text-underline mgr-50' @click='doCheckAll'>全选</text>
@@ -187,7 +187,7 @@
 			</view>
 		</view>
 
-		<view class='no-data' v-if='hasFinds && hasFetchs'>
+		<view class='no-data' v-if='finds.length<=0 && fetchs.length<=0 '>
 			<image src='../../static/icon/no_order1.png'></image>
 			<view class='no-data-text'>你没有相关任务</view>
 			<view class='no-data-btn' @click='goIndex(1)'>
@@ -874,7 +874,8 @@
 	}
 
 	.task-pay {
-		width: 710upx;
+		width: 100%;
+		margin: 0 20upx;
 		position: fixed;
 		bottom: 130upx;
 		z-index: 999;

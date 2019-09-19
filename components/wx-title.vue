@@ -40,7 +40,7 @@
 <style lang="scss" scoped>
 	
 	.title{
-		width: 750upx;
+		width: 100%;
 		height: 80upx;
 		color: #333;
 		line-height: 80upx;
@@ -51,7 +51,7 @@
 		z-index: 999998;
 		overflow: hidden;
 		.text{
-			width: 750upx;
+			width: 100%;
 			line-height: 80upx;
 			text-align: center;
 			position: absolute;

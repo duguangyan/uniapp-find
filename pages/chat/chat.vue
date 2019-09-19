@@ -149,24 +149,11 @@
 			});
 			this.fromUserId = option.fromUserId; // 当前登录的用户 id
 			this.toUserId = option.toUserId; // 对方的用户 id
-			this.fromAvatarPath = uni.getStorageSync('fromAvatarPath') || option.fromAvatarPath || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'; // 当前登录用户的头像
-			this.toAvatarPath = uni.getStorageSync('toAvatarPath') || option.toAvatarPath || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'; // 对方的用户头像
+			this.fromAvatarPath = uni.getStorageSync('fromAvatarPath') || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'; // 当前登录用户的头像
+			this.toAvatarPath = uni.getStorageSync('toAvatarPath') || 'https://ossyidap.oss-cn-shenzhen.aliyuncs.com/image/png/9EAFE4BFEFDDF762718332C8F1BE9F2C.png'; // 对方的用户头像
 			this.userInfoId =  parseInt(this.fromUserId) > parseInt(this.toUserId) ? md5.md5(this.toUserId + this.fromUserId) : md5.md5(this.fromUserId + this.toUserId);
 			if (this.globalData.connentSocket) { // 已连接则直接获取聊天历史
-				let message = {
-					fromUserId: this.fromUserId,
-					toUserId: this.toUserId,
-					content: 'page',
-					smsType: 'TEXT',
-					sysType: 1,
-					smsStatus: 10,
-					smsList: false,
-					currentPage: 1,
-					pageSize: 15
-				}
-				this.globalData.localSocket.send({
-					data: JSON.stringify(message)
-				})
+				this.onSend()
 			} else { // 未连接则连接过后再获取聊天历史
 				socket.initSocket(this.fromUserId, this.toUserId)
 			}
@@ -188,6 +175,9 @@
 		onShow() {
 			let that = this;
 			this.globalData.callback = function (res) {
+				if (res && res.sysType && res.sysType != 1) {
+					return;
+				}
 				if (String(res.userInfoId) == '0' || res.fromUserId == 0) {
 					return;
 				}
@@ -232,25 +222,28 @@
 			}
 		},
 		methods: {
+			onSend() {
+				let message = {
+					fromUserId: this.fromUserId,
+					toUserId: this.toUserId,
+					content: 'page',
+					smsType: 'TEXT',
+					sysType: 1,
+					smsStatus: 10,
+					smsList: false,
+					currentPage: this.currentPage,
+					pageSize: 15
+				}
+				this.globalData.localSocket.send({
+					data: JSON.stringify(message)
+				})
+			},
 			toupper(){
 				let that = this;
 				if (that.nextPage && that.toupperTop) {
 					that.toupperTop = false;
 					that.currentPage = that.currentPage + 1
-					let message = {
-						fromUserId: that.fromUserId,
-						toUserId: that.toUserId,
-						content: 'page',
-						smsType: 'TEXT',
-						sysType: 1,
-						smsStatus: 10,
-						smsList: false,
-						currentPage: that.currentPage,
-						pageSize: 15
-					}
-					that.globalData.localSocket.send({
-						data: JSON.stringify(message)
-					})
+					that.onSend()
 				}
 			},
 			//处理图片尺寸，如果不处理宽高，新进入页面加载图片时候会闪

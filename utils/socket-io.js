@@ -15,7 +15,7 @@ function initSocket (userId, toUserId) {
 	}
 	global.localSocket = wx.connectSocket({
 		//此处 url 可以用来测试 // im.yidap.com webapi.yidapi.com.cn
-		url: `${global.url}/notice/socket?userId=${userId}&openType=sms`,
+		url: `${global.url}/notice/socket?userId=${userId}&platform=1`,
 		success: () => {
 			global.userId = userId;
 			if (global.initType == 2) {

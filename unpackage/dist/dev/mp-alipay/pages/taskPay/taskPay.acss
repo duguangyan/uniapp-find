@@ -1,0 +1,203 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.fecth-address.data-v-122e613a {
+  padding-left: 16rpx;
+}
+.fetchsAddress.data-v-122e613a {
+  position: relative;
+  top: 18rpx;
+}
+.task-find-title.data-v-122e613a {
+  line-height: 90rpx;
+  height: 90rpx;
+  border-bottom: 1rpx solid #f4f4f4;
+  padding-left: 30rpx;
+}
+.task-find-list.data-v-122e613a {
+  padding-left: 40rpx;
+  border-bottom: 1rpx solid #f4f4f4;
+  padding: 30rpx 0;
+}
+.check-box.data-v-122e613a {
+  display: inline-block;
+  width: 55rpx;
+  padding-left: 30rpx;
+}
+.task-find-item.data-v-122e613a {
+  display: inline-block;
+  width: 640rpx;
+  position: relative;
+  padding-left: 30rpx;
+}
+.task-find-item view.data-v-122e613a {
+  display: block;
+  height: 50rpx;
+  line-height: 50rpx;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task-find-img.data-v-122e613a {
+  width: 125rpx;
+  height: 125rpx;
+  position: absolute;
+  top: 0rpx;
+  right: 20rpx;
+}
+.task-find-method.data-v-122e613a {
+  position: relative;
+}
+.task-find-method-img.data-v-122e613a {
+  padding-left: 30rpx;
+}
+.task-find-method-img image.data-v-122e613a {
+  width: 100rpx;
+  height: 100rpx;
+  margin-right: 50rpx;
+  border-radius: 10rpx;
+}
+.task-find-price.data-v-122e613a {
+  position: absolute;
+  bottom: 0rpx;
+  right: 20rpx;
+}
+.task-find-method-getfind view.data-v-122e613a {
+  padding-left: 16rpx;
+  display: block;
+}
+.task-find-method-getfind.data-v-122e613a {
+  padding-right: 30rpx;
+}
+.task-pay.data-v-122e613a {
+  width: 680rpx;
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  overflow: hidden;
+  background-color: #f8f8f8;
+}
+.task-pay view.data-v-122e613a {
+  padding-left: 30rpx;
+}
+.task-pay-btn.data-v-122e613a {
+  width: 200rpx;
+  height: 100%;
+  line-height: 120rpx;
+  display: inline-block;
+  background-color: #F29800;
+  text-align: center;
+  color: #fff;
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 0;
+}
+.task-find-sum.data-v-122e613a {
+  text-align: right;
+  padding-right: 20rpx;
+  border-top: 1rpx solid #f4f4f4;
+}
+.bottom-border.data-v-122e613a {
+  border-bottom: 1rpx solid #f4f4f4;
+}
+.icon-dizhi.data-v-122e613a {
+  font-size: 50rpx;
+  position: absolute;
+  top: 30%;
+  left: -60rpx;
+  z-index: 999999;
+}
+.task-sum.data-v-122e613a {
+  position: absolute;
+  right: 220rpx;
+  top: 20rpx;
+  width: 550rpx;
+  text-align: right;
+}
+.task-paybtn.data-v-122e613a {
+  /* position: relative;
+  top: -15upx; */
+}
+.address-icon.data-v-122e613a {
+  position: absolute;
+  right: 24rpx;
+  top: 36%;
+}
+.address.data-v-122e613a {
+  position: relative;
+  padding-right: 100rpx;
+  padding-bottom: 30rpx;
+}
+.address .address-info view.data-v-122e613a {
+    margin-bottom: 10rpx;
+}
+.icon-chahao.data-v-122e613a {
+  position: absolute;
+  right: 10rpx;
+  top: 0rpx;
+  font-size: 50rpx;
+  color: #aaa;
+}
+.remark.data-v-122e613a {
+  display: inline;
+  text-align: center;
+  border: 1rpx solid #F29800;
+  padding: 0 4rpx;
+  color: #F29800;
+  margin-left: 20rpx;
+}
+.task-warp.data-v-122e613a {
+  overflow: hidden;
+}
+.coupon.data-v-122e613a {
+  text-align: left;
+  color: #333;
+}
+.coupon text.data-v-122e613a:first-child {
+  margin-right: 20rpx;
+}
+.coupon text.data-v-122e613a:last-child {
+  position: relative;
+  top: 0rpx;
+}
+.pay-type .title.data-v-122e613a {
+  padding: 20rpx 10rpx;
+}
+.pay-type .items .item.data-v-122e613a {
+  height: 60rpx;
+  line-height: 60rpx;
+  padding: 20rpx 0;
+}
+.pay-type .items .item .text.data-v-122e613a {
+  width: 500rpx;
+}
+.pay-type .items .item image.data-v-122e613a {
+  width: 60rpx;
+  height: 60rpx;
+}
+

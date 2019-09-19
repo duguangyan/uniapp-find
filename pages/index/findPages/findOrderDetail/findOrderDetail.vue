@@ -715,7 +715,7 @@
 		background: #eee;
 	}
 	.image{
-		width: 750upx;
+		width: 100%;
 		position: relative;
 		left: -40upx;
 		image{

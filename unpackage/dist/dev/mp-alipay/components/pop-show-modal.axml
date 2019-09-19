@@ -1,0 +1,1 @@
+<view class="pop data-v-75fa18c0"><view data-event-opts="{{[['tap',[['hideBg',['$event']]]]]}}" class="bg data-v-75fa18c0" onTap="__e"></view><view class="con data-v-75fa18c0"><view class="info data-v-75fa18c0"><slot></slot></view><view data-event-opts="{{[['tap',[['toDo',['$event']]]]]}}" class="btn data-v-75fa18c0" onTap="__e">{{btnText}}</view></view></view>

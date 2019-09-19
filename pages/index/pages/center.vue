@@ -340,6 +340,7 @@
 	}
 
 	.index {
+		width: 100%;
 		background-color: #F6F6F6;
 		padding-bottom: 100upx;
 	}

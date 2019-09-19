@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "show-model": "/components/pop-show-modal",
+    "weixin-title": "/components/wx-title"
+  },
+  "component": true
+}

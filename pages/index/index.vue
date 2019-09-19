@@ -9,7 +9,7 @@
 		<fetchOrder v-if="page_code=='fetchOrder'"></fetchOrder>
 		<fetchCenter v-if="page_code=='fetchCenter'"></fetchCenter>
 		<message v-if="page_code=='message'"></message>
-		<view class="height120"></view>
+		<!-- <view class="height120"></view> -->
 		<footerNav></footerNav>
 		
 	</view>
@@ -131,9 +131,8 @@
 	.content {
 		text-align: center;
 		padding-bottom: 130upx;
-		height: 100%;
-		width: 750upx;
-		overflow-x: hidden;
+		// height: 100%;
+		width: 100%;
 	}
 
 	.logo {

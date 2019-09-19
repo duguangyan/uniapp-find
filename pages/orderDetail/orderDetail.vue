@@ -835,7 +835,7 @@
   padding-bottom: 30rpx;
 }
 .find-order-detail-btn{
-  width: 750rpx;
+  width: 100%;
   height: 120rpx;
   bottom: 0;
   background-color: #fff;
@@ -1026,7 +1026,7 @@
 	}
 	
 	.task-pay {
-		width: 750upx;
+		width: 100%;
 		position: fixed;
 		bottom: 0;
 		z-index: 999;
@@ -1056,7 +1056,7 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 750upx;
+		width: 100%;
 		height: 100%;
 		z-index: 999999999;
 	
@@ -1064,7 +1064,7 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-			width: 750upx;
+			width: 100%;
 			height: 100%;
 			background: #000;
 			opacity: .8;

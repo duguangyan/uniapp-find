@@ -3,7 +3,12 @@
 	import api from 'utils/api.js'
 	export default {
 		onLaunch: function () {
+			
+			
 			console.log('App Launch')
+			// #ifdef  APP-PLUS
+			// plus.screen.lockOrientation('portrait-primary'); //锁定竖屏正方向
+			// #endif
 			
 			 // 版本更新
 			if (uni.getUpdateManager) {

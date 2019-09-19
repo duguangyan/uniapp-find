@@ -1,0 +1,8 @@
+{
+  "defaultTitle": "找料订单详情",
+  "usingComponents": {
+    "upload": "/components/upload",
+    "uni-number-box": "/components/uni-number-box/uni-number-box",
+    "dialog": "/components/dialog"
+  }
+}

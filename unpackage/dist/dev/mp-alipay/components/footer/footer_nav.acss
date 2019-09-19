@@ -1,0 +1,36 @@
+
+.footer{
+	height: 120rpx;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: #fff;
+	color: #333;
+	border-top: 1rpx solid #eee;
+	padding-top: 10rpx;
+	z-index: 99999999;
+}
+.footer_item{
+	float: left;
+	width: 33.3%;
+	text-align: center;
+	font-size: 28rpx;
+	height: 120rpx;
+}
+.footer_item image{
+	width: 60rpx;
+	height: 60rpx;
+}
+.footer_item.big_item{
+	position: relative;
+	top: -40rpx;
+}
+.footer_item.big_item image{
+	width: 100rpx;
+	height: 100rpx;
+}
+.active{
+	color: orange;
+}
+

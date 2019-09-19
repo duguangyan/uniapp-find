@@ -12,7 +12,7 @@
 			<view class="box">
 				<image class="img" src="https://static.yidap.com/miniapp/o2o/imgs/ic_login_user.png"></image>
 				<image class="close" src="https://static.yidap.com/miniapp/o2o/imgs/ic_delete.png" v-if="isPhone" @click.stop="clearPhone"></image>
-				<input class="input" type="number" @input="clickPhone" placeholder="请输入您的手机号" v-model="phone" />
+				<input class="input" type="text" @input="clickPhone" placeholder="请输入您的手机号" v-model="phone" />
 			</view>
 		</view>
 

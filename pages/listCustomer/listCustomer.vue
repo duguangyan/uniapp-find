@@ -49,7 +49,7 @@
 		 */
 		onReachBottom: function () {
 				  this.$data.page++;
-				  this.getInviteCodeOrder();
+				  this.getInviteCodeUser();
 		},
 	}
 </script>

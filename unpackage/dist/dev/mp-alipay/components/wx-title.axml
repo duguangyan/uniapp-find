@@ -1,0 +1,1 @@
+<view class="title cf data-v-7af51bda"><view data-event-opts="{{[['tap',[['goBlack',['$event']]]]]}}" class="fll arrow data-v-7af51bda" style="width:100rpx;height:100%;" onTap="__e"><block a:if="{{isArrow}}"><text class="arrow-left data-v-7af51bda"></text></block></view><view class="fll text data-v-7af51bda">{{''+headTitle+''}}</view></view>

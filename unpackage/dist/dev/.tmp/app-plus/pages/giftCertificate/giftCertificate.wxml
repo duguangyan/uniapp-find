@@ -1,0 +1,2 @@
+<import src="./giftCertificate.vue.wxml" />
+    <template is="5b6d12f2" data="{{ ...$root['0'], $root }}"/>

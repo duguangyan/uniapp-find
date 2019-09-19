@@ -1,7 +1,7 @@
 // const apiUrl = 'https://apibeta.yidap.com'; // 体验
-// const apiUrl = 'https://devv2.yidap.com'; // 测试
- const apiUrl = 'https://apiv2.yidap.com';     // 正式
-const versionNumber = 'v4.0.12'; //版本号
+ const apiUrl = 'https://devv2.yidap.com'; // 测试
+//const apiUrl = 'https://apiv2.yidap.com';     // 正式
+const versionNumber = 'v4.0.14'; //版本号
 
 if (apiUrl == 'https://apiv2.yidap.com') {
 	uni.setStorageSync('v', versionNumber + ' 正式');
@@ -796,9 +796,12 @@ const apiStaffFetchSearch = (params) => myRequest(params, `${apiUrl}/api/staff/f
 // 业务端配送订单查询
 const apiStaffShipSearch = (params) => myRequest(params, `${apiUrl}/api/staff/ship/search`);
 
+// 业务端配送订单查询
+const apiFirstRecharge = (params) => myRequest(params, `${apiUrl}/api/first_recharge`);
 
 
 module.exports = {
+	apiFirstRecharge,
 	apiStaffFetchSearch,
 	apiStaffShipSearch,
 	apiStaffShow,

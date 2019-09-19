@@ -1,0 +1,271 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+button.data-v-0736c06a::after {
+  border: none;
+}
+input.data-v-0736c06a {
+  outline: none;
+  border: none;
+  list-style: none;
+}
+.index.data-v-0736c06a {
+  background-color: #F6F6F6;
+  height: 100vh;
+}
+.center-top.data-v-0736c06a {
+  width: 100%;
+  height: 320rpx;
+  background-color: #F29800;
+}
+.center-top .title.data-v-0736c06a {
+    padding-top: 68rpx;
+    color: white;
+    font-size: 36rpx;
+    line-height: 16px;
+}
+.center-top .icon.data-v-0736c06a {
+    border: 1rpx solid #fff;
+    border-radius: 50%;
+    height: 120rpx;
+    width: 120rpx;
+    float: left;
+    margin-left: 30rpx;
+    margin-top: 58rpx;
+    border-radius: 50%;
+}
+.center-top .setting.data-v-0736c06a {
+    float: right;
+    margin-top: 95rpx;
+    margin-right: 38rpx;
+    width: 48rpx;
+    height: 48rpx;
+    position: relative;
+    z-index: 99999;
+    top: -50rpx;
+}
+.center-top .message.data-v-0736c06a {
+    float: right;
+    margin-top: 92rpx;
+    margin-right: 40rpx;
+    width: 56rpx;
+    height: 56rpx;
+}
+.center-top .name.data-v-0736c06a {
+    color: white;
+    font-size: 32rpx;
+    position: relative;
+    top: 90rpx;
+    left: 40rpx;
+    text-align: left;
+}
+.center-top .top-button.data-v-0736c06a {
+    color: white;
+    border: 2rpx solid white;
+    border-radius: 20rpx;
+    position: absolute;
+    top: 140rpx;
+    padding: 8rpx 20rpx;
+    height: 40rpx;
+    font-size: 20rpx;
+    line-height: 20rpx;
+}
+.center-top .recharge.data-v-0736c06a {
+    left: 180rpx;
+}
+.center-top .buy.data-v-0736c06a {
+    background-color: transparent;
+    left: 340rpx;
+}
+.wallet.data-v-0736c06a {
+  background-color: white;
+  border-radius: 8rpx;
+  height: 180rpx;
+  position: relative;
+  top: -80rpx;
+  margin: 0rpx 30rpx;
+}
+.wallet .wallet-left.data-v-0736c06a {
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+.wallet .wallet-right.data-v-0736c06a {
+    float: right;
+    width: 50%;
+    height: 100%;
+}
+.wallet .wallet-separator.data-v-0736c06a {
+    background-color: #EEEEEE;
+    width: 2rpx;
+    height: 80rpx;
+    position: absolute;
+    top: 50rpx;
+    left: 50%;
+}
+.wallet .wallet_up.data-v-0736c06a {
+    color: #666666;
+    font-size: 30rpx;
+    position: relative;
+    top: 30rpx;
+}
+.wallet .wallet_down.data-v-0736c06a {
+    display: block;
+    color: #F29800;
+    font-size: 48rpx;
+    position: relative;
+    top: 44rpx;
+}
+.order.data-v-0736c06a {
+  position: relative;
+  background-color: white;
+  height: 264rpx;
+}
+.order .order_text.data-v-0736c06a {
+    font-size: 30rpx;
+    color: #333333;
+    position: absolute;
+    left: 30rpx;
+    margin-top: 30rpx;
+}
+.order .order_check.data-v-0736c06a {
+    font-size: 24rpx;
+    color: #999999;
+    position: absolute;
+    right: 38rpx;
+    margin-top: 30rpx;
+}
+.order .horizon_separator.data-v-0736c06a {
+    background-color: #D8D8D8;
+    position: relative;
+    top: 104rpx;
+    width: 100%;
+    height: 2rpx;
+}
+.order ._ul.data-v-0736c06a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    display: -webkit-flex;
+    /* Safari */
+    height: 158rpx;
+    position: absolute;
+    left: 0rpx;
+    right: 0rpx;
+    bottom: 0rpx;
+    padding-left: 0rpx;
+}
+.order ._li.data-v-0736c06a {
+    background-color: white;
+    display: inline;
+    width: 25%;
+    height: 158rpx;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+}
+.order .order_image.data-v-0736c06a {
+    display: block;
+    -webkit-align-content: center;
+        -ms-flex-line-pack: center;
+            align-content: center;
+    width: 80rpx;
+    height: 80rpx;
+    margin: 28rpx auto -8rpx;
+}
+.order .order_item_text.data-v-0736c06a {
+    color: #333333;
+    font-size: 24rpx;
+    position: relative;
+    top: 10rpx;
+}
+.fectch.data-v-0736c06a {
+  top: -40rpx;
+}
+.horizon_list.data-v-0736c06a {
+  position: relative;
+  background-color: #F6F6F6;
+}
+.horizon_list .family.data-v-0736c06a {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    background-color: white;
+    height: 112rpx;
+}
+.horizon_list .items.data-v-0736c06a {
+    display: -webkit-flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin-top: 0rpx;
+    padding-left: 0rpx;
+}
+.horizon_list .items .item.data-v-0736c06a {
+      position: relative;
+      background-color: white;
+      height: 112rpx;
+      border-top: 1rpx solid #eee;
+}
+.horizon_list text.title.data-v-0736c06a {
+    color: #333333;
+    font-size: 30rpx;
+    position: absolute;
+    left: 30rpx;
+    top: 35rpx;
+}
+.horizon_list text.subTitle.data-v-0736c06a {
+    color: #999999;
+    font-size: 24rpx;
+    position: absolute;
+    left: 170rpx;
+    top: 42rpx;
+}
+.horizon_list .arrow.data-v-0736c06a {
+    position: absolute;
+    top: 42rpx;
+    right: 25rpx;
+    width: 28rpx;
+    height: 28rpx;
+}
+.copyright.data-v-0736c06a {
+  color: #999999;
+  font-size: 24rpx;
+  text-align: center;
+  line-height: 100rpx;
+  padding-bottom: 40rpx;
+  height: 100rpx;
+  display: block;
+}
+
